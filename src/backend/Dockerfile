@@ -3,14 +3,20 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
 
 WORKDIR /src
 
-# Restore dependencies first (layer cache)
-COPY *.csproj ./
-RUN dotnet restore
+# Copy solution + NuGet config + all csproj files (preserving dir structure)
+# so dotnet restore can cache this layer independently from source changes.
+COPY Arsenal.sln NuGet.config ./
+COPY src/Arsenal.API/Arsenal.API.csproj                         src/Arsenal.API/
+COPY src/Arsenal.Application/Arsenal.Application.csproj         src/Arsenal.Application/
+COPY src/Arsenal.Domain/Arsenal.Domain.csproj                   src/Arsenal.Domain/
+COPY src/Arsenal.Infrastructure/Arsenal.Infrastructure.csproj   src/Arsenal.Infrastructure/
 
-# Copy source and publish
+RUN dotnet restore src/Arsenal.API/Arsenal.API.csproj
+
+# Copy full source and publish
 COPY . ./
-RUN dotnet build -c Release --no-restore
-RUN dotnet publish -c Release --no-build -o /app/publish
+RUN dotnet publish src/Arsenal.API/Arsenal.API.csproj \
+        -c Release --no-restore -o /app/publish
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
