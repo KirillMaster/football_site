@@ -122,12 +122,13 @@ export default function Footer({ settings }: FooterProps) {
         </div>
 
         {/* Stadium image */}
-        <div className="relative mt-10 -mx-4 sm:-mx-6 lg:-mx-8 h-40 overflow-hidden rounded-lg">
+        <div className="relative mt-10 -mx-4 sm:-mx-6 lg:-mx-8 h-48 overflow-hidden">
           <Image
-            src="https://static.tildacdn.com/tild3030-3864-4964-b661-333538623466/20.jpg"
-            alt="ДФК Арсенал — стадион"
+            src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/47_1.jpg"
+            alt="Стадион ДФК Арсенал-92 Севастополь"
             fill
-            className="object-cover object-center opacity-60"
+            className="object-cover object-center"
+            quality={85}
           />
         </div>
 
