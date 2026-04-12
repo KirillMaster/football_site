@@ -375,6 +375,12 @@ export default async function HomePage() {
                 {settings.socials.telegram && (
                   <a href={settings.socials.telegram} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-white text-sm">Telegram</a>
                 )}
+                {settings.socials.youtube && (
+                  <a href={settings.socials.youtube} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-white text-sm">YouTube</a>
+                )}
+                {settings.socials.dzen && (
+                  <a href={settings.socials.dzen} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-white text-sm">Дзен</a>
+                )}
               </div>
             </div>
           </div>

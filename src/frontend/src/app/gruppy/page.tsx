@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getGroups } from '@/lib/api';
-import { formatPrice, DAYS_RU } from '@/lib/utils';
+import { DAYS_RU } from '@/lib/utils';
 import { JsonLd } from '@/components/JsonLd';
 import { getCourseSchema } from '@/lib/schema';
 
@@ -43,12 +43,12 @@ export default async function GruppyPage() {
                       {group.ageMin}–{group.ageMax} лет · Тренер: {group.coachName}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-black text-brand-red">
-                      {formatPrice(group.price)}
+                  <Link href="/ceny" className="text-right">
+                    <div className="text-sm font-bold text-brand-red">
+                      от 4 000 ₽
                     </div>
-                    <div className="text-xs text-blue-300">/месяц</div>
-                  </div>
+                    <div className="text-xs text-blue-300 underline">Тарифы →</div>
+                  </Link>
                 </div>
 
                 <div className="p-6">

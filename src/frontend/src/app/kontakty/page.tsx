@@ -91,7 +91,7 @@ export default async function KontaktyPage() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-800">Социальные сети</div>
-                    <div className="flex gap-3 mt-1">
+                    <div className="flex gap-3 mt-1 flex-wrap">
                       {settings.socials.vk && (
                         <a href={settings.socials.vk} target="_blank" rel="noopener noreferrer" className="text-brand-red hover:underline text-sm">ВКонтакте</a>
                       )}
@@ -100,6 +100,9 @@ export default async function KontaktyPage() {
                       )}
                       {settings.socials.youtube && (
                         <a href={settings.socials.youtube} target="_blank" rel="noopener noreferrer" className="text-brand-red hover:underline text-sm">YouTube</a>
+                      )}
+                      {settings.socials.dzen && (
+                        <a href={settings.socials.dzen} target="_blank" rel="noopener noreferrer" className="text-brand-red hover:underline text-sm">Дзен</a>
                       )}
                     </div>
                   </div>
