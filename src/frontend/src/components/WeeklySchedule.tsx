@@ -1,5 +1,5 @@
 import type { TrainingGroup } from '@/types';
-import { DAYS_RU, DAYS_RU_FULL } from '@/lib/utils';
+import { DAYS_RU_FULL } from '@/lib/utils';
 
 interface WeeklyScheduleProps {
   groups: TrainingGroup[];
