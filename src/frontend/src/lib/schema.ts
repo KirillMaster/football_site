@@ -203,7 +203,7 @@ export function getCourseSchema(group: TrainingGroup): Record<string, unknown> {
       price: String(group.price),
       priceCurrency: 'RUB',
       availability: 'https://schema.org/InStock',
-      url: `${DOMAIN}/zapísatsya`,
+      url: `${DOMAIN}/zapisatsya`,
     },
     coursePrerequisites: `Дети от ${group.ageMin} до ${group.ageMax} лет`,
     educationalLevel: 'Beginner to Advanced',

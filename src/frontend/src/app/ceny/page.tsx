@@ -90,7 +90,7 @@ export default async function CenyPage() {
           <p className="text-red-100 mb-8">
             Запишитесь прямо сейчас — первое занятие бесплатно!
           </p>
-          <Link href="/zapísatsya" className="btn-primary bg-white text-brand-red hover:bg-gray-100 px-10 py-4 text-base">
+          <Link href="/zapisatsya" className="btn-primary bg-white text-brand-red hover:bg-gray-100 px-10 py-4 text-base">
             Записаться
           </Link>
         </div>

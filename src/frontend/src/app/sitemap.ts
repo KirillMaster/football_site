@@ -59,7 +59,7 @@ const staticPages: MetadataRoute.Sitemap = [
     priority: 0.6,
   },
   {
-    url: `${BASE_URL}/zapísatsya`,
+    url: `${BASE_URL}/zapisatsya`,
     lastModified: new Date(),
     changeFrequency: 'monthly',
     priority: 1.0,

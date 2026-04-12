@@ -49,7 +49,7 @@ export default async function HomePage() {
               дружный коллектив. Для детей от&nbsp;5 до&nbsp;17 лет.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/zapísatsya" className="btn-primary text-base px-8 py-4">
+              <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4">
                 Записаться
               </Link>
               <Link href="/gruppy" className="btn-outline text-base px-8 py-4 border-white text-white hover:bg-white hover:text-brand-blue">
@@ -281,7 +281,7 @@ export default async function HomePage() {
           <p className="text-red-100 text-lg mb-8">
             Первое занятие — бесплатно. Мы работаем с детьми от 5 до 17 лет.
           </p>
-          <Link href="/zapísatsya" className="inline-flex btn-primary bg-white text-brand-red hover:bg-gray-100 text-base px-10 py-4">
+          <Link href="/zapisatsya" className="inline-flex btn-primary bg-white text-brand-red hover:bg-gray-100 text-base px-10 py-4">
             Записаться бесплатно
           </Link>
         </div>

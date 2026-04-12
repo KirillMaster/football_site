@@ -77,7 +77,7 @@ export default async function GruppyPage() {
                     ))}
                   </div>
 
-                  <Link href="/zapísatsya" className="btn-primary w-full text-center block py-2.5 text-sm">
+                  <Link href="/zapisatsya" className="btn-primary w-full text-center block py-2.5 text-sm">
                     Записаться в группу
                   </Link>
                 </div>

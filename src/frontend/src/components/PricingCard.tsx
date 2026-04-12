@@ -84,7 +84,7 @@ export default function PricingCard({ plan }: PricingCardProps) {
       </ul>
 
       <Link
-        href="/zapísatsya"
+        href="/zapisatsya"
         className={cn(
           'block text-center font-semibold py-3 px-6 rounded-lg transition-colors',
           plan.isPopular
