@@ -102,10 +102,10 @@ Always respond in **Russian**. No exceptions, even for technical topics, error m
 # Прочитать секреты:
 Read("C:\\Pet\\secrets\\secrets.txt")
 
-# Подключиться к БД:
-docker run --rm postgres:16-alpine psql 'postgresql://gen_user:VXfV!4Tf8%23GLIU@188.225.75.81:5432/football' -c 'SELECT ...'
+# Подключиться к БД (пароль брать из secrets.txt, # кодируется как %23):
+docker run --rm postgres:16-alpine psql 'postgresql://gen_user:PASSWORD@188.225.75.81:5432/football' -c 'SELECT ...'
 
-# SSH на сервер (через sshpass или password в secrets):
+# SSH на сервер:
 sshpass -p 'PASSWORD' ssh root@147.45.229.110 'COMMAND'
 ```
 
