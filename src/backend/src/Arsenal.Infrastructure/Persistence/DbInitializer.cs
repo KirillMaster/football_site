@@ -238,8 +238,29 @@ public class DbInitializer
 
     private async Task SeedNewsAsync(JsonElement root, CancellationToken ct)
     {
-        if (await _db.News.AnyAsync(ct)) return;
+        bool hasNews = await _db.News.AnyAsync(ct);
         if (!root.TryGetProperty("News", out var newsEl)) return;
+
+        if (hasNews)
+        {
+            // Patch existing records: set CoverImage where missing
+            bool changed = false;
+            foreach (var el in newsEl.EnumerateArray())
+            {
+                if (!el.TryGetProperty("cover_image", out var ci) || ci.ValueKind != JsonValueKind.String) continue;
+                var slug = el.GetString("slug");
+                var coverUrl = ci.GetString();
+                if (string.IsNullOrEmpty(coverUrl)) continue;
+                var existing = await _db.News.FirstOrDefaultAsync(n => n.Slug == slug, ct);
+                if (existing != null && existing.CoverImage == null)
+                {
+                    existing.SetCoverImage(coverUrl);
+                    changed = true;
+                }
+            }
+            if (changed) await _db.SaveChangesAsync(ct);
+            return;
+        }
 
         foreach (var el in newsEl.EnumerateArray())
         {

@@ -117,6 +117,15 @@ export default function Footer({ settings }: FooterProps) {
           </div>
         </div>
 
+        {/* Stadium image */}
+        <div className="mt-10 -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden rounded-lg">
+          <img
+            src="https://static.tildacdn.com/tild3030-3864-4964-b661-333538623466/20.jpg"
+            alt="ДФК Арсенал — стадион"
+            className="w-full h-40 object-cover object-center opacity-60"
+          />
+        </div>
+
         <div className="mt-8 pt-8 border-t border-blue-700 text-center text-sm text-blue-400">
           <p>© {new Date().getFullYear()} ФК Арсенал-92. Все права защищены.</p>
         </div>

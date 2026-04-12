@@ -12,13 +12,19 @@ export default function NewsCard({ article }: NewsCardProps) {
     <article className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
       <Link href={`/novosti/${article.slug}`}>
         <div className="relative h-48 bg-gray-200 overflow-hidden">
-          <Image
-            src={article.coverImageUrl}
-            alt={article.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+          {article.coverImageUrl ? (
+            <Image
+              src={article.coverImageUrl}
+              alt={article.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-blue to-blue-900 flex items-center justify-center">
+              <span className="text-white font-black text-5xl opacity-20">92</span>
+            </div>
+          )}
         </div>
 
         <div className="p-5">

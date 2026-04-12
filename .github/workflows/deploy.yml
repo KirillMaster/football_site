@@ -116,6 +116,8 @@ jobs:
           labels: ${{ steps.meta-fe.outputs.labels }}
           cache-from: type=gha,scope=frontend-v2
           cache-to: type=gha,mode=max,scope=frontend-v2
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://fcarsenal92.ru
 
   # ── 3. Deploy ─────────────────────────────────────────────────────────────
   deploy:

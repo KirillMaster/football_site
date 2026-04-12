@@ -9,6 +9,8 @@ RUN npm ci
 
 # Copy source and build
 COPY . ./
+ARG NEXT_PUBLIC_API_URL=https://fcarsenal92.ru
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────

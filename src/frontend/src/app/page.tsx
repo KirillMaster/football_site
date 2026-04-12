@@ -32,47 +32,48 @@ export default async function HomePage() {
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative bg-brand-blue text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-blue-900 to-black opacity-90" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-brand-red/20 border border-brand-red/40 rounded-full px-4 py-1.5 text-sm text-red-300 mb-6">
-              <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
-              Набор открыт — 2026
-            </div>
-            <h1 className="text-4xl md:text-6xl font-black leading-tight mb-4">
-              ФК <span className="text-brand-red">Арсенал-92</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-200 font-medium mb-3">
-              Детская футбольная школа Севастополя
-            </p>
-            <p className="text-base text-blue-300 mb-8 leading-relaxed">
-              Воспитываем чемпионов с 1992 года. Профессиональные тренеры, современные методики,
-              дружный коллектив. Для детей от&nbsp;5 до&nbsp;17 лет.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4">
-                Записаться
-              </Link>
-              <Link href="/gruppy" className="btn-outline text-base px-8 py-4 border-white text-white hover:bg-white hover:text-brand-blue">
-                Наши группы
-              </Link>
-            </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <div className={settings.heroVideoRutubeId ? "grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" : ""}>
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 bg-brand-red/20 border border-brand-red/40 rounded-full px-4 py-1.5 text-sm text-red-300 mb-6">
+                <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
+                Набор открыт — 2026
+              </div>
+              <h1 className="text-4xl md:text-6xl font-black leading-tight mb-4">
+                ФК <span className="text-brand-red">Арсенал-92</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-blue-200 font-medium mb-3">
+                Детская футбольная школа Севастополя
+              </p>
+              <p className="text-base text-blue-300 mb-8 leading-relaxed">
+                Воспитываем чемпионов с 1992 года. Профессиональные тренеры, современные методики,
+                дружный коллектив. Для детей от&nbsp;5 до&nbsp;17 лет.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4">
+                  Записаться
+                </Link>
+                <Link href="/gruppy" className="btn-outline text-base px-8 py-4 border-white text-white hover:bg-white hover:text-brand-blue">
+                  Наши группы
+                </Link>
+              </div>
 
-            {/* Stats */}
-            <div className="mt-12 grid grid-cols-3 gap-6 max-w-sm">
-              {[
-                { value: '30+', label: 'лет опыта' },
-                { value: '4', label: 'тренера' },
-                { value: '100+', label: 'детей' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-black text-white">{stat.value}</div>
-                  <div className="text-xs text-blue-400 mt-1">{stat.label}</div>
-                </div>
-              ))}
+              {/* Stats */}
+              <div className="mt-12 grid grid-cols-3 gap-6 max-w-sm">
+                {[
+                  { value: '30+', label: 'лет опыта' },
+                  { value: '4', label: 'тренера' },
+                  { value: '100+', label: 'детей' },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <div className="text-3xl font-black text-white">{stat.value}</div>
+                    <div className="text-xs text-blue-400 mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-
             {settings.heroVideoRutubeId && (
-              <div className="mt-10 relative w-full max-w-xl rounded-xl overflow-hidden shadow-2xl aspect-video">
+              <div className="relative w-full rounded-xl overflow-hidden shadow-2xl aspect-video">
                 <iframe
                   src={`https://rutube.ru/play/embed/${settings.heroVideoRutubeId}/`}
                   title="ДФК Арсенал — видео"
@@ -118,13 +119,51 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="relative h-80 rounded-2xl overflow-hidden bg-gray-200">
-              <Image
-                src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg"
-                alt="ФК Арсенал-92 — тренировки"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
+              <img
+                src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/igor_3.jpg"
+                alt="Кулиев Игорь Рамизович — тренер ДФК Арсенал"
+                className="absolute inset-0 w-full h-full object-cover"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── От первого лица ──────────────────────────────────────── */}
+      <section className="py-16 bg-white" id="ot-pervogo-lica">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title text-center mb-12">От первого лица</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div className="relative h-96 rounded-2xl overflow-hidden bg-gray-100">
+              <img
+                src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/igor_3.jpg"
+                alt="Кулиев Игорь Рамизович"
+                className="absolute inset-0 w-full h-full object-cover object-top"
+              />
+            </div>
+            <div>
+              <div className="text-brand-red text-sm font-bold uppercase tracking-wide mb-1">Генеральный директор и старший тренер</div>
+              <h3 className="text-2xl font-black text-brand-blue mb-1">ДФК «АРСЕНАЛ»</h3>
+              <h4 className="text-xl font-bold text-gray-700 mb-6">Кулиев Игорь Рамизович</h4>
+              <h5 className="font-bold text-gray-900 mb-3">Миссия и цели</h5>
+              <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                Мы верим в то, что совместно способны создать лучшую школу футбола в Севастополе! Да, согласен, звучит громко и вызывающе, но если мыслить иначе, то зачем всё начинать?
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                Мы не обещаем, что ваши дети у нас станут чемпионами, будут завоёвывать кубки, медали и грамоты, мы реально не ставим во главу угла результаты. У нас абсолютно иные цели и модель построения отношений тренера с подопечными. Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство каждого!
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                Безусловно, в спорте главная цель победа, но мы должны понять и принять, что наши дети пришли сюда учиться и цель, в их случае, должна быть направлена на гармоничное и всестороннее развитие ребёнка.
+              </p>
+              <h5 className="font-bold text-gray-900 mb-2">Задачи и принципы клуба:</h5>
+              <p className="text-gray-600 text-sm leading-relaxed mb-2">
+                Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство, при котором:
+              </p>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">а)</span> Мы делаем фокус на развитие каждого ребёнка, а не результаты Команды;</li>
+                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">б)</span> Мы хвалим усилия, а не результаты матчей;</li>
+                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">в)</span> Мы устанавливаем цели, ориентированные на мастерство каждого, а не на результаты Команды.</li>
+              </ul>
             </div>
           </div>
         </div>
