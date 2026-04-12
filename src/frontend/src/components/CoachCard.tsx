@@ -9,7 +9,7 @@ interface CoachCardProps {
 
 export default function CoachCard({ coach }: CoachCardProps) {
   return (
-    <article className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <article className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
       <div className="relative h-64 bg-gray-200">
         {coach.photoUrl ? (
           <Image

@@ -50,7 +50,7 @@ export default async function HomePage() {
           />
         )}
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
         {/* Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="max-w-2xl">
@@ -237,7 +237,7 @@ export default async function HomePage() {
             <h2 className="section-title">Стоимость занятий</h2>
             <p className="section-subtitle">Выберите подходящий план для вашего ребёнка</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {plans.map((plan) => (
               <PricingCard key={plan.id} plan={plan} />
             ))}

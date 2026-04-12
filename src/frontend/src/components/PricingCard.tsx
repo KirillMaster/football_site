@@ -13,7 +13,7 @@ export default function PricingCard({ plan }: PricingCardProps) {
       className={cn(
         'relative rounded-2xl p-8 flex flex-col',
         plan.isPopular
-          ? 'bg-brand-blue text-white shadow-2xl scale-105'
+          ? 'bg-brand-blue text-white shadow-2xl ring-4 ring-brand-red ring-offset-2'
           : 'bg-white border-2 border-gray-200 shadow-md'
       )}
     >

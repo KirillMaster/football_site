@@ -84,10 +84,10 @@ export default function Header() {
       <div
         className={cn(
           'lg:hidden overflow-hidden transition-all duration-300',
-          menuOpen ? 'max-h-screen' : 'max-h-0'
+          menuOpen ? 'max-h-[560px]' : 'max-h-0'
         )}
       >
-        <nav className="px-4 pb-4 flex flex-col gap-1 bg-blue-900">
+        <nav className="px-4 pt-2 pb-6 flex flex-col gap-1 bg-blue-900 border-t border-blue-700">
           {navLinks.map((link) => (
             <Link
               key={link.href}
