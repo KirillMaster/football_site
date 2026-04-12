@@ -40,9 +40,9 @@ export default async function NewsArticlePage({ params }: Props) {
         data={[
           getArticleSchema(article),
           getBreadcrumbSchema([
-            { name: 'Главная', url: 'https://arsenal92.ru/' },
-            { name: 'Новости', url: 'https://arsenal92.ru/novosti' },
-            { name: article.title, url: `https://arsenal92.ru/novosti/${article.slug}` },
+            { name: 'Главная', url: 'https://fcarsenal92.ru/' },
+            { name: 'Новости', url: 'https://fcarsenal92.ru/novosti' },
+            { name: article.title, url: `https://fcarsenal92.ru/novosti/${article.slug}` },
           ]),
         ]}
       />

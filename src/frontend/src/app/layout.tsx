@@ -26,12 +26,17 @@ export const metadata: Metadata = {
     siteName: 'ДФК Арсенал — Детская футбольная школа Севастополь',
     locale: 'ru_RU',
     type: 'website',
+    images: [
+      {
+        url: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg',
+        width: 800,
+        height: 600,
+        alt: 'ДФК Арсенал-92 — Детская футбольная школа Севастополя',
+      },
+    ],
   },
   alternates: {
-    languages: {
-      ru: 'https://fcarsenal92.ru',
-      en: 'https://fcarsenal92.ru/en',
-    },
+    canonical: 'https://fcarsenal92.ru',
   },
 };
 

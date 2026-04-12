@@ -91,7 +91,7 @@ export function getSportsClubSchema(): Record<string, unknown> {
       'Квалифицированная школа футбола в Севастополе для детей от 6 до 14 лет. Профессиональные тренеры с лицензией УЕФА категории С.',
     url: DOMAIN,
     logo,
-    image: `${DOMAIN}/images/og-home.jpg`,
+    image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
     telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
     address,
     openingHoursSpecification: openingHours,
@@ -114,11 +114,11 @@ export function getLocalBusinessSchema(): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    '@id': `${DOMAIN}/contacts#localbusiness`,
+    '@id': `${DOMAIN}/kontakty#localbusiness`,
     name: 'ДФК Арсенал',
     description:
       'Детская футбольная школа в Севастополе. Профессиональные тренеры, современная методика, группы для детей от 6 до 14 лет.',
-    url: `${DOMAIN}/contacts`,
+    url: `${DOMAIN}/kontakty`,
     telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
     address,
     openingHoursSpecification: openingHours,

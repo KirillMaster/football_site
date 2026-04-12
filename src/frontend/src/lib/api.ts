@@ -414,30 +414,34 @@ export async function getReviews(): Promise<Review[]> {
 
 export async function submitContactMessage(data: ContactMessage): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/messages`, {
+    const res = await fetch(`${API_URL}/api/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
   } catch {
-    // In dev mode without backend, simulate success
-    console.warn('API unavailable — contact message not sent:', data);
-    return true;
+    return false;
   }
 }
 
 export async function submitTryoutRequest(data: TryoutRequest): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/tryouts`, {
+    const res = await fetch(`${API_URL}/api/tryout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        childName: data.childName,
+        childAge: data.age,
+        parentName: data.parentName,
+        phone: data.phone,
+        email: data.email,
+        message: data.message ?? '',
+      }),
     });
     return res.ok;
   } catch {
-    console.warn('API unavailable — tryout request not sent:', data);
-    return true;
+    return false;
   }
 }
 
