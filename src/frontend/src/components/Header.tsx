@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -24,9 +25,13 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-black text-white text-sm">
-              92
-            </div>
+            <Image
+              src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg"
+              alt="ФК Арсенал-92"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
             <div className="hidden sm:block">
               <div className="font-black text-base leading-tight">ФК АРСЕНАЛ-92</div>
               <div className="text-xs text-blue-300">Детская футбольная школа</div>

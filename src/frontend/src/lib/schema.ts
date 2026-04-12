@@ -21,7 +21,7 @@ const address = {
 
 const logo = {
   '@type': 'ImageObject',
-  url: `${DOMAIN}/images/logo.png`,
+  url: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
   width: 1072,
   height: 1037,
 } as const;
@@ -122,8 +122,8 @@ export function getLocalBusinessSchema(): Record<string, unknown> {
     telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
     address,
     openingHoursSpecification: openingHours,
-    image: `${DOMAIN}/images/logo.png`,
-    logo: `${DOMAIN}/images/logo.png`,
+    image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
+    logo: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
     priceRange: '4000₽ - 6000₽/мес',
     sameAs,
     areaServed: {
@@ -238,7 +238,7 @@ export function getArticleSchema(news: NewsArticle): Record<string, unknown> {
       name: 'ДФК Арсенал',
       logo: {
         '@type': 'ImageObject',
-        url: `${DOMAIN}/images/logo.png`,
+        url: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
       },
     },
     mainEntityOfPage: {
