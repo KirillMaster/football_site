@@ -747,7 +747,7 @@ export async function deleteAdminGroup(id: string): Promise<boolean> {
 
 // ─── Admin Site Settings ────────────────────────────────────────────────────
 
-export async function getAdminSettings(): Promise<Record<string, unknown>> {
+export async function getAdminSettings(): Promise<Record<string, unknown> | null> {
   try {
     const res = await fetch(`${API_URL}/api/admin/site-settings`, { headers: authHeaders() });
     if (!res.ok) return null;
@@ -845,8 +845,8 @@ export async function getAdminDashboardStats(): Promise<{
       newMessages: Array.isArray(messages) ? messages.filter((m: Record<string, unknown>) => !m.isRead).length : 0,
       newTryouts: Array.isArray(tryouts) ? tryouts.filter((t: Record<string, unknown>) => t.status === 'Pending').length : 0,
       totalCoaches: Array.isArray(coaches) ? coaches.length : 0,
-      totalNews: news?.totalCount ?? 0,
-      totalPhotos: photos?.totalCount ?? (Array.isArray(photos) ? photos.length : 0),
+      totalNews: ((news as Record<string, unknown>)?.totalCount as number) ?? 0,
+      totalPhotos: ((photos as Record<string, unknown>)?.totalCount as number) ?? (Array.isArray(photos) ? photos.length : 0),
     };
   } catch {
     return { newMessages: 0, newTryouts: 0, totalCoaches: 0, totalNews: 0, totalPhotos: 0 };

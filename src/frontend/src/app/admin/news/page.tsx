@@ -140,9 +140,11 @@ export default function AdminNewsPage() {
   const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getAdminNews();
-      const items: AdminNewsDto[] = data?.items ?? data ?? [];
-      setNews(Array.isArray(items) ? items : []);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = await getAdminNews();
+      const raw = data?.items ?? data ?? [];
+      const items = (Array.isArray(raw) ? raw : []) as AdminNewsDto[];
+      setNews(items);
       setError(null);
     } catch {
       showToast('Не удалось загрузить новости', true);
