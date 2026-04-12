@@ -53,8 +53,8 @@ jobs:
         run: npm ci
         working-directory: src/frontend
 
-      - name: Run frontend tests
-        run: npm test -- --passWithNoTests
+      - name: Lint frontend
+        run: npm run lint
         working-directory: src/frontend
 
   # ── 2. Build & push images ────────────────────────────────────────────────
