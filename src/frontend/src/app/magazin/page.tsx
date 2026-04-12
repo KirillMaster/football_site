@@ -1,39 +1,32 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Магазин — ДФК Арсенал Севастополь',
+  title: 'Экипировка — ДФК Арсенал Севастополь',
   description:
-    'Фирменная экипировка и атрибутика ДФК Арсенал-92: форма, мячи, аксессуары, спортивные костюмы. Заказ через Telegram — доставка по Севастополю.',
+    'Спортивная экипировка ДФК Арсенал-92: бутсы, форма, зимние куртки. Заказ через Telegram.',
 };
 
-const categories = [
+const products = [
   {
-    id: 'forma',
-    title: 'Форма',
-    icon: '👕',
+    id: 'boots',
+    title: 'Профессиональные бутсы',
+    price: 'от 1 199,00 руб.',
     description:
-      'Официальная игровая форма клуба «Арсенал». Домашний и выездной комплект — футболка, шорты, гетры с клубной символикой.',
+      'Футбольные бутсы — отличный подарок как маленькому болельщику, так и начинающей звезде футбола. Хотите купить детскую футбольную форму, бутсы, защиту? Обращайтесь, мы подберем вам лучшее решение по отличной цене!',
   },
   {
-    id: 'myachi',
-    title: 'Мячи',
-    icon: '⚽',
+    id: 'kit',
+    title: 'Спортивная форма — Лето 2025',
+    price: 'от 1 999,00 руб.',
     description:
-      'Тренировочные и матчевые мячи размеров 3, 4 и 5 с логотипом клуба. Подходят для всех возрастных групп.',
+      'Администрация футбольного клуба АРСЕНАЛ предлагает широкий ассортимент спортивной и повседневной одежды. Гарантия качества и выгодные условия на групповые покупки. Отличная цена и возможность оперативной доставки.',
   },
   {
-    id: 'aksessuary',
-    title: 'Аксессуары',
-    icon: '🧢',
+    id: 'jackets',
+    title: 'Зимние дутые куртки — Зима 2025-2026',
+    price: 'от 1 499,00 руб.',
     description:
-      'Шапки, кепки, шарфы, рюкзаки и сумки с эмблемой «Арсенала». Отличный подарок для юного футболиста.',
-  },
-  {
-    id: 'kostum',
-    title: 'Спортивный костюм',
-    icon: '🥋',
-    description:
-      'Фирменный спортивный костюм клуба — куртка и брюки. Удобен для тренировок и повседневной носки.',
+      'Зимние спортивные куртки позволят не делать перерывов в тренировках даже при минусовой температуре. Удобная и теплая одежда. Отличное качество. Высокие стандарты в производстве при сохранении доступной цены.',
   },
 ];
 
@@ -45,46 +38,43 @@ export default function MagazinPage() {
       {/* Hero */}
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-3">
-            Магазин «Арсенал»
-          </h1>
-          <p className="text-blue-300 text-lg">
-            Фирменная экипировка и атрибутика детского футбольного клуба
+          <h1 className="text-4xl md:text-5xl font-black mb-3">ЭКИПИРОВКА</h1>
+          <p className="text-blue-300 text-lg max-w-2xl">
+            Гарантия высоких результатов и побед — это не только регулярные тренировки, но и форма.
+            У нас вы можете приобрести наиболее востребованные элементы спортивной одежды.
           </p>
         </div>
       </section>
 
-      {/* Product categories */}
+      {/* Products */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="section-title">Каталог</h2>
-            <p className="section-subtitle">
-              Вся экипировка выполнена в цветах клуба и доступна для заказа через Telegram
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((cat) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {products.map((product) => (
               <div
-                key={cat.id}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col"
+                key={product.id}
+                className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow"
               >
-                <div className="text-4xl mb-4">{cat.icon}</div>
-                <h3 className="font-bold text-brand-blue text-xl mb-2">
-                  {cat.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-6">
-                  {cat.description}
-                </p>
-                <a
-                  href={TELEGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary text-center"
-                >
-                  Заказать в Telegram
-                </a>
+                <div className="bg-gray-100 h-48 flex items-center justify-center">
+                  <span className="text-6xl">⚽</span>
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="text-brand-red font-bold text-sm mb-2">{product.price}</div>
+                  <h3 className="font-bold text-brand-blue text-lg mb-3 leading-tight">
+                    {product.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-6">
+                    {product.description}
+                  </p>
+                  <a
+                    href={TELEGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary text-center text-sm"
+                  >
+                    Заказать в Telegram
+                  </a>
+                </div>
               </div>
             ))}
           </div>
@@ -92,22 +82,20 @@ export default function MagazinPage() {
       </section>
 
       {/* Order info */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-brand-red/5 border border-brand-red/20 rounded-2xl p-8 text-center">
-            <p className="text-gray-700 text-base leading-relaxed">
-              Для заказа пишите нам в Telegram —{' '}
-              <a
-                href={TELEGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-brand-blue hover:underline"
-              >
-                @arsenalarena
-              </a>
-              . Доставка по Севастополю бесплатна при заказе от 3000₽.
-            </p>
-          </div>
+      <section className="py-10 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <p className="text-gray-700 text-base leading-relaxed">
+            Для заказа пишите нам в Telegram —{' '}
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-brand-blue hover:underline"
+            >
+              @arsenalarena
+            </a>
+            . Принимаем заказы ежедневно.
+          </p>
         </div>
       </section>
     </>

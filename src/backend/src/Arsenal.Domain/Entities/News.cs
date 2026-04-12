@@ -58,6 +58,12 @@ public class News : BaseEntity
         UpdatedAt = DateTime.UtcNow;
     }
 
+    public void SetCoverImage(string? url)
+    {
+        CoverImage = url;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
     public void Update(string titleRu, string titleEn, string excerptRu,
         string excerptEn, string contentRu, string contentEn,
         string metaTitle, string metaDescription, List<string> tags,

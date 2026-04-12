@@ -96,6 +96,18 @@ export interface SiteSettings {
     dzen?: string;
   };
   mapEmbedUrl?: string;
+  heroVideoRutubeId?: string;
+}
+
+export interface AdminPage {
+  id: string;  // GUID from backend
+  slug: string;
+  titleRu: string;
+  contentRu: string;
+  metaDescriptionRu: string;
+  isPublished: boolean;
+  sortOrder: number;
+  updatedAt: string;
 }
 
 export interface CmsPage {

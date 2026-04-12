@@ -93,6 +93,24 @@ interface RawPartner {
   websiteUrl?: string | null;
 }
 
+interface RawPageDto {
+  id: string;
+  slug: string;
+  titleRu: string;
+  contentRu: string;
+  metaDescriptionRu: string;
+  isPublished: boolean;
+  updatedAt: string;
+}
+
+interface RawSiteSettingsDto {
+  phones: string[];
+  email: string;
+  address: string;
+  socials: { vk?: string; telegram?: string; youtube?: string; dzen?: string };
+  heroVideoRutubeId?: string;
+}
+
 // ─── Mappers ─────────────────────────────────────────────────────────────────
 
 function mapCoach(raw: RawCoach, index: number): Coach {
@@ -153,6 +171,32 @@ function mapPartner(raw: RawPartner, index: number): Partner {
     description: raw.descriptionRu ?? '',
     logoUrl: raw.logoUrl ?? null,
     websiteUrl: raw.websiteUrl ?? null,
+  };
+}
+
+function mapCmsPage(raw: RawPageDto): CmsPage {
+  return {
+    id: 0,
+    slug: raw.slug,
+    title: raw.titleRu,
+    content: raw.contentRu,
+    metaDescription: raw.metaDescriptionRu,
+    updatedAt: raw.updatedAt,
+  };
+}
+
+function mapSiteSettings(raw: RawSiteSettingsDto): SiteSettings {
+  return {
+    phones: raw.phones ?? [],
+    email: raw.email ?? '',
+    address: raw.address ?? '',
+    socials: {
+      vk: raw.socials?.vk,
+      telegram: raw.socials?.telegram,
+      youtube: raw.socials?.youtube,
+      dzen: raw.socials?.dzen,
+    },
+    heroVideoRutubeId: raw.heroVideoRutubeId,
   };
 }
 
@@ -228,11 +272,25 @@ export async function getPhotos(albumId?: number): Promise<Photo[]> {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  return apiFetch('/api/sitesettings', mockSiteSettings);
+  try {
+    const res = await fetch(`${API_URL}/api/sitesettings`, { next: { revalidate: 300 } });
+    if (!res.ok) return mockSiteSettings;
+    const raw: RawSiteSettingsDto = await res.json();
+    return mapSiteSettings(raw);
+  } catch {
+    return mockSiteSettings;
+  }
 }
 
 export async function getCmsPage(slug: string): Promise<CmsPage | null> {
-  return apiFetch(`/api/pages/${slug}`, mockPages[slug] ?? null);
+  try {
+    const res = await fetch(`${API_URL}/api/pages/${slug}`, { next: { revalidate: 60 } });
+    if (!res.ok) return mockPages[slug] ?? null;
+    const raw: RawPageDto = await res.json();
+    return mapCmsPage(raw);
+  } catch {
+    return mockPages[slug] ?? null;
+  }
 }
 
 export async function getPartners(): Promise<Partner[]> {
@@ -278,6 +336,82 @@ export async function submitTryoutRequest(data: TryoutRequest): Promise<boolean>
   } catch {
     console.warn('API unavailable — tryout request not sent:', data);
     return true;
+  }
+}
+
+// ─── Admin Pages API ─────────────────────────────────────────────────────────
+
+function authHeaders(): HeadersInit {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+  return token ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' };
+}
+
+export async function getAdminPages(): Promise<import('@/types').AdminPage[]> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/pages`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    const raw: Array<{ id: string; slug: string; titleRu: string; contentRu?: string; metaDescriptionRu?: string; isPublished: boolean; sortOrder: number; updatedAt: string }> = await res.json();
+    return raw.map((r) => ({
+      id: r.id,
+      slug: r.slug,
+      titleRu: r.titleRu,
+      contentRu: r.contentRu ?? '',
+      metaDescriptionRu: r.metaDescriptionRu ?? '',
+      isPublished: r.isPublished,
+      sortOrder: r.sortOrder,
+      updatedAt: r.updatedAt,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getAdminPageBySlug(slug: string): Promise<import('@/types').AdminPage | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/pages/${slug}`, { headers: authHeaders() });
+    if (!res.ok) return null;
+    const r = await res.json();
+    return {
+      id: r.id,
+      slug: r.slug,
+      titleRu: r.titleRu,
+      contentRu: r.contentRu ?? '',
+      metaDescriptionRu: r.metaDescriptionRu ?? '',
+      isPublished: r.isPublished,
+      sortOrder: r.sortOrder,
+      updatedAt: r.updatedAt,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function updateAdminPage(
+  id: string,
+  data: { titleRu: string; contentRu: string; metaDescriptionRu: string; isPublished: boolean }
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/pages/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        slug: '',  // will be ignored by backend if page exists
+        titleRu: data.titleRu,
+        titleEn: '',
+        contentRu: data.contentRu,
+        contentEn: '',
+        metaTitleRu: data.titleRu,
+        metaDescriptionRu: data.metaDescriptionRu,
+        metaTitleEn: '',
+        metaDescriptionEn: '',
+        isPublished: data.isPublished,
+        sortOrder: 0,
+        ogImage: null,
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
 

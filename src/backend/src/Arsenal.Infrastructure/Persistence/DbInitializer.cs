@@ -262,6 +262,8 @@ public class DbInitializer
                 isPublished: el.TryGetProperty("is_published", out var pub) && pub.GetBoolean(),
                 publishedAt: publishedAt
             );
+            if (el.TryGetProperty("cover_image", out var ci) && ci.ValueKind == JsonValueKind.String)
+                news.SetCoverImage(ci.GetString());
             _db.News.Add(news);
         }
         await _db.SaveChangesAsync(ct);

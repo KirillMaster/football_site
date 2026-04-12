@@ -63,10 +63,6 @@ public class AdminPartnersController : ControllerBase
     private readonly IArsenalDbContext _db;
     public AdminPartnersController(IArsenalDbContext db) => _db = db;
 
-    [HttpGet("api/partners")]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
-        => Ok(await _db.Partners.AsNoTracking().Where(p => p.IsActive).OrderBy(p => p.SortOrder).ToListAsync(ct));
-
     [HttpPost("api/admin/partners")]
     public async Task<IActionResult> Create([FromBody] PartnerRequest req, CancellationToken ct)
     {

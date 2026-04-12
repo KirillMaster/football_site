@@ -30,7 +30,8 @@ public class SiteSettings : BaseEntity
         return new SiteSettings
         {
             SiteNameRu = "ДФК Арсенал — Детская футбольная школа Севастополь",
-            SiteNameEn = "FC Arsenal-92 — Youth Football School Sevastopol"
+            SiteNameEn = "FC Arsenal-92 — Youth Football School Sevastopol",
+            HeroVideoRutubeId = "1335a9553dac12ea586c0ce0a90456cf"
         };
     }
 

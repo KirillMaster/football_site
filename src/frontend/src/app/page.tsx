@@ -70,6 +70,18 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
+
+            {settings.heroVideoRutubeId && (
+              <div className="mt-10 relative w-full max-w-xl rounded-xl overflow-hidden shadow-2xl aspect-video">
+                <iframe
+                  src={`https://rutube.ru/play/embed/${settings.heroVideoRutubeId}/`}
+                  title="ДФК Арсенал — видео"
+                  allow="clipboard-write; autoplay"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>

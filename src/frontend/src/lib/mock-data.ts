@@ -17,15 +17,12 @@ import type {
 export const mockSiteSettings: SiteSettings = {
   phones: ['+7-978-813-09-82', '+7-978-812-64-32', '+7-978-10-40-940'],
   email: 'info@arsenal92.ru',
-  address: 'г. Севастополь, ул. Спортивная, 1',
+  address: 'г. Севастополь, ул. Косарева, д.12, Спорткомплекс школы №61',
   socials: {
     vk: 'https://vk.com/arsenal_92',
     telegram: 'https://t.me/arsenal_sevastopol',
-    youtube: 'https://youtube.com/@arsenal92',
-    dzen: 'https://dzen.ru/arsenal92',
   },
-  mapEmbedUrl:
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2898.7!2d33.5254!3d44.6054!',
+  heroVideoRutubeId: '1335a9553dac12ea586c0ce0a90456cf',
 };
 
 // ─── Coaches ────────────────────────────────────────────────────────────────
