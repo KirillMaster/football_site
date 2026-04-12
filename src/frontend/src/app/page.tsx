@@ -30,59 +30,66 @@ export default async function HomePage() {
       <JsonLd data={[getSportsClubSchema(), getWebSiteSchema()]} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative bg-brand-blue text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-blue-900 to-black opacity-90" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className={settings.heroVideoRutubeId ? "grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" : ""}>
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 bg-brand-red/20 border border-brand-red/40 rounded-full px-4 py-1.5 text-sm text-red-300 mb-6">
-                <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
-                Набор открыт — 2026
-              </div>
-              <h1 className="text-4xl md:text-6xl font-black leading-tight mb-4">
-                ФК <span className="text-brand-red">Арсенал-92</span>
-              </h1>
-              <p className="text-xl md:text-2xl text-blue-200 font-medium mb-3">
-                Детская футбольная школа Севастополя
-              </p>
-              <p className="text-base text-blue-300 mb-8 leading-relaxed">
-                Воспитываем чемпионов с 1992 года. Профессиональные тренеры, современные методики,
-                дружный коллектив. Для детей от&nbsp;5 до&nbsp;17 лет.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4">
-                  Записаться
-                </Link>
-                <Link href="/gruppy" className="btn-outline text-base px-8 py-4 border-white text-white hover:bg-white hover:text-brand-blue">
-                  Наши группы
-                </Link>
-              </div>
-
-              {/* Stats */}
-              <div className="mt-12 grid grid-cols-3 gap-6 max-w-sm">
-                {[
-                  { value: '30+', label: 'лет опыта' },
-                  { value: '4', label: 'тренера' },
-                  { value: '100+', label: 'детей' },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <div className="text-3xl font-black text-white">{stat.value}</div>
-                    <div className="text-xs text-blue-400 mt-1">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
+      <section className="relative bg-brand-blue text-white overflow-hidden min-h-[700px] flex items-center">
+        {/* Rutube fullscreen looping background */}
+        {settings.heroVideoRutubeId ? (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <iframe
+              src={`https://rutube.ru/play/embed/${settings.heroVideoRutubeId}/?autoPlay=1&isLoop=1&isNoSound=1`}
+              title="Видео фон"
+              allow="autoplay"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              style={{ width: 'max(100%, 177.78vh)', height: 'max(56.25vw, 100%)' }}
+              tabIndex={-1}
+            />
+          </div>
+        ) : (
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('https://static.tildacdn.info/tild3932-3163-4233-b066-383964306439/47_1.jpg')" }}
+          />
+        )}
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+        {/* Content */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 bg-brand-red/20 border border-brand-red/40 rounded-full px-4 py-1.5 text-sm text-red-300 mb-6">
+              <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
+              Набор открыт — 2026
             </div>
-            {settings.heroVideoRutubeId && (
-              <div className="relative w-full rounded-xl overflow-hidden shadow-2xl aspect-video">
-                <iframe
-                  src={`https://rutube.ru/play/embed/${settings.heroVideoRutubeId}/`}
-                  title="ДФК Арсенал — видео"
-                  allow="clipboard-write; autoplay"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              </div>
-            )}
+            <h1 className="text-4xl md:text-6xl font-black leading-tight mb-4">
+              ФК <span className="text-brand-red">Арсенал-92</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-200 font-medium mb-3">
+              Детская футбольная школа Севастополя
+            </p>
+            <p className="text-base text-blue-300 mb-8 leading-relaxed">
+              Воспитываем чемпионов с 1992 года. Профессиональные тренеры, современные методики,
+              дружный коллектив. Для детей от&nbsp;5 до&nbsp;17 лет.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4">
+                Записаться
+              </Link>
+              <Link href="/gruppy" className="btn-outline text-base px-8 py-4 border-white text-white hover:bg-white hover:text-brand-blue">
+                Наши группы
+              </Link>
+            </div>
+
+            {/* Stats */}
+            <div className="mt-12 grid grid-cols-3 gap-6 max-w-sm">
+              {[
+                { value: '30+', label: 'лет опыта' },
+                { value: '4', label: 'тренера' },
+                { value: '100+', label: 'детей' },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-3xl font-black text-white">{stat.value}</div>
+                  <div className="text-xs text-blue-400 mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -119,10 +126,11 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="relative h-80 rounded-2xl overflow-hidden bg-gray-200">
-              <img
+              <Image
                 src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/igor_3.jpg"
                 alt="Кулиев Игорь Рамизович — тренер ДФК Арсенал"
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
           </div>
@@ -135,10 +143,11 @@ export default async function HomePage() {
           <h2 className="section-title text-center mb-12">От первого лица</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="relative h-96 rounded-2xl overflow-hidden bg-gray-100">
-              <img
+              <Image
                 src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/igor_3.jpg"
                 alt="Кулиев Игорь Рамизович"
-                className="absolute inset-0 w-full h-full object-cover object-top"
+                fill
+                className="object-cover object-top"
               />
             </div>
             <div>
@@ -307,6 +316,7 @@ export default async function HomePage() {
                   title={partner.name}
                 >
                   {partner.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={partner.logoUrl}
                       alt={partner.name}

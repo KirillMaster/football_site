@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { SiteSettings } from '@/types';
 
 interface FooterProps {
@@ -118,11 +119,12 @@ export default function Footer({ settings }: FooterProps) {
         </div>
 
         {/* Stadium image */}
-        <div className="mt-10 -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden rounded-lg">
-          <img
+        <div className="relative mt-10 -mx-4 sm:-mx-6 lg:-mx-8 h-40 overflow-hidden rounded-lg">
+          <Image
             src="https://static.tildacdn.com/tild3030-3864-4964-b661-333538623466/20.jpg"
             alt="ДФК Арсенал — стадион"
-            className="w-full h-40 object-cover object-center opacity-60"
+            fill
+            className="object-cover object-center opacity-60"
           />
         </div>
 
