@@ -11,9 +11,6 @@ docker compose pull
 echo "==> Bringing up nextjs and dotnet-api (no downtime for postgres/nginx)..."
 docker compose up -d --no-deps --build nextjs dotnet-api
 
-echo "==> Running EF Core migrations..."
-docker compose exec -T dotnet-api dotnet Arsenal.API.dll --migrate
-
 echo "==> Health check..."
 sleep 5
 HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health)

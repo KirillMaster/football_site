@@ -108,7 +108,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-    var seedPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "config", "seed-data.json");
+    var seedPath = app.Configuration["SEED_DATA_PATH"]
+        ?? Path.Combine(Directory.GetCurrentDirectory(), "seed-data.json");
     await initializer.InitializeAsync(seedPath);
 }
 
