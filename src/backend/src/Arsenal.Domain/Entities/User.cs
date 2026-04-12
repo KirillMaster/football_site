@@ -30,4 +30,5 @@ public class User : BaseEntity
     public void RecordLogin() { LastLoginAt = DateTime.UtcNow; UpdatedAt = DateTime.UtcNow; }
     public void Deactivate() { IsActive = false; UpdatedAt = DateTime.UtcNow; }
     public void UpdatePasswordHash(string hash) { PasswordHash = hash; UpdatedAt = DateTime.UtcNow; }
+    public void UpdateEmail(string email) { Email = email.ToLowerInvariant().Trim(); UpdatedAt = DateTime.UtcNow; }
 }

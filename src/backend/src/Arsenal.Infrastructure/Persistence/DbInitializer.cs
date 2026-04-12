@@ -69,12 +69,24 @@ public class DbInitializer
             await _db.SaveChangesAsync(ct);
             _logger.LogInformation("Admin user created: {Email}", email);
         }
-        else if (!BCrypt.Net.BCrypt.Verify(password, existing.PasswordHash))
+        else
         {
-            // Config password changed — update hash so deploy always syncs credentials
-            existing.UpdatePasswordHash(BCrypt.Net.BCrypt.HashPassword(password));
-            await _db.SaveChangesAsync(ct);
-            _logger.LogInformation("Admin password updated from config for {Email}", existing.Email);
+            bool changed = false;
+            // Sync email if it differs (handles empty-email legacy records)
+            if (existing.Email != email)
+            {
+                existing.UpdateEmail(email);
+                changed = true;
+                _logger.LogInformation("Admin email updated to {Email}", email);
+            }
+            // Sync password if it changed in config
+            if (!BCrypt.Net.BCrypt.Verify(password, existing.PasswordHash))
+            {
+                existing.UpdatePasswordHash(BCrypt.Net.BCrypt.HashPassword(password));
+                changed = true;
+                _logger.LogInformation("Admin password updated from config");
+            }
+            if (changed) await _db.SaveChangesAsync(ct);
         }
     }
 
