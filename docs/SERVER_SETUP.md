@@ -1,55 +1,77 @@
 # Server Setup Summary - FC Arsenal-92
 
 **Server:** 45.10.40.194
-**Date:** 2026-04-12 11:17:38 UTC
+**OS:** Ubuntu 24.04.3 LTS (Noble Numbat)
+**Kernel:** 6.8.0-100-generic x86_64
+**Date:** 2026-04-12
 
-## Setup Results
+## Server Specs
 
-| Step | Status | Details |
-|------|--------|---------|
-| Check OS release | OK | PRETTY_NAME="Ubuntu 24.04.3 LTS" NAME="Ubuntu" VERSION_ID="24.04" VERSION="24.04.3 LTS (Noble Numbat |
-| Kernel info | EXCEPTION: [WinError 10054] Удаленный хост принудительно разорвал существующее подключение |  |
-| Disk usage | EXCEPTION: SSH session not active |  |
-| Memory usage | EXCEPTION: SSH session not active |  |
-| Check Docker | EXCEPTION: SSH session not active |  |
-| Check Docker Compose | EXCEPTION: SSH session not active |  |
-| Check nginx | EXCEPTION: SSH session not active |  |
-| Docker installation | SKIPPED (already installed) |  |
-| Install UFW | EXCEPTION: SSH session not active |  |
-| UFW default deny incoming | EXCEPTION: SSH session not active |  |
-| UFW default allow outgoing | EXCEPTION: SSH session not active |  |
-| UFW allow SSH (22) | EXCEPTION: SSH session not active |  |
-| UFW allow HTTP (80) | EXCEPTION: SSH session not active |  |
-| UFW allow HTTPS (443) | EXCEPTION: SSH session not active |  |
-| UFW enable | EXCEPTION: SSH session not active |  |
-| Check deploy user | EXCEPTION: SSH session not active |  |
-| Create deploy user | SKIPPED (already exists) |  |
-| Add deploy to docker group | EXCEPTION: SSH session not active |  |
-| Create .ssh dir for deploy | EXCEPTION: SSH session not active |  |
-| Set .ssh permissions (700) | EXCEPTION: SSH session not active |  |
-| Set .ssh ownership | EXCEPTION: SSH session not active |  |
-| Install certbot | EXCEPTION: SSH session not active |  |
-| Create /opt/football-site | EXCEPTION: SSH session not active |  |
-| Set ownership to deploy | EXCEPTION: SSH session not active |  |
-| Docker hello-world test | EXCEPTION: SSH session not active |  |
-| UFW status | EXCEPTION: SSH session not active |  |
-| Docker Compose version | EXCEPTION: SSH session not active |  |
-| Certbot version | EXCEPTION: SSH session not active |  |
-| Deploy user info | EXCEPTION: SSH session not active |  |
-| Project directory listing | EXCEPTION: SSH session not active |  |
+- **RAM:** 2 GB (1967 MB total, 4 GB swap)
+- **Disk:** 38 GB total (18 GB used, 21 GB available, 47%)
 
-## Server Configuration
+## Installed Software
 
-- **Firewall (UFW):** Enabled - ports 22 (SSH), 80 (HTTP), 443 (HTTPS)
-- **Docker:** Installed with Docker Compose plugin
-- **Deploy user:** Created with Docker group access
-- **SSL:** Certbot installed (certificates to be configured with domain)
-- **Project directory:** /opt/football-site (owned by deploy)
+| Software | Version | Status |
+|----------|---------|--------|
+| Docker | 28.2.2 | Active (systemctl) |
+| Docker Compose | v5.1.2 (plugin) | Installed manually |
+| Certbot | 2.9.0 | Installed |
+| UFW | 0.36.2 | Active |
+
+## Firewall Rules (UFW)
+
+Default: deny incoming, allow outgoing
+
+| Port | Protocol | Action | Purpose |
+|------|----------|--------|---------|
+| 22 | TCP | ALLOW | SSH |
+| 80 | TCP | ALLOW | HTTP |
+| 443 | TCP | ALLOW | HTTPS |
+
+## Users
+
+- **deploy** (uid=1000) - deployment user
+  - Groups: deploy, users, docker
+  - SSH directory: /home/deploy/.ssh (permissions 700)
+
+## Project Directory
+
+- **Path:** /opt/football-site
+- **Owner:** deploy:deploy
+
+## Existing Docker Containers (pre-existing on server)
+
+| Container | Image | Status |
+|-----------|-------|--------|
+| mtproto | alexbers/mtprotoproxy | Running |
+| warp | caomingjun/warp | Running (healthy) |
+| amnezia-wg-easy | ghcr.io/yokitoki/awg-easy | Running (healthy) |
+
+## Setup Actions Performed
+
+1. Checked OS and system state (Ubuntu 24.04.3 LTS, 2GB RAM, 38GB disk)
+2. Docker was already installed (v28.2.2) - skipped installation
+3. Configured UFW firewall (deny incoming, allow 22/80/443)
+4. Created `deploy` user with Docker group membership
+5. Set up SSH directory for deploy user with proper permissions
+6. Installed certbot 2.9.0 for SSL certificate management
+7. Created /opt/football-site directory owned by deploy
+8. Installed Docker Compose v5.1.2 plugin (manual install - apt package unavailable)
+9. Verified all components working (docker hello-world passed)
+
+## Notes
+
+- Docker was installed from Ubuntu repos (not Docker official repo), hence docker-compose-plugin was not available via apt. Installed manually from GitHub releases.
+- Server has pre-existing VPN containers (MTProto proxy, Cloudflare WARP, AmneziaWG).
+- Cloudflare WARP repo (`pkg.cloudflarewarp.com`) is unreachable in apt sources - consider removing from `/etc/apt/sources.list.d/` if not needed.
+- SSH connection to this server is unstable (frequent RST packets) - scripts should use keepalive and auto-reconnect.
 
 ## Next Steps
 
 1. Configure DNS to point domain to 45.10.40.194
 2. Deploy application to /opt/football-site
-3. Set up SSL certificate with certbot
+3. Set up SSL certificate: `certbot certonly --standalone -d yourdomain.com`
 4. Configure nginx reverse proxy or Docker-based web server
 5. Set up CI/CD pipeline for automated deployments
+6. Add SSH public key to /home/deploy/.ssh/authorized_keys for key-based auth
