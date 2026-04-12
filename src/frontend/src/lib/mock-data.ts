@@ -8,6 +8,8 @@ import type {
   SiteSettings,
   CmsPage,
   DashboardStats,
+  Partner,
+  Review,
 } from '@/types';
 
 // ─── Site Settings ──────────────────────────────────────────────────────────
@@ -286,3 +288,55 @@ export const mockDashboardStats: DashboardStats = {
   totalNewsArticles: 3,
   totalPhotos: 12,
 };
+
+// ─── Partners ────────────────────────────────────────────────────────────────
+
+export const mockPartners: Partner[] = [
+  {
+    id: 1,
+    name: 'МЕДОБОРЫ',
+    description: 'Семейная кондитерская — лидер по производству кондитерских изделий Севастополя',
+    logoUrl: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/medobory_logo.png',
+    websiteUrl: 'https://medobory.com/',
+  },
+  {
+    id: 2,
+    name: 'А2 Спортарена',
+    description: 'Официальный поставщик экипировки клуба. Бренд спортивной одежды и инвентаря.',
+    logoUrl: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/1756323661504.png',
+    websiteUrl: 'https://t.me/s/arsenalarena',
+  },
+];
+
+// ─── Reviews ─────────────────────────────────────────────────────────────────
+
+export const mockReviews: Review[] = [
+  {
+    id: 1,
+    author: 'Анна К.',
+    text: 'Сын занимается уже второй год, прогресс виден невооружённым глазом. Тренеры находят подход к каждому ребёнку. Рекомендую всем родителям!',
+    rating: 5,
+    childAge: 10,
+  },
+  {
+    id: 2,
+    author: 'Максим Д.',
+    text: 'Отличная школа! Игорь Рамизович — настоящий профессионал. Ребята не просто играют в футбол, они учатся командной работе и дисциплине.',
+    rating: 5,
+    childAge: 9,
+  },
+  {
+    id: 3,
+    author: 'Светлана В.',
+    text: 'Дочь обожает тренировки. Атмосфера дружелюбная, тренеры внимательные. Первое занятие действительно бесплатное — проверено!',
+    rating: 5,
+    childAge: 7,
+  },
+  {
+    id: 4,
+    author: 'Олег Т.',
+    text: 'Два сына занимаются. Один уже выступает за сборную города. Клуб даёт реальную перспективу для тех, кто хочет расти в футболе.',
+    rating: 5,
+    childAge: 13,
+  },
+];

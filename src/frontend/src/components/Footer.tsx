@@ -56,6 +56,7 @@ export default function Footer({ settings }: FooterProps) {
                 { href: '/gruppy', label: 'Группы' },
                 { href: '/ceny', label: 'Цены' },
                 { href: '/novosti', label: 'Новости' },
+                { href: '/magazin', label: 'Магазин' },
                 { href: '/kontakty', label: 'Контакты' },
                 { href: '/roditelyam', label: 'Родителям' },
               ].map((l) => (

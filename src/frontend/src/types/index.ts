@@ -121,6 +121,22 @@ export interface ApiError {
   code?: string;
 }
 
+export interface Partner {
+  id: number;
+  name: string;
+  description: string;
+  logoUrl: string | null;
+  websiteUrl: string | null;
+}
+
+export interface Review {
+  id: number;
+  author: string;
+  text: string;
+  rating: number;
+  childAge?: number;
+}
+
 // ─── Admin Types ─────────────────────────────────────────────────────────────
 
 export interface AdminUser {

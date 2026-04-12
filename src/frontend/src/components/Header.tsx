@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/raspisanie', label: 'Расписание' },
   { href: '/novosti', label: 'Новости' },
   { href: '/foto', label: 'Фото' },
+  { href: '/magazin', label: 'Магазин' },
   { href: '/ceny', label: 'Цены' },
   { href: '/kontakty', label: 'Контакты' },
 ];

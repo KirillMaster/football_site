@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getCoaches, getNewsPage, getPricingPlans, getSiteSettings } from '@/lib/api';
+import { getCoaches, getNewsPage, getPricingPlans, getSiteSettings, getPartners, getReviews } from '@/lib/api';
 import CoachCard from '@/components/CoachCard';
 import NewsCard from '@/components/NewsCard';
 import PricingCard from '@/components/PricingCard';
@@ -16,11 +16,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [coaches, newsData, plans, settings] = await Promise.all([
+  const [coaches, newsData, plans, settings, partners, reviews] = await Promise.all([
     getCoaches(),
     getNewsPage(1, 3),
     getPricingPlans(),
     getSiteSettings(),
+    getPartners(),
+    getReviews(),
   ]);
 
   return (
@@ -116,6 +118,38 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Events ───────────────────────────────────────────────── */}
+      <section className="py-16 bg-white border-b border-gray-100" id="sobytiya">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h2 className="section-title mb-1">События школы</h2>
+              <p className="text-gray-500 text-sm">Следите за нашими новостями, акциями и турнирами</p>
+            </div>
+            <Link href="/novosti" className="text-brand-red hover:underline text-sm font-medium">
+              Все события
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {newsData.data.slice(0, 3).map((article) => (
+              <Link
+                key={article.id}
+                href={`/novosti/${article.slug}`}
+                className="group bg-gray-50 rounded-xl p-6 border border-gray-200 hover:border-brand-red hover:shadow-md transition-all"
+              >
+                <div className="text-brand-red text-xs font-semibold uppercase tracking-wide mb-2">
+                  {new Date(article.publishedAt).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })}
+                </div>
+                <h3 className="font-bold text-gray-900 mb-3 group-hover:text-brand-red transition-colors line-clamp-2">
+                  {article.title}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{article.excerpt}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Coaches preview ──────────────────────────────────────── */}
       <section className="py-16" id="trenery">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -175,6 +209,68 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Reviews ─────────────────────────────────────────────── */}
+      <section className="py-16 bg-gray-50" id="otzyvy">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="section-title">Отзывы родителей</h2>
+            <p className="section-subtitle">Что говорят семьи наших воспитанников</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {reviews.slice(0, 4).map((review) => (
+              <div key={review.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({ length: review.rating }).map((_, i) => (
+                    <span key={i} className="text-yellow-400 text-lg">★</span>
+                  ))}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-4">&quot;{review.text}&quot;</p>
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm text-gray-900">{review.author}</span>
+                  {review.childAge && (
+                    <span className="text-xs text-gray-400">Ребёнок {review.childAge} лет</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Partners ─────────────────────────────────────────────── */}
+      {partners.length > 0 && (
+        <section className="py-12 bg-white border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8">
+              <h2 className="section-title">Наши партнёры</h2>
+            </div>
+            <div className="flex flex-wrap justify-center items-center gap-8">
+              {partners.map((partner) => (
+                <a
+                  key={partner.id}
+                  href={partner.websiteUrl ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center gap-2 group"
+                  title={partner.name}
+                >
+                  {partner.logoUrl ? (
+                    <img
+                      src={partner.logoUrl}
+                      alt={partner.name}
+                      className="h-16 w-auto object-contain grayscale group-hover:grayscale-0 transition-all"
+                    />
+                  ) : (
+                    <span className="text-gray-600 font-semibold text-lg">{partner.name}</span>
+                  )}
+                  <span className="text-xs text-gray-400 group-hover:text-gray-700 transition-colors">{partner.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CTA banner ───────────────────────────────────────────── */}
       <section className="py-16 bg-brand-red text-white">

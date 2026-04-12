@@ -105,9 +105,12 @@ export default function AdminNewsPage() {
   };
 
   return (
-    <AdminLayout title="Новости">
+    <AdminLayout title="Новости и события">
       {mode === 'list' && (
         <div>
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+            Новости и события — одна сущность. Записи из этого раздела отображаются в блоке «События школы» на главной странице.
+          </div>
           <div className="flex items-center justify-between mb-5">
             <p className="text-sm text-gray-500">{news.length} статей</p>
             <button onClick={() => { setEditing(null); setMode('new'); }} className="btn-primary text-sm px-4 py-2">
