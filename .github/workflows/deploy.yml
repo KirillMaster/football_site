@@ -148,6 +148,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -euo pipefail
+            # Ensure claude-code key is authorized
+            mkdir -p /root/.ssh && chmod 700 /root/.ssh
+            grep -qF 'claude-code@football_site' /root/.ssh/authorized_keys 2>/dev/null || \
+              echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz/HTFfJoNew/3GQnLXtV+eGefW6w/mpMI+v9A7ac8f claude-code@football_site' >> /root/.ssh/authorized_keys
+            chmod 600 /root/.ssh/authorized_keys
             mkdir -p /opt/football_site/config
             cd /opt/football_site
 
