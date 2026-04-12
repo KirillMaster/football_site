@@ -9,7 +9,7 @@ echo "==> Pulling latest images..."
 docker compose pull
 
 echo "==> Bringing up nextjs and dotnet-api (no downtime for postgres/nginx)..."
-docker compose up -d --no-deps --build nextjs dotnet-api
+docker compose up -d --no-deps nextjs dotnet-api
 
 echo "==> Health check..."
 sleep 5
