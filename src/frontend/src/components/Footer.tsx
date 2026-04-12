@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import type { SiteSettings } from '@/types';
 
 interface FooterProps {
@@ -119,17 +118,6 @@ export default function Footer({ settings }: FooterProps) {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Stadium image */}
-        <div className="relative mt-10 -mx-4 sm:-mx-6 lg:-mx-8 h-48 overflow-hidden">
-          <Image
-            src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/47_1.jpg"
-            alt="Стадион ДФК Арсенал-92 Севастополь"
-            fill
-            className="object-cover object-center"
-            quality={85}
-          />
         </div>
 
         <div className="mt-8 pt-8 border-t border-blue-700 text-center text-sm text-blue-400">
