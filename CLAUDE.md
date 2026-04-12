@@ -85,15 +85,43 @@ Always respond in **Russian**. No exceptions, even for technical topics, error m
 
 ---
 
+## Secrets — C:\Pet\secrets\secrets.txt
+
+**Все учётные данные проекта хранятся локально в `C:\Pet\secrets\secrets.txt`.**
+
+Перед любой операцией требующей доступа к инфраструктуре — читай этот файл.
+
+| Что | Как использовать |
+|-----|-----------------|
+| SSH на сервер | `ssh root@147.45.229.110` + пароль из строки `ssh root@...` |
+| PostgreSQL | `docker run --rm postgres:16-alpine psql 'postgresql://gen_user:PASSWORD@188.225.75.81:5432/football'` |
+| S3 хранилище | endpoint `https://s3.twcstorage.ru`, bucket/keys из secrets.txt |
+| Timeweb панель | логин `dd38889` + пароль из secrets.txt |
+
+```bash
+# Прочитать секреты:
+Read("C:\\Pet\\secrets\\secrets.txt")
+
+# Подключиться к БД:
+docker run --rm postgres:16-alpine psql 'postgresql://gen_user:VXfV!4Tf8%23GLIU@188.225.75.81:5432/football' -c 'SELECT ...'
+
+# SSH на сервер (через sshpass или password в secrets):
+sshpass -p 'PASSWORD' ssh root@147.45.229.110 'COMMAND'
+```
+
+> ⚠️ НИКОГДА не коммить содержимое secrets.txt в git. Файл локальный, не в репозитории.
+
+---
+
 ## Project Context
 
 **Stack:** Next.js 15 (App Router, TypeScript) + .NET 9 (DDD, EF Core) + PostgreSQL + Docker + nginx
 
 **Domain:** ФК Арсенал-92 — детская футбольная школа, г. Севастополь
 
-**Server:** `147.45.229.110` (root, пароль в C:\Pet\secrets\secrets.txt)
+**Server:** `147.45.229.110` (root SSH — пароль в secrets.txt)
 
-**DB:** `postgresql://gen_user@188.225.75.81:5432/football` (пароль в secrets.txt)
+**DB:** `postgresql://gen_user@188.225.75.81:5432/football` (пароль в secrets.txt, `#` → `%23` в URL)
 
 **Deploy:** GitHub Actions → GHCR → SSH pull → `docker compose up -d --no-deps nextjs dotnet-api`
 
