@@ -5,24 +5,13 @@ export const metadata: Metadata = {
   description: 'Видеогалерея ФК Арсенал-92 — лучшие моменты тренировок и матчей.',
 };
 
+// Real Rutube videos — add IDs as new videos are published
 const mockVideos = [
   {
     id: 1,
-    title: 'Городской турнир 2026 — лучшие голы',
-    youtubeId: 'dQw4w9WgXcQ',
-    date: '2026-03-16',
-  },
-  {
-    id: 2,
-    title: 'Тренировка группы Кадеты',
-    youtubeId: 'dQw4w9WgXcQ',
-    date: '2026-03-10',
-  },
-  {
-    id: 3,
-    title: 'Интервью с главным тренером',
-    youtubeId: 'dQw4w9WgXcQ',
-    date: '2026-02-28',
+    title: 'ДФК Арсенал — тренировки и матчи',
+    rutubeId: '1335a9553dac12ea586c0ce0a90456cf',
+    date: '2026-04-01',
   },
 ];
 
@@ -43,10 +32,10 @@ export default function VideoPage() {
               <div key={video.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="relative aspect-video bg-gray-200">
                   <iframe
-                    src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                    src={`https://rutube.ru/play/embed/${video.rutubeId}/`}
                     title={video.title}
                     className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="clipboard-write; autoplay"
                     allowFullScreen
                     loading="lazy"
                   />

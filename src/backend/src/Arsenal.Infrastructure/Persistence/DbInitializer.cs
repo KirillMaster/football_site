@@ -52,15 +52,30 @@ public class DbInitializer
 
     private async Task SeedAdminUserAsync(CancellationToken ct)
     {
-        if (await _db.Users.AnyAsync(ct)) return;
+        // Use defaults when env vars are missing or empty
+        var email = string.IsNullOrWhiteSpace(_config["ADMIN_EMAIL"])
+            ? "admin@arsenal92.ru"
+            : _config["ADMIN_EMAIL"]!.ToLowerInvariant().Trim();
+        var password = string.IsNullOrWhiteSpace(_config["ADMIN_PASSWORD"])
+            ? "ChangeMe123!"
+            : _config["ADMIN_PASSWORD"]!;
 
-        var email = _config["ADMIN_EMAIL"] ?? "admin@arsenal92.ru";
-        var password = _config["ADMIN_PASSWORD"] ?? "ChangeMe123!";
-        var hash = BCrypt.Net.BCrypt.HashPassword(password);
-        var user = User.Create(email, hash, "admin");
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync(ct);
-        _logger.LogInformation("Admin user created: {Email}", email);
+        var existing = await _db.Users.FirstOrDefaultAsync(ct);
+        if (existing is null)
+        {
+            var hash = BCrypt.Net.BCrypt.HashPassword(password);
+            var user = User.Create(email, hash, "admin");
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync(ct);
+            _logger.LogInformation("Admin user created: {Email}", email);
+        }
+        else if (!BCrypt.Net.BCrypt.Verify(password, existing.PasswordHash))
+        {
+            // Config password changed — update hash so deploy always syncs credentials
+            existing.UpdatePasswordHash(BCrypt.Net.BCrypt.HashPassword(password));
+            await _db.SaveChangesAsync(ct);
+            _logger.LogInformation("Admin password updated from config for {Email}", existing.Email);
+        }
     }
 
     private async Task SeedSiteSettingsAsync(CancellationToken ct)

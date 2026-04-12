@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Экипировка — ДФК Арсенал Севастополь',
+  title: 'Экипировка и снаряжение',
   description:
     'Спортивная экипировка ДФК Арсенал-92: бутсы, форма, зимние куртки. Заказ через Telegram.',
 };

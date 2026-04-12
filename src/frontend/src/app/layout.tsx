@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     apple: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg',
   },
   title: {
-    default: 'Футбольная школа «Арсенал» в Севастополе — детский футбол от 6 до 14 лет',
+    default: 'ФК Арсенал-92 — Детская футбольная школа Севастополя от 5 до 17 лет',
     template: '%s | ДФК Арсенал Севастополь',
   },
   description:

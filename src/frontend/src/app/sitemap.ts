@@ -82,6 +82,12 @@ const staticPages: MetadataRoute.Sitemap = [
     changeFrequency: 'monthly',
     priority: 0.6,
   },
+  {
+    url: `${BASE_URL}/magazin`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.5,
+  },
 ];
 
 interface SitemapNewsItem {
@@ -107,7 +113,7 @@ interface SitemapData {
 async function fetchSitemapData(): Promise<SitemapData> {
   try {
     const apiBase =
-      process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
+      process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000';
     const res = await fetch(`${apiBase}/api/sitemap-data`, {
       next: { revalidate: 3600 },
     });
