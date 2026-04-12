@@ -105,7 +105,7 @@ export default async function HomePage() {
             </div>
             <div className="relative h-80 rounded-2xl overflow-hidden bg-gray-200">
               <Image
-                src="/images/about-club.jpg"
+                src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg"
                 alt="ФК Арсенал-92 — тренировки"
                 fill
                 className="object-cover"

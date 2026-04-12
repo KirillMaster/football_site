@@ -45,6 +45,7 @@ public class DbInitializer
         await SeedPricingPlansAsync(seedData, ct);
         await SeedPartnersAsync(seedData, ct);
         await SeedNewsAsync(seedData, ct);
+        await SeedGalleryAsync(seedData, ct);
 
         _logger.LogInformation("Database seeding complete.");
     }
@@ -107,6 +108,10 @@ public class DbInitializer
                 foreach (var c in certsEl.EnumerateArray())
                     certs.Add(c.GetString() ?? string.Empty);
 
+            string? photoUrl = null;
+            if (el.TryGetProperty("photo", out var photoEl) && photoEl.ValueKind == JsonValueKind.String)
+                photoUrl = photoEl.GetString();
+
             var coach = Coach.Create(
                 nameRu: el.GetString("name_ru"),
                 nameEn: el.GetString("name_en"),
@@ -118,6 +123,7 @@ public class DbInitializer
                 sortOrder: el.TryGetProperty("sort_order", out var so) ? so.GetInt32() : 0,
                 isActive: el.TryGetProperty("is_active", out var ia) && ia.GetBoolean()
             );
+            if (photoUrl != null) coach.SetPhoto(photoUrl);
             _db.Coaches.Add(coach);
         }
         await _db.SaveChangesAsync(ct);
@@ -260,6 +266,31 @@ public class DbInitializer
         }
         await _db.SaveChangesAsync(ct);
         _logger.LogInformation("News seeded.");
+    }
+
+    private async Task SeedGalleryAsync(JsonElement root, CancellationToken ct)
+    {
+        if (await _db.Photos.AnyAsync(ct)) return;
+        if (!root.TryGetProperty("Gallery", out var galleryEl)) return;
+
+        int sortOrder = 0;
+        foreach (var albumEl in galleryEl.EnumerateArray())
+        {
+            var albumName = albumEl.TryGetProperty("album", out var an) ? an.GetString() ?? "Галерея" : "Галерея";
+            if (!albumEl.TryGetProperty("photos", out var photosEl)) continue;
+
+            foreach (var p in photosEl.EnumerateArray())
+            {
+                var url = p.TryGetProperty("url", out var u) ? u.GetString() ?? string.Empty : string.Empty;
+                if (string.IsNullOrWhiteSpace(url)) continue;
+                var altRu = p.TryGetProperty("alt_ru", out var a) ? a.GetString() ?? albumName : albumName;
+
+                var photo = Photo.Create(url, url, altRu, string.Empty, [albumName], true, sortOrder++);
+                _db.Photos.Add(photo);
+            }
+        }
+        await _db.SaveChangesAsync(ct);
+        _logger.LogInformation("Gallery photos seeded.");
     }
 
     private static List<string> ParseStringArray(JsonElement el, string property)

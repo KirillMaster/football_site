@@ -52,9 +52,21 @@
       "position_en": "General Director and Head Coach",
       "bio_ru": "Мы верим в то, что совместно способны создать лучшую школу футбола в Севастополе! Мы не обещаем, что ваши дети у нас станут чемпионами, будут завоёвывать кубки, медали и грамоты, мы реально не ставим во главу угла результаты. У нас абсолютно иные цели и модель построения отношений тренера с подопечными. Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство каждого!",
       "bio_en": "",
-      "photo": null,
+      "photo": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/igor_3.jpg",
       "certifications": ["Тренерская лицензия категории С УЕФА"],
       "sort_order": 1,
+      "is_active": true
+    },
+    {
+      "name_ru": "Зализняк Андрей",
+      "name_en": "Andrey Zaliznyak",
+      "position_ru": "Тренер",
+      "position_en": "Coach",
+      "bio_ru": "Профессиональный тренер с опытом работы в детском футболе. Лицензия УЕФА категории С.",
+      "bio_en": "",
+      "photo": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/zaliznyak_1.jpg",
+      "certifications": ["Тренерская лицензия категории С УЕФА"],
+      "sort_order": 2,
       "is_active": true
     }
   ],
@@ -257,7 +269,7 @@
     {
       "name": "МЕДОБОРЫ",
       "description_ru": "Семейная кондитерская, лидер по производству кондитерских изделий. Компания «Медоборы» – это, прежде всего, качество. И качество во всем!",
-      "logo_url": "https://static.tildacdn.info/tild3930-6361-4931-a561-613939393439/-/empty/medobory_logo.png",
+      "logo_url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/medobory_logo.png",
       "website_url": "https://medobory.com/",
       "sort_order": 1,
       "is_active": true
@@ -265,7 +277,7 @@
     {
       "name": "А2",
       "description_ru": "Собственный бренд экипировки и инвентаря",
-      "logo_url": "https://static.tildacdn.info/tild6637-3331-4331-b838-386461376331/-/empty/1756323661504.png",
+      "logo_url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/1756323661504.png",
       "website_url": "https://t.me/s/arsenalarena",
       "sort_order": 2,
       "is_active": true
@@ -281,7 +293,7 @@
       "excerpt_en": "",
       "content_ru": "<p>В рамках зимнего турнира Winter Cup 2023 футбольный клуб «Арсенал», Севастополь посетил тренировочную базу ФК «Краснодар», где провёл пробную тренировку с футболистами Детской академии. Скауты ФК «Краснодар» были приятно удивлены мастерству наших ребят.</p>",
       "content_en": "",
-      "cover_image": null,
+      "cover_image": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg",
       "meta_title": "Winter Cup 2023 — ДФК Арсенал на базе ФК Краснодар",
       "meta_description": "Арсенал Севастополь посетил тренировочную базу ФК Краснодар в рамках Winter Cup 2023.",
       "tags": ["турнир", "Winter Cup", "Краснодар", "2023"],
@@ -296,7 +308,7 @@
       "excerpt_en": "",
       "content_ru": "<p>С 12 по 15 января 2023 года наша команда «Арсенал» приняла участие в Зимнем кубке среди команд 2010-2011 гг. в Краснодаре. Ребята получили большую игровую практику в не самых простых условиях. Ждём новых турниров и желаем новых побед!</p>",
       "content_en": "",
-      "cover_image": null,
+      "cover_image": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_2.jpg",
       "meta_title": "Зимний кубок 2023 — ДФК Арсенал Севастополь",
       "meta_description": "Арсенал Севастополь на Зимнем кубке 2023 в Краснодаре среди команд 2010-2011 гг.",
       "tags": ["турнир", "Зимний кубок", "Краснодар", "2023"],
@@ -311,7 +323,7 @@
       "excerpt_en": "",
       "content_ru": "<p>Год стремительно подходит к своему завершению и мы в клубе подводим итоги. 2022-й получился насыщенным и эмоциональным. Многое пришлось познавать заново, а в чём-то еще сильнее утвердиться. Мы рады, что прошли этот год вместе, а пока — Итоги года!</p>",
       "content_en": "",
-      "cover_image": null,
+      "cover_image": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_3.jpg",
       "meta_title": "Итоги 2022 года — ДФК Арсенал",
       "meta_description": "Подводим итоги 2022 года в ДФК Арсенал Севастополь.",
       "tags": ["итоги", "2022"],
@@ -420,10 +432,39 @@
     }
   ],
 
+  "Gallery": [
+    {
+      "album": "Тренировки",
+      "photos": [
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/2.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/3.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/11.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/17.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/18.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/19.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/20.jpg", "alt_ru": "Тренировка" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/25.jpg", "alt_ru": "Тренировка" }
+      ]
+    },
+    {
+      "album": "Турниры",
+      "photos": [
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/13_1.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/31.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/36.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/39.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/45.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/46.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/47.jpg", "alt_ru": "Турнир" },
+        { "url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/47_1.jpg", "alt_ru": "Турнир" }
+      ]
+    }
+  ],
+
   "SiteSettings": {
     "site_name_ru": "ДФК Арсенал — Детская футбольная школа Севастополь",
     "site_name_en": "FC Arsenal-92 — Youth Football School Sevastopol",
-    "logo_url": "/images/logo.png",
+    "logo_url": "https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg",
     "favicon_url": "/favicon.ico",
     "primary_color": "#E10005",
     "secondary_color": "#101A7A",
