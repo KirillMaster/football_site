@@ -27,7 +27,7 @@ public class SiteSettingsController : ControllerBase
                 youtube = (string?)null,
                 dzen = (string?)null,
             },
-            heroVideoRutubeId = s?.HeroVideoRutubeId,
+            heroVideoRutubeId = s?.HeroVideoRutubeId ?? "1335a9553dac12ea586c0ce0a90456cf",
         });
     }
 }
