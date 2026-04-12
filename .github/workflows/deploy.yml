@@ -134,7 +134,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml,config/seed-data.json,scripts/deploy.sh"
+          source: "docker-compose.yml,config/seed-data.json,scripts/deploy.sh,config/nginx/fcarsenal92.ru.conf"
           target: /opt/football_site
           strip_components: 0
 
@@ -168,5 +168,9 @@ jobs:
 
             # Login to GHCR
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+            # Update nginx config and reload
+            cp /opt/football_site/config/nginx/fcarsenal92.ru.conf /etc/nginx/sites-available/fcarsenal92.ru
+            nginx -t && systemctl reload nginx
 
             bash scripts/deploy.sh
