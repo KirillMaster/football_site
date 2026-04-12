@@ -547,3 +547,308 @@ export async function adminLogin(
     return null;
   }
 }
+
+// ─── Admin Coaches ──────────────────────────────────────────────────────────
+
+export async function getAdminCoaches(): Promise<Record<string, unknown>[]> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/coaches`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function createAdminCoach(data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/coaches`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function updateAdminCoach(id: string, data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/coaches/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteAdminCoach(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/coaches/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin News ─────────────────────────────────────────────────────────────
+
+export async function getAdminNews(page = 1, pageSize = 20): Promise<Record<string, unknown>> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/news?page=${page}&pageSize=${pageSize}`, {
+      headers: authHeaders(),
+    });
+    if (!res.ok) return { items: [], totalCount: 0 };
+    return await res.json();
+  } catch {
+    return { items: [], totalCount: 0 };
+  }
+}
+
+export async function createAdminNews(data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/news`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function updateAdminNews(id: string, data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/news/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteAdminNews(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/news/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin Photos ───────────────────────────────────────────────────────────
+
+export async function uploadAdminPhoto(file: File): Promise<{ id: string; url: string } | null> {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+    const res = await fetch(`${API_URL}/api/admin/photos/upload`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    });
+    if (!res.ok) return null;
+    const result = await res.json();
+    return { id: result.id, url: result.url };
+  } catch {
+    return null;
+  }
+}
+
+export async function updateAdminPhoto(id: string, data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/photos/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteAdminPhoto(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/photos/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin Groups ───────────────────────────────────────────────────────────
+
+export async function getAdminGroups(): Promise<Record<string, unknown>[]> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/groups`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function createAdminGroup(data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/groups`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function updateAdminGroup(id: string, data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/groups/${id}`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteAdminGroup(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/groups/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin Site Settings ────────────────────────────────────────────────────
+
+export async function getAdminSettings(): Promise<Record<string, unknown>> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/site-settings`, { headers: authHeaders() });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function updateAdminSettings(data: Record<string, unknown>): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/site-settings`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin Contact Messages ─────────────────────────────────────────────────
+
+export async function getAdminMessages(unreadOnly = false): Promise<Record<string, unknown>[]> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/contact-messages?unreadOnly=${unreadOnly}`, {
+      headers: authHeaders(),
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function markMessageRead(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/contact-messages/${id}/read`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin Tryout Requests ──────────────────────────────────────────────────
+
+export async function getAdminTryouts(): Promise<Record<string, unknown>[]> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/tryout-requests`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function updateTryoutStatus(id: string, status: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/admin/tryout-requests/${id}/status`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Admin Dashboard Stats ──────────────────────────────────────────────────
+
+export async function getAdminDashboardStats(): Promise<{
+  newMessages: number;
+  newTryouts: number;
+  totalCoaches: number;
+  totalNews: number;
+  totalPhotos: number;
+}> {
+  try {
+    const [messages, tryouts, coaches, news, photos] = await Promise.all([
+      getAdminMessages(),
+      getAdminTryouts(),
+      getAdminCoaches(),
+      getAdminNews(1, 1),
+      fetch(`${API_URL}/api/photos`, { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : { totalCount: 0 }))
+        .catch(() => ({ totalCount: 0 })),
+    ]);
+
+    return {
+      newMessages: Array.isArray(messages) ? messages.filter((m: Record<string, unknown>) => !m.isRead).length : 0,
+      newTryouts: Array.isArray(tryouts) ? tryouts.filter((t: Record<string, unknown>) => t.status === 'Pending').length : 0,
+      totalCoaches: Array.isArray(coaches) ? coaches.length : 0,
+      totalNews: news?.totalCount ?? 0,
+      totalPhotos: photos?.totalCount ?? (Array.isArray(photos) ? photos.length : 0),
+    };
+  } catch {
+    return { newMessages: 0, newTryouts: 0, totalCoaches: 0, totalNews: 0, totalPhotos: 0 };
+  }
+}

@@ -2,20 +2,76 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/components/AdminLayout';
-import { mockSiteSettings } from '@/lib/mock-data';
+import { getAdminSettings, updateAdminSettings } from '@/lib/api';
 import type { SiteSettings } from '@/types';
 
-export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState<SiteSettings>(mockSiteSettings);
-  const [saved, setSaved] = useState(false);
+const emptySocials = { vk: '', telegram: '', youtube: '', dzen: '' };
 
-  const handleSave = () => {
-    // In real app: PATCH /api/sitesettings
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+const defaultSettings: SiteSettings = {
+  phones: [''],
+  email: '',
+  address: '',
+  socials: { ...emptySocials },
+  heroVideoRutubeId: '',
+  mapEmbedUrl: '',
+};
+
+export default function AdminSettingsPage() {
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const fetchSettings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const raw = await getAdminSettings();
+      if (raw) {
+        const data = raw as unknown as SiteSettings;
+        setSettings({
+          phones: data.phones?.length ? data.phones : [''],
+          email: data.email ?? '',
+          address: data.address ?? '',
+          socials: { ...emptySocials, ...data.socials },
+          heroVideoRutubeId: data.heroVideoRutubeId ?? '',
+          mapEmbedUrl: data.mapEmbedUrl ?? '',
+        });
+      }
+    } catch {
+      setFeedback({ type: 'error', text: 'Не удалось загрузить настройки' });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setFeedback(null);
+    const ok = await updateAdminSettings(settings as unknown as Record<string, unknown>);
+    setSaving(false);
+    if (ok) {
+      setFeedback({ type: 'success', text: 'Сохранено!' });
+    } else {
+      setFeedback({ type: 'error', text: 'Ошибка при сохранении' });
+    }
+    setTimeout(() => setFeedback(null), 4000);
   };
+
+  if (loading) {
+    return (
+      <AdminLayout title="Настройки сайта">
+        <div className="flex justify-center py-12">
+          <div className="w-8 h-8 border-4 border-brand-red border-t-transparent rounded-full animate-spin" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout title="Настройки сайта">
@@ -62,6 +118,26 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
+        {/* Hero Video */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <h2 className="font-bold text-gray-800 mb-4">Главная страница</h2>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ID видео Rutube (героический баннер)
+            </label>
+            <input
+              type="text"
+              value={settings.heroVideoRutubeId ?? ''}
+              onChange={(e) => setSettings({ ...settings, heroVideoRutubeId: e.target.value })}
+              placeholder="Например: a1b2c3d4e5f6..."
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Вставьте ID из URL Rutube-видео (часть после /video/)
+            </p>
+          </div>
+        </div>
+
         {/* Socials */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <h2 className="font-bold text-gray-800 mb-4">Социальные сети</h2>
@@ -89,11 +165,13 @@ export default function AdminSettingsPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button onClick={handleSave} className="btn-primary px-8 py-2.5">
-            Сохранить
+          <button onClick={handleSave} disabled={saving} className="btn-primary px-8 py-2.5 disabled:opacity-50">
+            {saving ? 'Сохранение...' : 'Сохранить'}
           </button>
-          {saved && (
-            <span className="text-sm text-green-600 font-medium">Сохранено!</span>
+          {feedback && (
+            <span className={`text-sm font-medium ${feedback.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+              {feedback.text}
+            </span>
           )}
         </div>
       </div>
