@@ -25,6 +25,28 @@ Thumbs.db
 # Playwright MCP temp
 .playwright-mcp/
 
+# Local tooling state
+.claude-flow/
+.swarm/
+agentdb.rvf
+agentdb.rvf.lock
+.claude/memory.db
+
+# Local dev only
+docker-compose.override.yml
+
+# Scripts with hardcoded server credentials (local use only)
+scripts/check_server.py
+scripts/check_nginx.py
+scripts/clean_server.py
+scripts/create_deploy_key.py
+scripts/deploy_configs.py
+scripts/free_images.py
+scripts/prepare_server.py
+scripts/read_nginx_conf.py
+scripts/setup_ssl.py
+scripts/ssl-init.sh
+
 # Graphify temp (intermediate files, output stays)
 .graphify_python
 .graphify_detect.json

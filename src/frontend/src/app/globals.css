@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-brand-black font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-brand-red text-white font-semibold rounded-lg hover:bg-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-brand-red text-brand-red font-semibold rounded-lg hover:bg-brand-red hover:text-white transition-colors duration-200;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-brand-blue mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-gray-600 mb-8;
+  }
+
+  .container-narrow {
+    @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .prose-club h2 {
+    @apply text-2xl font-bold text-brand-blue mt-8 mb-4;
+  }
+
+  .prose-club p {
+    @apply text-gray-700 leading-relaxed mb-4;
+  }
+
+  .prose-club ul {
+    @apply list-disc list-inside text-gray-700 space-y-2 mb-4;
+  }
+}

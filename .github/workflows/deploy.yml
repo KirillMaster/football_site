@@ -1,0 +1,140 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository }}
+
+jobs:
+  # ── 1. Test ────────────────────────────────────────────────────────────────
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Backend tests
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('src/backend/**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-
+
+      - name: Restore .NET dependencies
+        run: dotnet restore src/backend
+
+      - name: Run backend tests
+        run: dotnet test src/backend --no-restore --verbosity normal
+
+      # Frontend tests
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: src/frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: src/frontend
+
+      - name: Run frontend tests
+        run: npm test -- --passWithNoTests
+        working-directory: src/frontend
+
+  # ── 2. Build & push images ────────────────────────────────────────────────
+  build:
+    name: Build Docker images
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract Docker metadata (backend)
+        id: meta-api
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/dotnet-api
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./src/backend
+          file: ./src/backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-api.outputs.tags }}
+          labels: ${{ steps.meta-api.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract Docker metadata (frontend)
+        id: meta-fe
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/nextjs
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./src/frontend
+          file: ./src/frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta-fe.outputs.tags }}
+          labels: ${{ steps.meta-fe.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── 3. Deploy ─────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: deploy
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+            cd /opt/football_site
+            bash scripts/deploy.sh
