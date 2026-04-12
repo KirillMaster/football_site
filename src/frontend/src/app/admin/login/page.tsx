@@ -30,8 +30,8 @@ export default function AdminLoginPage() {
   const onSubmit = async (data: FormData) => {
     setError('');
     const result = await adminLogin(data.email, data.password);
-    if (result?.token) {
-      localStorage.setItem('admin_token', result.token);
+    if (result?.accessToken) {
+      localStorage.setItem('admin_token', result.accessToken);
       router.push('/admin/dashboard');
     } else {
       setError('Неверный email или пароль');

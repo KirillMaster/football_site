@@ -283,10 +283,18 @@ export async function submitTryoutRequest(data: TryoutRequest): Promise<boolean>
 
 // ─── Admin Auth ───────────────────────────────────────────────────────────────
 
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
+  email: string;
+  role: string;
+}
+
 export async function adminLogin(
   email: string,
   password: string
-): Promise<{ token: string } | null> {
+): Promise<AuthResponse | null> {
   try {
     const res = await fetch(`${API_URL}/api/admin/auth/login`, {
       method: 'POST',
