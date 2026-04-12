@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getGroups } from '@/lib/api';
 import WeeklySchedule from '@/components/WeeklySchedule';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Расписание тренировок',
   description:

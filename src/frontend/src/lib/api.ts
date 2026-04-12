@@ -213,8 +213,83 @@ export async function getCoaches(): Promise<Coach[]> {
   }
 }
 
+// Raw DTO shapes from .NET backend
+interface RawGroupDto {
+  id: string;
+  name: string;
+  ageRange: string;
+  level: string;
+  maxCapacity: number;
+  descriptionRu: string;
+  descriptionEn: string;
+  isActive: boolean;
+}
+
+interface RawScheduleDto {
+  id: string;
+  groupId: string;
+  groupName: string;
+  coachId: string;
+  coachName: string;
+  dayOfWeek: string; // .NET DayOfWeek enum: "Sunday","Monday",...
+  startTime: string; // "HH:mm"
+  endTime: string;
+  location: string;
+  isActive: boolean;
+}
+
+// .NET DayOfWeek (Sun=0) → frontend index (Mon=0)
+const DOW_MAP: Record<string, number> = {
+  Sunday: 6, Monday: 0, Tuesday: 1, Wednesday: 2,
+  Thursday: 3, Friday: 4, Saturday: 5,
+};
+
+function parseAgeRange(range: string): { min: number; max: number } {
+  const m = range.match(/(\d+)[^\d]+(\d+)/);
+  return m ? { min: parseInt(m[1]), max: parseInt(m[2]) } : { min: 5, max: 17 };
+}
+
 export async function getGroups(): Promise<TrainingGroup[]> {
-  return apiFetch('/api/groups', mockGroups);
+  try {
+    const [groupsRes, schedulesRes] = await Promise.all([
+      fetch(`${API_URL}/api/groups`, { next: { revalidate: 60 } }),
+      fetch(`${API_URL}/api/groups/schedules`, { next: { revalidate: 60 } }),
+    ]);
+
+    if (!groupsRes.ok) return mockGroups;
+    const rawGroups: RawGroupDto[] = await groupsRes.json();
+
+    let rawSchedules: RawScheduleDto[] = [];
+    if (schedulesRes.ok) {
+      const body = await schedulesRes.json();
+      rawSchedules = Array.isArray(body) ? body : [];
+    }
+
+    return rawGroups.map((g, i) => {
+      const { min, max } = parseAgeRange(g.ageRange);
+      const slots = rawSchedules
+        .filter((s) => s.groupId === g.id && s.isActive)
+        .map((s) => ({
+          dayOfWeek: DOW_MAP[s.dayOfWeek] ?? 0,
+          startTime: s.startTime,
+          endTime: s.endTime,
+          location: s.location,
+        }));
+      const firstCoach = rawSchedules.find((s) => s.groupId === g.id)?.coachName ?? '';
+      return {
+        id: i + 1,
+        name: g.name,
+        ageMin: min,
+        ageMax: max,
+        description: g.descriptionRu,
+        schedule: slots,
+        price: 0,
+        coachName: firstCoach,
+      };
+    });
+  } catch {
+    return mockGroups;
+  }
 }
 
 export async function getPricingPlans(): Promise<PricingPlan[]> {

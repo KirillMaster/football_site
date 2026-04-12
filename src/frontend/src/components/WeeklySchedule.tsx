@@ -12,7 +12,7 @@ export default function WeeklySchedule({ groups }: WeeklyScheduleProps) {
   for (let d = 0; d < 7; d++) slotsByDay[d] = [];
 
   for (const group of groups) {
-    for (const slot of group.schedule) {
+    for (const slot of (group.schedule ?? [])) {
       slotsByDay[slot.dayOfWeek].push({ group, slot });
     }
   }

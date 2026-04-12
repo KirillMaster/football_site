@@ -61,7 +61,7 @@ export default async function GruppyPage() {
                     Расписание
                   </h3>
                   <div className="space-y-2 mb-5">
-                    {group.schedule.map((slot, i) => (
+                    {(group.schedule ?? []).map((slot, i) => (
                       <div
                         key={i}
                         className="flex items-center gap-3 text-sm"
