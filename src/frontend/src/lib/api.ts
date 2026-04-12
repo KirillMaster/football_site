@@ -109,6 +109,7 @@ interface RawSiteSettingsDto {
   address: string;
   socials: { vk?: string; telegram?: string; youtube?: string; dzen?: string };
   heroVideoRutubeId?: string;
+  mapEmbedUrl?: string;
 }
 
 // ─── Mappers ─────────────────────────────────────────────────────────────────
@@ -197,6 +198,7 @@ function mapSiteSettings(raw: RawSiteSettingsDto): SiteSettings {
       dzen: raw.socials?.dzen,
     },
     heroVideoRutubeId: raw.heroVideoRutubeId,
+    mapEmbedUrl: raw.mapEmbedUrl,
   };
 }
 
@@ -292,8 +294,33 @@ export async function getGroups(): Promise<TrainingGroup[]> {
   }
 }
 
+interface RawPricingPlan {
+  id: string;
+  nameRu: string;
+  price: number;
+  featuresRu: string[];
+  isFeatured: boolean;
+}
+
+function mapPricingPlan(raw: RawPricingPlan): PricingPlan {
+  return {
+    id: raw.id,
+    name: raw.nameRu,
+    priceRub: raw.price,
+    features: raw.featuresRu ?? [],
+    isPopular: raw.isFeatured,
+  };
+}
+
 export async function getPricingPlans(): Promise<PricingPlan[]> {
-  return apiFetch('/api/pricing', mockPricingPlans);
+  try {
+    const res = await fetch(`${API_URL}/api/pricing`, { next: { revalidate: 60 } });
+    if (!res.ok) return mockPricingPlans;
+    const raw: RawPricingPlan[] = await res.json();
+    return raw.map(mapPricingPlan);
+  } catch {
+    return mockPricingPlans;
+  }
 }
 
 export async function getNewsPage(
