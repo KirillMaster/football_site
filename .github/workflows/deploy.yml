@@ -132,9 +132,9 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_IP }}
-          username: deploy
+          username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -euo pipefail
             cd /opt/football_site
-            bash scripts/deploy.sh
+            bash /opt/football_site/deploy.sh
