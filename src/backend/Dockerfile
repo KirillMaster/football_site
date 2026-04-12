@@ -23,6 +23,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 WORKDIR /app
 
+# Install curl for healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
 # Create non-root user for security
 RUN addgroup --system arsenal && adduser --system --ingroup arsenal arsenal
 
@@ -40,7 +43,7 @@ EXPOSE 5000
 ENV ASPNETCORE_URLS=http://+:5000 \
     DOTNET_RUNNING_IN_CONTAINER=true
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=15s --timeout=10s --start-period=120s --retries=5 \
     CMD curl -f http://localhost:5000/health || exit 1
 
 ENTRYPOINT ["dotnet", "Arsenal.API.dll"]
