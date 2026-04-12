@@ -1,0 +1,769 @@
+{
+  "seo": {
+    "title": "Футбольный клуб",
+    "metaTags": {
+      "Content-Type": "text/html; charset=utf-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "description": "Детский футбольный клуб Арсенал",
+      "og:url": "http://fcarsenal-92.tilda.ws",
+      "og:title": "Футбольный клуб",
+      "og:description": "Детский футбольный клуб Арсенал",
+      "og:type": "website",
+      "og:image": "https://static.tildacdn.info/tild6361-3136-4530-a561-623435316331/-/resize/504x/Logo_Arsenal_2.jpg",
+      "format-detection": "telephone=no",
+      "x-dns-prefetch-control": "on",
+      "robots": "nofollow"
+    },
+    "ogTags": {
+      "og:url": "http://fcarsenal-92.tilda.ws",
+      "og:title": "Футбольный клуб",
+      "og:description": "Детский футбольный клуб Арсенал",
+      "og:type": "website",
+      "og:image": "https://static.tildacdn.info/tild6361-3136-4530-a561-623435316331/-/resize/504x/Logo_Arsenal_2.jpg"
+    },
+    "twitterCards": {},
+    "canonical": "http://fcarsenal-92.tilda.ws/",
+    "robots": "nofollow",
+    "hreflang": [],
+    "structuredData": [],
+    "headings": {
+      "h1": [],
+      "h2": [],
+      "h3": [],
+      "h4": [],
+      "h5": [],
+      "h6": []
+    }
+  },
+  "integrations": {
+    "scripts": [
+      "https://static.tildacdn.info/js/tilda-stat-1.0.min.js",
+      "https://neo.tildacdn.com/js/tilda-fallback-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-polyfill-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-scripts-3.0.min.js",
+      "https://static.tildacdn.info/ws/project6713166/tilda-blocks-page33581642.min.js?t=1756374939",
+      "https://static.tildacdn.info/js/tilda-lazyload-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-menu-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-cover-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-cards-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-slds-1.4.min.js",
+      "https://static.tildacdn.info/js/hammer.min.js",
+      "https://static.tildacdn.info/js/tilda-forms-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-t431-table-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-text-clamp.min.js",
+      "https://static.tildacdn.info/js/tilda-video-processor-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-zoom-2.0.min.js",
+      "https://static.tildacdn.info/js/tilda-skiplink-1.0.min.js",
+      "https://static.tildacdn.info/js/tilda-events-1.0.min.js"
+    ],
+    "pixels": [
+      {
+        "type": "facebook",
+        "snippet": "(function() {if((/bot|google|yandex|baidu|bing|msn|duckduckbot|teoma|slurp|crawler|spider|robot|crawling|facebook/i.test(navigator.userAgent))===false&&typeof(sessionStorage)!='undefined'&&sessionStor"
+      },
+      {
+        "type": "facebook",
+        "snippet": "function t_social_init(recid,groupName) {var rec=document.getElementById('rec' + recid);if(!rec) return;var socialLinks=rec.querySelectorAll('.' + groupName + '-social-links');Array.prototype.forEach."
+      },
+      {
+        "type": "vk",
+        "snippet": "function t_social_init(recid,groupName) {var rec=document.getElementById('rec' + recid);if(!rec) return;var socialLinks=rec.querySelectorAll('.' + groupName + '-social-links');Array.prototype.forEach."
+      }
+    ],
+    "analytics": [
+      {
+        "type": "google",
+        "snippet": "(function() {if((/bot|google|yandex|baidu|bing|msn|duckduckbot|teoma|slurp|crawler|spider|robot|crawling|facebook/i.test(navigator.userAgent))===false&&typeof(sessionStorage)!='undefined'&&sessionStorage.getItem('visited')!=='y'&&document.visibilityState){var style=document.createElement('style');st"
+      },
+      {
+        "type": "yandex",
+        "snippet": "(function() {if((/bot|google|yandex|baidu|bing|msn|duckduckbot|teoma|slurp|crawler|spider|robot|crawling|facebook/i.test(navigator.userAgent))===false&&typeof(sessionStorage)!='undefined'&&sessionStorage.getItem('visited')!=='y'&&document.visibilityState){var style=document.createElement('style');st"
+      },
+      {
+        "type": "yandex",
+        "snippet": "function t_social_init(recid,groupName) {var rec=document.getElementById('rec' + recid);if(!rec) return;var socialLinks=rec.querySelectorAll('.' + groupName + '-social-links');Array.prototype.forEach.call(socialLinks,function(link) {var socialAttr=link.getAttribute('data-social-links');var socialWra"
+      }
+    ],
+    "fonts": [
+      "https://static.tildacdn.info/css/fonts-tildasans.css"
+    ],
+    "stylesheets": [
+      "https://static.tildacdn.info/css/tilda-grid-3.0.min.css",
+      "https://static.tildacdn.info/ws/project6713166/tilda-blocks-page33581642.min.css?t=1756374939",
+      "https://static.tildacdn.info/css/tilda-cover-1.0.min.css",
+      "https://static.tildacdn.info/css/tilda-cards-1.0.min.css",
+      "https://static.tildacdn.info/css/tilda-slds-1.4.min.css",
+      "https://static.tildacdn.info/css/tilda-forms-1.0.min.css",
+      "https://static.tildacdn.info/css/tilda-zoom-2.0.min.css",
+      "https://static.tildacdn.info/css/fonts-tildasans.css"
+    ]
+  },
+  "structure": {
+    "allSections": [
+      {
+        "id": "rec542757205",
+        "classes": "r t-rec t-rec_pb_0 r_showed r_anim",
+        "offsetTop": 0,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 12,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757206",
+        "classes": "r t-rec t-rec_pt_0 t-rec_pb_0",
+        "offsetTop": 0,
+        "height": 700,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": true,
+        "hasMap": false
+      },
+      {
+        "id": "recorddiv542757206",
+        "classes": "t-cover",
+        "offsetTop": 0,
+        "height": 700,
+        "bgColor": "rgb(0, 0, 0)",
+        "bgImage": "url(\"https://static.tildacdn.info/tild3932-3163-4233-b066-383964306439/-/resize/20x/47_1.jpg\")",
+        "childCount": 3,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": true,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757207",
+        "classes": "r t-rec r_showed r_anim",
+        "offsetTop": 700,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757208",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_30",
+        "offsetTop": 700,
+        "height": 655.09375,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec1246624301",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_30",
+        "offsetTop": 1355,
+        "height": 1984.953125,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757209",
+        "classes": "r t-rec t-rec_pt_120 t-rec_pb_45",
+        "offsetTop": 3340,
+        "height": 421.078125,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757210",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_30",
+        "offsetTop": 3761,
+        "height": 1620,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757211",
+        "classes": "r t-rec t-rec_pt_60 t-rec_pb_0",
+        "offsetTop": 5381,
+        "height": 508.65625,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 3,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec552899753",
+        "classes": "r t-rec t-rec_pt_45 t-rec_pb_60",
+        "offsetTop": 5890,
+        "height": 1454.09375,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec546523435",
+        "classes": "r t-rec t-rec_pt_60 t-rec_pb_30",
+        "offsetTop": 7344,
+        "height": 533.734375,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757213",
+        "classes": "r t-rec t-rec_pt_45 t-rec_pb_45",
+        "offsetTop": 7878,
+        "height": 341.03125,
+        "bgColor": "rgb(19, 206, 102)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": true,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757217",
+        "classes": "r t-rec r_hidden r_anim",
+        "offsetTop": 8219,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757218",
+        "classes": "r t-rec t-rec_pt_60 t-rec_pb_0 r_hidden r_anim",
+        "offsetTop": 8219,
+        "height": 331.65625,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757219",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_45 r_hidden r_anim",
+        "offsetTop": 8550,
+        "height": 75,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 4,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757220",
+        "classes": "r t-rec t-rec_pt_15 r_hidden r_anim",
+        "offsetTop": 8625,
+        "height": 15,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757221",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_60",
+        "offsetTop": 8640,
+        "height": 938.96875,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 3,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757222",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_30 r_hidden r_anim",
+        "offsetTop": 9579,
+        "height": 556.65625,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 7,
+        "hasForm": false,
+        "hasSlider": true,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757223",
+        "classes": "r t-rec r_hidden r_anim",
+        "offsetTop": 10136,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757224",
+        "classes": "r t-rec t-rec_pt_45 t-rec_pb_90",
+        "offsetTop": 10136,
+        "height": 761.09375,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec545989060",
+        "classes": "r t-rec r_hidden r_anim",
+        "offsetTop": 10897,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec545923848",
+        "classes": "r t-rec t-rec_pt_30 t-rec_pb_30",
+        "offsetTop": 10897,
+        "height": 847.90625,
+        "bgColor": "rgb(245, 245, 245)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757225",
+        "classes": "r t-rec r_hidden r_anim",
+        "offsetTop": 11745,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 1,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757226",
+        "classes": "r t-rec t-rec_pt_0 t-rec_pb_0",
+        "offsetTop": 11745,
+        "height": 863.09375,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 3,
+        "hasForm": true,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "recorddiv542757226",
+        "classes": "t-cover",
+        "offsetTop": 11745,
+        "height": 863.09375,
+        "bgColor": "rgb(0, 0, 0)",
+        "bgImage": "url(\"https://static.tildacdn.info/tild3030-3864-4964-b661-333538623466/-/resize/20x/20.jpg\")",
+        "childCount": 3,
+        "hasForm": true,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757227",
+        "classes": "r t-rec t-rec_pt_60 t-rec_pb_60",
+        "offsetTop": 12608,
+        "height": 421.4375,
+        "bgColor": "rgb(207, 16, 16)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      },
+      {
+        "id": "rec542757228",
+        "classes": "r t-rec r_hidden r_anim",
+        "offsetTop": 13029,
+        "height": 0,
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "none",
+        "childCount": 2,
+        "hasForm": false,
+        "hasSlider": false,
+        "hasVideo": false,
+        "hasMap": false
+      }
+    ],
+    "totalHeight": 13304,
+    "totalWidth": 1234
+  },
+  "links": {
+    "internal": [
+      {
+        "href": "#about",
+        "text": "О школе",
+        "target": ""
+      },
+      {
+        "href": "#schedule",
+        "text": "Расписание",
+        "target": ""
+      },
+      {
+        "href": "#rates",
+        "text": "Тарифы",
+        "target": ""
+      },
+      {
+        "href": "#news",
+        "text": "Новости",
+        "target": ""
+      },
+      {
+        "href": "#shop",
+        "text": "Магазин",
+        "target": ""
+      },
+      {
+        "href": "#form",
+        "text": "Записаться на бесплатные занятия #rec542757206 .t-",
+        "target": ""
+      },
+      {
+        "href": "#form",
+        "text": "Записаться #rec542757221 .t-btnflex.t-btnflex_type",
+        "target": ""
+      },
+      {
+        "href": "#form",
+        "text": "Записаться #rec542757221 .t-btnflex.t-btnflex_type",
+        "target": ""
+      },
+      {
+        "href": "#form",
+        "text": "Записаться #rec542757221 .t-btnflex.t-btnflex_type",
+        "target": ""
+      }
+    ],
+    "external": [
+      {
+        "href": "http://project6713166.tilda.ws/",
+        "text": "",
+        "target": ""
+      },
+      {
+        "href": "https://vk.com/arsenal_92",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://t.me/arsenal_sevastopol",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://www.youtube.com/@arsenal92",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://medobory.com/",
+        "text": "МЕДОБОРЫ",
+        "target": "_blank"
+      },
+      {
+        "href": "https://t.me/s/arsenalarena",
+        "text": "А2",
+        "target": "_blank"
+      },
+      {
+        "href": "https://t.me/s/arsenalarena",
+        "text": "Профессиональные бутсы",
+        "target": "_blank"
+      },
+      {
+        "href": "https://t.me/s/arsenalarena",
+        "text": "Спортивная форма - Лето 2025",
+        "target": "_blank"
+      },
+      {
+        "href": "https://t.me/s/arsenalarena",
+        "text": "Зимние дутые куртки - Зима 2025-2026",
+        "target": "_blank"
+      },
+      {
+        "href": "https://vk.com/arsenal_92",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://t.me/s/arsenal_sevastopol",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://www.youtube.com/channel/UCSGBTnP_M6_UxyAvu8RPW1g",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://dzen.ru/arsenal92",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://tilda.cc/",
+        "text": "",
+        "target": "_blank"
+      },
+      {
+        "href": "https://tilda.cc/",
+        "text": "Tilda — a website builder",
+        "target": "_blank"
+      },
+      {
+        "href": "https://tilda.cc/registration/",
+        "text": "Create a website",
+        "target": "_blank"
+      },
+      {
+        "href": "https://help.tilda.cc/white-label",
+        "text": "How to remove this block?",
+        "target": "_blank"
+      },
+      {
+        "href": "https://tilda.cc/",
+        "text": "About platform",
+        "target": "_blank"
+      },
+      {
+        "href": "https://tilda.cc/abuse/",
+        "text": "Submit a complaint",
+        "target": "_blank"
+      }
+    ],
+    "tel": [
+      {
+        "href": "tel: +7 (978) 10 40 940",
+        "text": "+7 (978) 10 40 940"
+      }
+    ],
+    "mailto": [],
+    "broken": []
+  },
+  "images": {
+    "total": 7,
+    "withAlt": 0,
+    "withoutAlt": 7,
+    "lazy": 2,
+    "details": [
+      {
+        "src": "https://static.tildacdn.info/tild6361-3136-4530-a561-623435316331/Logo_Arsenal_2.jpg",
+        "alt": "",
+        "width": 1072,
+        "height": 1037,
+        "loading": "auto",
+        "lazyOriginal": false
+      },
+      {
+        "src": "https://static.tildacdn.info/lib/tildaicon/31373332-6435-4561-b939-373539393966/whistle.svg",
+        "alt": "",
+        "width": 150,
+        "height": 150,
+        "loading": "auto",
+        "lazyOriginal": false
+      },
+      {
+        "src": "https://static.tildacdn.info/lib/tildaicon/30346233-3431-4931-b136-363463323832/field.svg",
+        "alt": "",
+        "width": 150,
+        "height": 150,
+        "loading": "auto",
+        "lazyOriginal": false
+      },
+      {
+        "src": "https://static.tildacdn.info/lib/tildaicon/35613038-6634-4235-b336-343335313666/win.svg",
+        "alt": "",
+        "width": 150,
+        "height": 150,
+        "loading": "auto",
+        "lazyOriginal": false
+      },
+      {
+        "src": "https://static.tildacdn.info/tild3930-6361-4931-a561-613939393439/-/empty/medobory_logo.png",
+        "alt": "",
+        "width": 320,
+        "height": 320,
+        "loading": "auto",
+        "lazyOriginal": true
+      },
+      {
+        "src": "https://static.tildacdn.info/tild6637-3331-4331-b838-386461376331/-/empty/1756323661504.png",
+        "alt": "",
+        "width": 640,
+        "height": 640,
+        "loading": "auto",
+        "lazyOriginal": true
+      },
+      {
+        "src": "https://static.tildacdn.info/img/tildacopy.png",
+        "alt": "",
+        "width": 60,
+        "height": 60,
+        "loading": "auto",
+        "lazyOriginal": false
+      }
+    ]
+  },
+  "performance": {
+    "totalDomElements": 791,
+    "totalScripts": 40,
+    "totalStylesheets": 8,
+    "totalImages": 7,
+    "totalIframes": 1,
+    "viewportMeta": "width=device-width, initial-scale=1.0",
+    "charset": "UTF-8",
+    "doctype": "html5",
+    "lang": ""
+  },
+  "forms": [
+    {
+      "index": 0,
+      "action": "https://fcarsenal-92.tilda.ws/",
+      "method": "post",
+      "fields": [
+        {
+          "name": "Email",
+          "type": "email",
+          "placeholder": "Ваш Email",
+          "required": false,
+          "pattern": ""
+        },
+        {
+          "name": "Phone",
+          "type": "tel",
+          "placeholder": "Номер телефона",
+          "required": false,
+          "pattern": "[0-9]*"
+        },
+        {
+          "name": "Name",
+          "type": "text",
+          "placeholder": "Ваше имя",
+          "required": false,
+          "pattern": ""
+        },
+        {
+          "name": "form-spec-comments",
+          "type": "text",
+          "placeholder": "",
+          "required": false,
+          "pattern": ""
+        }
+      ],
+      "submitBtn": "Записаться #rec542757213 .t-btnflex.t-btnflex_type_submit {color:#ffffff;background-color:#000000;border-style:none !important;border-radius:10px;box-shadow:none !important;transition-duration:0.2s;transition-property:background-color,color,border-color,box-shadow,opacity,transform;transition-timing-function:ease-in-out;}",
+      "hasRecaptcha": false
+    },
+    {
+      "index": 1,
+      "action": "https://fcarsenal-92.tilda.ws/",
+      "method": "post",
+      "fields": [
+        {
+          "name": "Phone number",
+          "type": "tel",
+          "placeholder": "Номер телефона",
+          "required": false,
+          "pattern": "[0-9]*"
+        },
+        {
+          "name": "Name",
+          "type": "text",
+          "placeholder": "Ваше имя",
+          "required": false,
+          "pattern": ""
+        },
+        {
+          "name": "form-spec-comments",
+          "type": "text",
+          "placeholder": "",
+          "required": false,
+          "pattern": ""
+        }
+      ],
+      "submitBtn": "Отправить заявку #rec542757226 .t-btnflex.t-btnflex_type_submit {color:#ffffff;background-color:#cf1026;border-style:none !important;border-radius:7px;box-shadow:none !important;transition-duration:0.2s;transition-property:background-color,color,border-color,box-shadow,opacity,transform;transition-timing-function:ease-in-out;}",
+      "hasRecaptcha": false
+    }
+  ],
+  "tilda": {
+    "projectId": "6713166",
+    "pageId": "",
+    "publishedDate": "",
+    "tildaForms": [],
+    "popups": []
+  },
+  "accessibility": {
+    "hasSkipNav": false,
+    "ariaLandmarks": 1,
+    "focusableElements": 57,
+    "imagesWithoutAlt": 0
+  }
+}
