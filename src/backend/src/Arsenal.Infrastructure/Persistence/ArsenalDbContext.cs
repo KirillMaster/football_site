@@ -1,4 +1,5 @@
 using Arsenal.Application.Interfaces;
+using Arsenal.Domain.Common;
 using Arsenal.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,7 @@ public class ArsenalDbContext : DbContext, IArsenalDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Ignore<DomainEvent>();
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ArsenalDbContext).Assembly);
     }
 

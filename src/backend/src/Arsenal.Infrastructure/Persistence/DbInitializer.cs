@@ -21,8 +21,11 @@ public class DbInitializer
 
     public async Task InitializeAsync(string seedDataPath, CancellationToken ct = default)
     {
-        _logger.LogInformation("Applying migrations...");
-        await _db.Database.MigrateAsync(ct);
+        if (_db.Database.IsRelational())
+        {
+            _logger.LogInformation("Applying migrations...");
+            await _db.Database.MigrateAsync(ct);
+        }
 
         await SeedAdminUserAsync(ct);
         await SeedSiteSettingsAsync(ct);
