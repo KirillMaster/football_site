@@ -28,7 +28,7 @@ public class SiteSettingsController : ControllerBase
                 dzen = "https://dzen.ru/arsenal92",
             },
             heroVideoRutubeId = s?.HeroVideoRutubeId ?? "1335a9553dac12ea586c0ce0a90456cf",
-            mapEmbedUrl = "https://yandex.ru/map-widget/v1/?um=constructor%3A0a1b2c3d&source=constructor&ll=33.5224%2C44.5868&z=16&pt=33.5224%2C44.5868%2Cpm2rdm",
+            mapEmbedUrl = "https://yandex.ru/map-widget/v1/?ll=33.522167%2C44.586567&z=17&l=map&pt=33.522167%2C44.586567%2Cpm2rdl~Спорткомплекс+школы+№61",
         });
     }
 }
