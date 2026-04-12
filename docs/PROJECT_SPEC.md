@@ -51,6 +51,7 @@
 | Auth | JWT + refresh tokens (только для админки) |
 | i18n | next-intl (ru + en) |
 | Payments | ЮKassa API (опционально включается в админке) |
+| S3 Storage | Timeweb S3 (s3.twcstorage.ru, region ru-1) — фото, видео, загрузки |
 | Container | Docker Compose (nginx + nextjs + dotnet-api + postgres) |
 | Reverse proxy | Nginx с SSL (Let's Encrypt / certbot) |
 | Server | Timeweb VPS, Казахстан (45.10.40.194) |
@@ -400,6 +401,16 @@ AdminUsers         — пользователи админки
 - DNS A-запись: fcarsenal92.ru → 45.10.40.194
 - DNS A-запись: www.fcarsenal92.ru → 45.10.40.194 (или CNAME → fcarsenal92.ru)
 - www → 301 redirect на fcarsenal92.ru (без www — основной)
+
+### S3 хранилище (Timeweb S3)
+
+- Endpoint: `https://s3.twcstorage.ru`
+- Region: `ru-1`
+- Bucket: `577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66`
+- Использование: все загруженные файлы (фото, видео, документы)
+- .NET API загружает через AWS SDK (S3-совместимый)
+- Nginx проксирует `/uploads/` → S3 с кэшированием
+- Преимущества: CDN, бэкапы, не зависит от диска сервера
 
 ### Nginx конфиг (HTTPS)
 

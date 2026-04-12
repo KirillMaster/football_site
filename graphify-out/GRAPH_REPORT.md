@@ -1,112 +1,124 @@
-# Graph Report - C:/pet/football_site  (2026-04-12)
+# Graph Report - .  (2026-04-12)
 
 ## Corpus Check
-- 33 files · ~171,122 words
+- 7 files · ~50,000 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 58 nodes · 73 edges · 9 communities detected
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.82)
+- 103 nodes · 167 edges · 11 communities detected
+- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Club Identity & Operations|Club Identity & Operations]]
+- [[_COMMUNITY_Backend Architecture|Backend Architecture]]
 - [[_COMMUNITY_Database Schema|Database Schema]]
-- [[_COMMUNITY_Infrastructure & Architecture|Infrastructure & Architecture]]
-- [[_COMMUNITY_Admin & Payments|Admin & Payments]]
-- [[_COMMUNITY_SEO & Search Engines|SEO & Search Engines]]
+- [[_COMMUNITY_Club Identity & Content|Club Identity & Content]]
+- [[_COMMUNITY_Deployment & Client|Deployment & Client]]
+- [[_COMMUNITY_SEO & Analytics|SEO & Analytics]]
+- [[_COMMUNITY_Design Audit & Issues|Design Audit & Issues]]
+- [[_COMMUNITY_Server Setup|Server Setup]]
 - [[_COMMUNITY_Pricing & Academies|Pricing & Academies]]
-- [[_COMMUNITY_UI Icons (Field)|UI Icons (Field)]]
-- [[_COMMUNITY_UI Icons (Whistle)|UI Icons (Whistle)]]
-- [[_COMMUNITY_UI Icons (Trophy)|UI Icons (Trophy)]]
+- [[_COMMUNITY_UI Icons|UI Icons]]
+- [[_COMMUNITY_UI Icons|UI Icons]]
+- [[_COMMUNITY_UI Icons|UI Icons]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `PostgreSQL 16 Database` - 16 edges
-2. `FC Arsenal-92` - 15 edges
-3. `.NET 9 Web API Backend` - 11 edges
-4. `Next.js 15 Frontend` - 9 edges
-5. `Docker Compose Deployment` - 6 edges
-6. `SEO Optimization Strategy` - 5 edges
-7. `Nginx Reverse Proxy` - 4 edges
-8. `Pricing Plans Entity` - 4 edges
-9. `Admin Panel SPA` - 3 edges
-10. `YuKassa Payment System` - 3 edges
+1. `FC Arsenal-92 Children's Football Club` - 20 edges
+2. `PostgreSQL 16 Database` - 19 edges
+3. `PostgreSQL 16 Database` - 16 edges
+4. `.NET 9 Web API Backend (Clean Architecture)` - 13 edges
+5. `.NET 9 Web API Backend` - 11 edges
+6. `Docker Compose Deployment (4 containers)` - 10 edges
+7. `New Website Project (fcarsenal92.ru)` - 10 edges
+8. `Next.js 15 Frontend` - 9 edges
+9. `Next.js 15 Frontend (React, TypeScript, App Router)` - 9 edges
+10. `SEO Optimization Strategy (Google + Yandex)` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `FC Arsenal-92` --equipped_by--> `Nike Equipment and Uniforms`  [INFERRED]
+- `FC Arsenal-92 Children's Football Club` --equipped_by--> `Nike Equipment and Uniforms`  [INFERRED]
   docs/PROJECT_SPEC.md → docs/assets/promo_2.jpg
-- `FC Arsenal-92` --branding--> `Arsenal-92 Club Logo`  [EXTRACTED]
+- `Accessibility Issues (WCAG violations)` --semantically_similar_to--> `SEO Optimization Strategy (Google + Yandex)`  [INFERRED] [semantically similar]
+  docs/DESIGN_REVIEW_AUTO.md → docs/PROJECT_SPEC.md
+- `FC Arsenal-92 Children's Football Club` --branding--> `Arsenal-92 Club Logo`  [EXTRACTED]
   docs/PROJECT_SPEC.md → docs/assets/Logo_Arsenal_2.jpg
-- `Team and Training Photos` --depicts--> `FC Arsenal-92`  [EXTRACTED]
+- `Team and Training Photos` --depicts--> `FC Arsenal-92 Children's Football Club`  [EXTRACTED]
   docs/assets/11.jpg → docs/PROJECT_SPEC.md
-- `Player Zaliznyak (#18)` --player_of--> `FC Arsenal-92`  [EXTRACTED]
+- `Player Zaliznyak (#18)` --player_of--> `FC Arsenal-92 Children's Football Club`  [EXTRACTED]
   docs/assets/zaliznyak_1.jpg → docs/PROJECT_SPEC.md
-- `Current Site Screenshot` --depicts--> `Current Tilda Website`  [EXTRACTED]
-  docs/assets/site_screenshot_full.jpeg → docs/PROJECT_SPEC.md
 
 ## Hyperedges (group relationships)
-- **Docker Infrastructure Stack** — docker_compose, nginx_proxy, nextjs_frontend, dotnet_backend, postgresql_db [EXTRACTED 1.00]
-- **Database Schema Entities** — pages_entity, news_entity, coaches_entity, training_groups_entity, schedule_entity, pricing_plans_entity, bookings_entity, reviews_entity, gallery_entity, payments_entity, admin_users_entity, site_settings_entity, contacts_entity, partners_entity [EXTRACTED 1.00]
-- **Club Identity and Branding** — fc_arsenal_92, club_logo, design_system, nike_equipment, children_first_philosophy [INFERRED 0.80]
+- **Docker Infrastructure Stack** — docker_compose, nginx_proxy, nextjs_15_frontend, dotnet_9_api, postgresql_16 [EXTRACTED 1.00]
+- **Database Schema Entity Model** — pages_entity, news_entity, coaches_entity, training_groups_entity, schedule_entity, pricing_plans_entity, booking_entity, reviews_entity, gallery_entity, shop_products_entity, payments_entity, site_settings_entity, contacts_entity, admin_users_entity, partners_entity [EXTRACTED 1.00]
+- **SEO and Analytics Ecosystem** — seo_strategy, schema_org, google_analytics, yandex_metrika, core_web_vitals, google_business, yandex_business [EXTRACTED 1.00]
 
 ## Communities
 
-### Community 0 - "Club Identity & Operations"
-Cohesion: 0.18
-Nodes (14): Children-First Philosophy, Arsenal-92 Club Logo, FC Arsenal-92, Kuliev Igor Ramizovich, Nike Equipment and Uniforms, Player Zaliznyak (#18), Private Academy Goal, Sevastopol (+6 more)
+### Community 0 - "Backend Architecture"
+Cohesion: 0.14
+Nodes (23): Admin Panel SPA (React, client-side), Clean Architecture Pattern (Domain/Application/Infrastructure/API), CQRS Pattern (MediatR commands/queries), Design System (Color Palette: Red #E10005, Navy #101A7A), .NET 9 Web API Backend (Clean Architecture), .NET 9 Web API Backend, Entity Framework Core ORM, Feature Toggle System (+15 more)
 
 ### Community 1 - "Database Schema"
-Cohesion: 0.19
-Nodes (13): Admin Users Entity, Bookings Entity, Coaches Entity, Contacts Entity, Gallery Entity, News Entity, Pages Entity, Partners Entity (+5 more)
+Cohesion: 0.2
+Nodes (19): AdminUsers Entity (superadmin/editor roles), Bookings Entity (trial training requests), Bookings Entity, Coaches Entity, Contacts Entity (singleton, phones, social links), Feature Toggle System (SiteSettings.features_enabled), Gallery Entity (albums + items), News/Blog Entity (+11 more)
 
-### Community 2 - "Infrastructure & Architecture"
+### Community 2 - "Club Identity & Content"
+Cohesion: 0.14
+Nodes (17): Children-First Philosophy, Arsenal-92 Club Logo, FC Arsenal-92 Children's Football Club, International Camps (Spain/Seville, Turkey), Kuliev Igor Ramizovich (Director & Head Coach), Nike Equipment and Uniforms, Player Zaliznyak (#18), Private Academy Goal (+9 more)
+
+### Community 3 - "Deployment & Client"
+Cohesion: 0.2
+Nodes (11): Client Requirements Document (FOR_CLIENT.md), DNS Configuration (A records to 45.10.40.194), Docker Compose Deployment (4 containers), Domain fcarsenal92.ru (Timeweb), English Language Version of Site, GitHub Actions CI/CD Pipeline, Privacy Policy (152-FZ compliance), Server Setup Log (Ubuntu 24.04 LTS) (+3 more)
+
+### Community 4 - "SEO & Analytics"
 Cohesion: 0.24
-Nodes (12): Clean Architecture Pattern, CQRS Pattern, Design System (Color Palette), Docker Compose Deployment, .NET 9 Web API Backend, Entity Framework Core ORM, GitHub Actions CI/CD, Next.js 15 Frontend (+4 more)
+Nodes (10): Core Web Vitals (LCP, FID, CLS targets), Google Analytics 4 Integration, Google Business Profile (local SEO), Google Integration, Schema.org Structured Data (JSON-LD), SEO Optimization Strategy, SEO Optimization Strategy (Google + Yandex), Yandex.Business Profile (local SEO) (+2 more)
 
-### Community 3 - "Admin & Payments"
-Cohesion: 0.33
-Nodes (6): Admin Panel SPA, Feature Toggle System, Internationalization (ru/en), JWT Authentication, Payments Entity, YuKassa Payment System
+### Community 5 - "Design Audit & Issues"
+Cohesion: 0.29
+Nodes (8): Accessibility Issues (WCAG violations), Current Tilda Website (fcarsenal-92.tilda.ws), Automated Design Quality Review (Score 52/100), Form Security Issues (no reCAPTCHA, no required fields), Knowledge Graph Report (58 nodes, 73 edges, 9 communities), New Website Project (fcarsenal92.ru), Rationale: Migration from Tilda due to SEO/accessibility deficiencies, Priority Remediation Plan (P0-P2)
 
-### Community 4 - "SEO & Search Engines"
+### Community 6 - "Server Setup"
+Cohesion: 0.43
+Nodes (6): create_connection(), main(), Server setup script for FC Arsenal-92 football site. Connects via paramiko and c, Create a fresh SSH connection with keepalive., Run a command via SSH with auto-reconnect. ssh_holder is a list [ssh] so we can, run_command()
+
+### Community 7 - "Pricing & Academies"
 Cohesion: 0.4
-Nodes (5): Core Web Vitals, Google Integration, Schema.org Structured Data, SEO Optimization Strategy, Yandex Integration
+Nodes (5): Partner Academies (Krasnodar, Rostov, CSKA, Lokomotiv, etc.), Pricing Plans Entity (Standard/Standard+/PRO), PRO Plan (6000 RUB), Standard Plan (4000 RUB), Standard+ Plan (5400 RUB)
 
-### Community 5 - "Pricing & Academies"
-Cohesion: 0.4
-Nodes (5): Partner Academies, Pricing Plans Entity, PRO Plan (6000 RUB), Standard Plan (4000 RUB), Standard+ Plan (5400 RUB)
-
-### Community 6 - "UI Icons (Field)"
+### Community 8 - "UI Icons"
 Cohesion: 1.0
 Nodes (1): Football Field Icon (SVG)
 
-### Community 7 - "UI Icons (Whistle)"
+### Community 9 - "UI Icons"
 Cohesion: 1.0
 Nodes (1): Whistle Icon (SVG)
 
-### Community 8 - "UI Icons (Trophy)"
+### Community 10 - "UI Icons"
 Cohesion: 1.0
 Nodes (1): Trophy/Win Icon (SVG)
 
 ## Knowledge Gaps
-- **28 isolated node(s):** `Yandex Integration`, `Google Integration`, `Schema.org Structured Data`, `Pages Entity`, `News Entity` (+23 more)
+- **32 isolated node(s):** `Yandex Integration`, `Google Integration`, `Standard Plan (4000 RUB)`, `Standard+ Plan (5400 RUB)`, `Tournaments and Competitions` (+27 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `UI Icons (Field)`** (1 nodes): `Football Field Icon (SVG)`
+- **Thin community `UI Icons`** (1 nodes): `Football Field Icon (SVG)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `UI Icons (Whistle)`** (1 nodes): `Whistle Icon (SVG)`
+- **Thin community `UI Icons`** (1 nodes): `Whistle Icon (SVG)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `UI Icons (Trophy)`** (1 nodes): `Trophy/Win Icon (SVG)`
+- **Thin community `UI Icons`** (1 nodes): `Trophy/Win Icon (SVG)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `PostgreSQL 16 Database` connect `Database Schema` to `Infrastructure & Architecture`, `Admin & Payments`, `Pricing & Academies`?**
-  _High betweenness centrality (0.426) - this node is a cross-community bridge._
-- **Why does `FC Arsenal-92` connect `Club Identity & Operations` to `Infrastructure & Architecture`, `Pricing & Academies`?**
-  _High betweenness centrality (0.407) - this node is a cross-community bridge._
-- **Why does `.NET 9 Web API Backend` connect `Infrastructure & Architecture` to `Club Identity & Operations`, `Database Schema`, `Admin & Payments`?**
-  _High betweenness centrality (0.399) - this node is a cross-community bridge._
-- **Are the 2 inferred relationships involving `Next.js 15 Frontend` (e.g. with `SEO Optimization Strategy` and `Design System (Color Palette)`) actually correct?**
-  _`Next.js 15 Frontend` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Yandex Integration`, `Google Integration`, `Schema.org Structured Data` to the rest of the system?**
-  _28 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `FC Arsenal-92 Children's Football Club` connect `Club Identity & Content` to `Backend Architecture`, `Design Audit & Issues`, `Pricing & Academies`?**
+  _High betweenness centrality (0.288) - this node is a cross-community bridge._
+- **Why does `New Website Project (fcarsenal92.ru)` connect `Design Audit & Issues` to `Backend Architecture`, `Database Schema`, `Club Identity & Content`, `Deployment & Client`, `SEO & Analytics`?**
+  _High betweenness centrality (0.204) - this node is a cross-community bridge._
+- **Why does `PostgreSQL 16 Database` connect `Database Schema` to `Backend Architecture`, `Deployment & Client`, `Design Audit & Issues`, `Pricing & Academies`?**
+  _High betweenness centrality (0.187) - this node is a cross-community bridge._
+- **What connects `Yandex Integration`, `Google Integration`, `Standard Plan (4000 RUB)` to the rest of the system?**
+  _32 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Backend Architecture` be split into smaller, more focused modules?**
+  _Cohesion score 0.14 - nodes in this community are weakly interconnected._
+- **Should `Club Identity & Content` be split into smaller, more focused modules?**
+  _Cohesion score 0.14 - nodes in this community are weakly interconnected._

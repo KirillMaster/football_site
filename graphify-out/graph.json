@@ -4,23 +4,23 @@
   "graph": {
     "hyperedges": [
       {
-        "id": "docker_infrastructure_stack",
+        "id": "he_docker_stack",
         "label": "Docker Infrastructure Stack",
         "nodes": [
           "docker_compose",
           "nginx_proxy",
-          "nextjs_frontend",
-          "dotnet_backend",
-          "postgresql_db"
+          "nextjs_15_frontend",
+          "dotnet_9_api",
+          "postgresql_16"
         ],
-        "relation": "participate_in",
+        "relation": "infrastructure_composition",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "docs/PROJECT_SPEC.md"
+        "source_file": "docs/ARCHITECTURE.md"
       },
       {
-        "id": "database_schema",
-        "label": "Database Schema Entities",
+        "id": "he_db_schema",
+        "label": "Database Schema Entity Model",
         "nodes": [
           "pages_entity",
           "news_entity",
@@ -28,49 +28,52 @@
           "training_groups_entity",
           "schedule_entity",
           "pricing_plans_entity",
-          "bookings_entity",
+          "booking_entity",
           "reviews_entity",
           "gallery_entity",
+          "shop_products_entity",
           "payments_entity",
-          "admin_users_entity",
           "site_settings_entity",
           "contacts_entity",
+          "admin_users_entity",
           "partners_entity"
         ],
-        "relation": "form",
+        "relation": "schema_composition",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "docs/PROJECT_SPEC.md"
+        "source_file": "docs/ARCHITECTURE.md"
       },
       {
-        "id": "club_identity",
-        "label": "Club Identity and Branding",
+        "id": "he_seo_ecosystem",
+        "label": "SEO and Analytics Ecosystem",
         "nodes": [
-          "fc_arsenal_92",
-          "club_logo",
-          "design_system",
-          "nike_equipment",
-          "children_first_philosophy"
+          "seo_strategy",
+          "schema_org",
+          "google_analytics",
+          "yandex_metrika",
+          "core_web_vitals",
+          "google_business",
+          "yandex_business"
         ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.8,
+        "relation": "seo_optimization_system",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
         "source_file": "docs/PROJECT_SPEC.md"
       }
     ]
   },
   "nodes": [
     {
-      "label": "FC Arsenal-92",
+      "label": "FC Arsenal-92 Children's Football Club",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: title",
+      "source_location": null,
       "source_url": "https://fcarsenal-92.tilda.ws/",
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "fc_arsenal_92",
-      "community": 0
+      "community": 2,
+      "id": "fc_arsenal_92"
     },
     {
       "label": "Sevastopol",
@@ -81,20 +84,20 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "sevastopol",
-      "community": 0
+      "community": 2,
+      "id": "sevastopol"
     },
     {
-      "label": "Kuliev Igor Ramizovich",
+      "label": "Kuliev Igor Ramizovich (Director & Head Coach)",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Personalii",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "kuliev_igor",
-      "community": 0
+      "community": 2,
+      "id": "kuliev_igor"
     },
     {
       "label": "Next.js 15 Frontend",
@@ -105,8 +108,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nextjs_frontend",
-      "community": 2
+      "community": 0,
+      "id": "nextjs_frontend"
     },
     {
       "label": ".NET 9 Web API Backend",
@@ -117,8 +120,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "dotnet_backend",
-      "community": 2
+      "community": 0,
+      "id": "dotnet_backend"
     },
     {
       "label": "PostgreSQL 16 Database",
@@ -129,44 +132,44 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "postgresql_db",
-      "community": 1
+      "community": 1,
+      "id": "postgresql_db"
     },
     {
-      "label": "Docker Compose Deployment",
+      "label": "Docker Compose Deployment (4 containers)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Arkhitektura",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 6",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "docker_compose",
-      "community": 2
+      "community": 3,
+      "id": "docker_compose"
     },
     {
-      "label": "Nginx Reverse Proxy",
+      "label": "Nginx Reverse Proxy (SSL, HTTP/2, Brotli)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Arkhitektura",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nginx_proxy",
-      "community": 2
+      "community": 0,
+      "id": "nginx_proxy"
     },
     {
-      "label": "Admin Panel SPA",
+      "label": "Admin Panel SPA (React, client-side)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Adminka",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "admin_panel",
-      "community": 3
+      "community": 0,
+      "id": "admin_panel"
     },
     {
       "label": "SEO Optimization Strategy",
@@ -177,8 +180,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "seo_optimization",
-      "community": 4
+      "community": 4,
+      "id": "seo_optimization"
     },
     {
       "label": "Yandex Integration",
@@ -189,8 +192,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "yandex_integration",
-      "community": 4
+      "community": 4,
+      "id": "yandex_integration"
     },
     {
       "label": "Google Integration",
@@ -201,152 +204,152 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "google_integration",
-      "community": 4
+      "community": 4,
+      "id": "google_integration"
     },
     {
-      "label": "Schema.org Structured Data",
+      "label": "Schema.org Structured Data (JSON-LD)",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Tekhnicheskoye SEO, item 4",
+      "source_location": "SEO section item 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "schema_org",
-      "community": 4
+      "community": 4,
+      "id": "schema_org"
     },
     {
-      "label": "JWT Authentication",
+      "label": "JWT Authentication (access + refresh tokens)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Stek tekhnologiy",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.5",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "jwt_auth",
-      "community": 3
+      "community": 0,
+      "id": "jwt_auth"
     },
     {
-      "label": "YuKassa Payment System",
+      "label": "YuKassa Payment System (optional)",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Stek tekhnologiy",
+      "source_location": null,
+      "source_url": "https://yookassa.ru",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 0,
+      "id": "yukassa_payments"
+    },
+    {
+      "label": "Internationalization (ru/en via next-intl)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.5",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "yukassa_payments",
-      "community": 3
+      "community": 0,
+      "id": "i18n_system"
     },
     {
-      "label": "Internationalization (ru/en)",
+      "label": "Timeweb VPS Server (45.10.40.194, Kazakhstan)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Stek tekhnologiy",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "i18n_system",
-      "community": 3
+      "community": 3,
+      "id": "timeweb_vps"
     },
     {
-      "label": "Timeweb VPS Server",
+      "label": "GitHub Actions CI/CD Pipeline",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Server",
+      "source_location": "CI/CD section",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "timeweb_vps",
-      "community": 2
+      "community": 3,
+      "id": "github_actions_cicd"
     },
     {
-      "label": "GitHub Actions CI/CD",
+      "label": "Pages Entity (static CMS pages)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: CI/CD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "github_actions_cicd",
-      "community": 2
+      "community": 1,
+      "id": "pages_entity"
     },
     {
-      "label": "Pages Entity",
+      "label": "News/Blog Entity",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "pages_entity",
-      "community": 1
-    },
-    {
-      "label": "News Entity",
-      "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "news_entity",
-      "community": 1
+      "community": 1,
+      "id": "news_entity"
     },
     {
       "label": "Coaches Entity",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "coaches_entity",
-      "community": 1
+      "community": 1,
+      "id": "coaches_entity"
     },
     {
       "label": "Training Groups Entity",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "training_groups_entity",
-      "community": 1
+      "community": 1,
+      "id": "training_groups_entity"
     },
     {
-      "label": "Schedule Entity",
+      "label": "Schedule Entity (training timetable)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "schedule_entity",
-      "community": 1
+      "community": 1,
+      "id": "schedule_entity"
     },
     {
-      "label": "Pricing Plans Entity",
+      "label": "Pricing Plans Entity (Standard/Standard+/PRO)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "pricing_plans_entity",
-      "community": 5
+      "community": 7,
+      "id": "pricing_plans_entity"
     },
     {
       "label": "Bookings Entity",
@@ -357,116 +360,116 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "bookings_entity",
-      "community": 1
+      "community": 1,
+      "id": "bookings_entity"
     },
     {
-      "label": "Reviews Entity",
+      "label": "Reviews Entity (parent/player testimonials)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "reviews_entity",
-      "community": 1
+      "community": 1,
+      "id": "reviews_entity"
     },
     {
-      "label": "Gallery Entity",
+      "label": "Gallery Entity (albums + items)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "gallery_entity",
-      "community": 1
+      "community": 1,
+      "id": "gallery_entity"
     },
     {
-      "label": "Payments Entity",
+      "label": "Payments Entity (YuKassa transactions)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "payments_entity",
-      "community": 3
+      "community": 1,
+      "id": "payments_entity"
     },
     {
-      "label": "Admin Users Entity",
+      "label": "AdminUsers Entity (superadmin/editor roles)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "admin_users_entity",
-      "community": 1
+      "community": 1,
+      "id": "admin_users_entity"
     },
     {
-      "label": "Site Settings Entity",
+      "label": "SiteSettings Entity (singleton, feature flags)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "site_settings_entity",
-      "community": 1
+      "community": 1,
+      "id": "site_settings_entity"
     },
     {
-      "label": "Contacts Entity",
+      "label": "Contacts Entity (singleton, phones, social links)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "contacts_entity",
-      "community": 1
+      "community": 1,
+      "id": "contacts_entity"
     },
     {
-      "label": "Partners Entity",
+      "label": "Partners Entity (Medobory, A2)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Struktura BD",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "partners_entity",
-      "community": 1
+      "community": 1,
+      "id": "partners_entity"
     },
     {
-      "label": "Clean Architecture Pattern",
+      "label": "Clean Architecture Pattern (Domain/Application/Infrastructure/API)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Printsipy razrabotki",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.1",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "clean_architecture",
-      "community": 2
+      "community": 0,
+      "id": "clean_architecture"
     },
     {
-      "label": "CQRS Pattern",
+      "label": "CQRS Pattern (MediatR commands/queries)",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Printsipy razrabotki",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.3",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "cqrs_pattern",
-      "community": 2
+      "community": 0,
+      "id": "cqrs_pattern"
     },
     {
       "label": "TDD Methodology",
@@ -477,8 +480,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tdd_methodology",
-      "community": 2
+      "community": 0,
+      "id": "tdd_methodology"
     },
     {
       "label": "Current Tilda Website",
@@ -489,20 +492,20 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tilda_current_site",
-      "community": 0
+      "community": 2,
+      "id": "tilda_current_site"
     },
     {
-      "label": "Core Web Vitals",
+      "label": "Core Web Vitals (LCP, FID, CLS targets)",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Tekhnicheskoye SEO, item 9",
+      "source_location": "SEO item 9",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "core_web_vitals",
-      "community": 4
+      "community": 4,
+      "id": "core_web_vitals"
     },
     {
       "label": "UEFA C License",
@@ -513,8 +516,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "uefa_c_license",
-      "community": 0
+      "community": 2,
+      "id": "uefa_c_license"
     },
     {
       "label": "Standard Plan (4000 RUB)",
@@ -525,8 +528,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "standard_plan",
-      "community": 5
+      "community": 7,
+      "id": "standard_plan"
     },
     {
       "label": "Standard+ Plan (5400 RUB)",
@@ -537,8 +540,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "standard_plus_plan",
-      "community": 5
+      "community": 7,
+      "id": "standard_plus_plan"
     },
     {
       "label": "PRO Plan (6000 RUB)",
@@ -549,20 +552,20 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "pro_plan",
-      "community": 5
+      "community": 7,
+      "id": "pro_plan"
     },
     {
-      "label": "Partner Academies",
+      "label": "Partner Academies (Krasnodar, Rostov, CSKA, Lokomotiv, etc.)",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Prosmotra, stazhirovki",
+      "source_location": "Advantages item 4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "partner_academies",
-      "community": 5
+      "community": 7,
+      "id": "partner_academies"
     },
     {
       "label": "Tournaments and Competitions",
@@ -573,8 +576,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "tournaments",
-      "community": 0
+      "community": 2,
+      "id": "tournaments"
     },
     {
       "label": "Training Location (SOSh 61)",
@@ -585,8 +588,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "training_location",
-      "community": 0
+      "community": 2,
+      "id": "training_location"
     },
     {
       "label": "Feature Toggle System",
@@ -597,20 +600,20 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "feature_toggle_system",
-      "community": 3
+      "community": 0,
+      "id": "feature_toggle_system"
     },
     {
-      "label": "Design System (Color Palette)",
+      "label": "Design System (Color Palette: Red #E10005, Navy #101A7A)",
       "file_type": "document",
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Dizayn",
+      "source_location": "Design section",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "design_system",
-      "community": 2
+      "community": 0,
+      "id": "design_system"
     },
     {
       "label": "Arsenal-92 Club Logo",
@@ -621,8 +624,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "club_logo",
-      "community": 0
+      "community": 2,
+      "id": "club_logo"
     },
     {
       "label": "Nike Equipment and Uniforms",
@@ -633,8 +636,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "nike_equipment",
-      "community": 0
+      "community": 2,
+      "id": "nike_equipment"
     },
     {
       "label": "Team and Training Photos",
@@ -645,8 +648,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "team_photos",
-      "community": 0
+      "community": 2,
+      "id": "team_photos"
     },
     {
       "label": "Current Site Screenshot",
@@ -657,8 +660,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "site_screenshot",
-      "community": 0
+      "community": 2,
+      "id": "site_screenshot"
     },
     {
       "label": "Football Field Icon (SVG)",
@@ -669,8 +672,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "field_icon",
-      "community": 6
+      "community": 8,
+      "id": "field_icon"
     },
     {
       "label": "Whistle Icon (SVG)",
@@ -681,8 +684,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "whistle_icon",
-      "community": 7
+      "community": 9,
+      "id": "whistle_icon"
     },
     {
       "label": "Trophy/Win Icon (SVG)",
@@ -693,8 +696,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "trophy_icon",
-      "community": 8
+      "community": 10,
+      "id": "trophy_icon"
     },
     {
       "label": "Player Zaliznyak (#18)",
@@ -705,20 +708,20 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "player_zaliznyak",
-      "community": 0
+      "community": 2,
+      "id": "player_zaliznyak"
     },
     {
       "label": "Entity Framework Core ORM",
       "file_type": "document",
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Stek tekhnologiy",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.4",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ef_core_orm",
-      "community": 2
+      "community": 0,
+      "id": "ef_core_orm"
     },
     {
       "label": "SSL/HTTPS (Let's Encrypt)",
@@ -729,8 +732,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "ssl_letsencrypt",
-      "community": 2
+      "community": 0,
+      "id": "ssl_letsencrypt"
     },
     {
       "label": "Private Academy Goal",
@@ -741,8 +744,8 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "private_academy_goal",
-      "community": 0
+      "community": 2,
+      "id": "private_academy_goal"
     },
     {
       "label": "Children-First Philosophy",
@@ -753,8 +756,520 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "children_first_philosophy",
+      "community": 2,
+      "id": "children_first_philosophy"
+    },
+    {
+      "label": "server_setup.py",
+      "file_type": "code",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L1",
+      "id": "scripts_server_setup_py",
+      "community": 6
+    },
+    {
+      "label": "create_connection()",
+      "file_type": "code",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L20",
+      "id": "server_setup_create_connection",
+      "community": 6
+    },
+    {
+      "label": "run_command()",
+      "file_type": "code",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L41",
+      "id": "server_setup_run_command",
+      "community": 6
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L94",
+      "id": "server_setup_main",
+      "community": 6
+    },
+    {
+      "label": "Server setup script for FC Arsenal-92 football site. Connects via paramiko and c",
+      "file_type": "rationale",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L1",
+      "id": "server_setup_rationale_1",
+      "community": 6
+    },
+    {
+      "label": "Create a fresh SSH connection with keepalive.",
+      "file_type": "rationale",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L21",
+      "id": "server_setup_rationale_21",
+      "community": 6
+    },
+    {
+      "label": "Run a command via SSH with auto-reconnect. ssh_holder is a list [ssh] so we can",
+      "file_type": "rationale",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L42",
+      "id": "server_setup_rationale_42",
+      "community": 6
+    },
+    {
+      "label": "Current Tilda Website (fcarsenal-92.tilda.ws)",
+      "file_type": "document",
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": null,
+      "source_url": "https://fcarsenal-92.tilda.ws/",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "current_tilda_site",
+      "community": 5
+    },
+    {
+      "label": "New Website Project (fcarsenal92.ru)",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "new_site_project",
+      "community": 5
+    },
+    {
+      "label": "Next.js 15 Frontend (React, TypeScript, App Router)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "nextjs_15_frontend",
       "community": 0
+    },
+    {
+      "label": ".NET 9 Web API Backend (Clean Architecture)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "dotnet_9_api",
+      "community": 0
+    },
+    {
+      "label": "PostgreSQL 16 Database",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "postgresql_16",
+      "community": 1
+    },
+    {
+      "label": "SEO Optimization Strategy (Google + Yandex)",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "SEO section",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "seo_strategy",
+      "community": 4
+    },
+    {
+      "label": "Feature Toggle System (SiteSettings.features_enabled)",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Optional features table",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "feature_toggle",
+      "community": 1
+    },
+    {
+      "label": "Domain fcarsenal92.ru (Timeweb)",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "domain_fcarsenal92",
+      "community": 3
+    },
+    {
+      "label": "Let's Encrypt SSL (Certbot)",
+      "file_type": "document",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "letsencrypt_ssl",
+      "community": 0
+    },
+    {
+      "label": "Google Analytics 4 Integration",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Analytics section",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "google_analytics",
+      "community": 4
+    },
+    {
+      "label": "Yandex.Metrika Integration",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Analytics section",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "yandex_metrika",
+      "community": 4
+    },
+    {
+      "label": "Automated Design Quality Review (Score 52/100)",
+      "file_type": "document",
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "design_review",
+      "community": 5
+    },
+    {
+      "label": "Accessibility Issues (WCAG violations)",
+      "file_type": "document",
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Issues 23, 24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "accessibility_issues",
+      "community": 5
+    },
+    {
+      "label": "Form Security Issues (no reCAPTCHA, no required fields)",
+      "file_type": "document",
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Issue 25",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "form_security_issues",
+      "community": 5
+    },
+    {
+      "label": "Bookings Entity (trial training requests)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "booking_entity",
+      "community": 1
+    },
+    {
+      "label": "Shop Products Entity (equipment catalog)",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "DB Schema",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "shop_products_entity",
+      "community": 1
+    },
+    {
+      "label": "FluentValidation (input validation)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fluent_validation",
+      "community": 0
+    },
+    {
+      "label": "Serilog Structured Logging",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "serilog_logging",
+      "community": 0
+    },
+    {
+      "label": "RFC 7807 Problem Details (error handling)",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "rfc7807_errors",
+      "community": 0
+    },
+    {
+      "label": "Client Requirements Document (FOR_CLIENT.md)",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "client_requirements",
+      "community": 3
+    },
+    {
+      "label": "DNS Configuration (A records to 45.10.40.194)",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "dns_setup",
+      "community": 3
+    },
+    {
+      "label": "Privacy Policy (152-FZ compliance)",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "privacy_policy_152fz",
+      "community": 3
+    },
+    {
+      "label": "Telegram Shop Channel (@arsenalarena)",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Shop section",
+      "source_url": "https://t.me/s/arsenalarena",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "telegram_shop",
+      "community": 2
+    },
+    {
+      "label": "Location: Sevastopol, SOSh 61, Kosareva 12",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Contacts",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "sevastopol_location",
+      "community": 2
+    },
+    {
+      "label": "International Camps (Spain/Seville, Turkey)",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Advantages item 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "international_camps",
+      "community": 2
+    },
+    {
+      "label": "Server Setup Log (Ubuntu 24.04 LTS)",
+      "file_type": "document",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "server_setup_log",
+      "community": 3
+    },
+    {
+      "label": "Ubuntu 24.04.3 LTS (Noble Numbat)",
+      "file_type": "document",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": "OS release check",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "ubuntu_24_os",
+      "community": 3
+    },
+    {
+      "label": "UFW Firewall (ports 22, 80, 443)",
+      "file_type": "document",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": "Firewall config",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "ufw_firewall",
+      "community": 3
+    },
+    {
+      "label": "Knowledge Graph Report (58 nodes, 73 edges, 9 communities)",
+      "file_type": "document",
+      "source_file": "graphify-out/GRAPH_REPORT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "graph_report",
+      "community": 5
+    },
+    {
+      "label": "Rationale: Clean Architecture chosen for separation of concerns",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.1 - Dependency Rule",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "rationale_clean_arch",
+      "community": 0
+    },
+    {
+      "label": "Rationale: SSR/SSG rendering strategy per page type",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "rationale_ssr_ssg",
+      "community": 0
+    },
+    {
+      "label": "Rationale: Feature toggles for optional features",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Optional features table",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "rationale_feature_toggles",
+      "community": 1
+    },
+    {
+      "label": "Rationale: Migration from Tilda due to SEO/accessibility deficiencies",
+      "file_type": "document",
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Problems section",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "rationale_tilda_migration",
+      "community": 5
+    },
+    {
+      "label": "Rationale: locale prefix 'as-needed' for clean Russian URLs",
+      "file_type": "document",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "rationale_locale_prefix",
+      "community": 0
+    },
+    {
+      "label": "Priority Remediation Plan (P0-P2)",
+      "file_type": "document",
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Priority Remediation Plan",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "remediation_plan",
+      "community": 5
+    },
+    {
+      "label": "English Language Version of Site",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "english_version",
+      "community": 3
+    },
+    {
+      "label": "Google Business Profile (local SEO)",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 12",
+      "source_url": "https://business.google.com",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "google_business",
+      "community": 4
+    },
+    {
+      "label": "Yandex.Business Profile (local SEO)",
+      "file_type": "document",
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 12",
+      "source_url": "https://business.yandex.ru",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "yandex_business",
+      "community": 4
     }
   ],
   "links": [
@@ -771,11 +1286,11 @@
       "target": "sevastopol"
     },
     {
-      "relation": "led_by",
+      "relation": "directed_by",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Personalii",
+      "source_location": "Personnel section",
       "weight": 1.0,
       "_src": "fc_arsenal_92",
       "_tgt": "kuliev_igor",
@@ -835,7 +1350,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Prosmotra",
+      "source_location": "Advantages item 4",
       "weight": 1.0,
       "_src": "fc_arsenal_92",
       "_tgt": "partner_academies",
@@ -939,6 +1454,66 @@
       "target": "player_zaliznyak"
     },
     {
+      "relation": "currently_hosted_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Current site URL",
+      "weight": 1.0,
+      "_src": "fc_arsenal_92",
+      "_tgt": "current_tilda_site",
+      "source": "fc_arsenal_92",
+      "target": "current_tilda_site"
+    },
+    {
+      "relation": "migrating_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Goal section",
+      "weight": 1.0,
+      "_src": "fc_arsenal_92",
+      "_tgt": "new_site_project",
+      "source": "fc_arsenal_92",
+      "target": "new_site_project"
+    },
+    {
+      "relation": "located_at",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Contacts section",
+      "weight": 1.0,
+      "_src": "fc_arsenal_92",
+      "_tgt": "sevastopol_location",
+      "source": "fc_arsenal_92",
+      "target": "sevastopol_location"
+    },
+    {
+      "relation": "organizes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Advantages item 4",
+      "weight": 1.0,
+      "_src": "fc_arsenal_92",
+      "_tgt": "international_camps",
+      "source": "fc_arsenal_92",
+      "target": "international_camps"
+    },
+    {
+      "relation": "sells_via",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Shop section",
+      "weight": 1.0,
+      "_src": "fc_arsenal_92",
+      "_tgt": "telegram_shop",
+      "source": "fc_arsenal_92",
+      "target": "telegram_shop"
+    },
+    {
       "relation": "located_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -961,6 +1536,18 @@
       "_tgt": "uefa_c_license",
       "source": "kuliev_igor",
       "target": "uefa_c_license"
+    },
+    {
+      "relation": "addressed_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Opening line",
+      "weight": 1.0,
+      "_src": "client_requirements",
+      "_tgt": "kuliev_igor",
+      "source": "kuliev_igor",
+      "target": "client_requirements"
     },
     {
       "relation": "communicates_with",
@@ -1347,11 +1934,11 @@
       "target": "partners_entity"
     },
     {
-      "relation": "orchestrates",
+      "relation": "contains_container",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Docker Compose",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 Container Topology",
       "weight": 1.0,
       "_src": "docker_compose",
       "_tgt": "nginx_proxy",
@@ -1359,28 +1946,76 @@
       "target": "nginx_proxy"
     },
     {
-      "relation": "deployed_to",
+      "relation": "hosts",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Deploy",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": "Docker installed",
       "weight": 1.0,
-      "_src": "docker_compose",
-      "_tgt": "timeweb_vps",
+      "_src": "timeweb_vps",
+      "_tgt": "docker_compose",
       "source": "docker_compose",
       "target": "timeweb_vps"
     },
     {
-      "relation": "triggers_deployment",
+      "relation": "deploys_via",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: CI/CD",
+      "source_location": "CI/CD section",
       "weight": 1.0,
       "_src": "github_actions_cicd",
       "_tgt": "docker_compose",
       "source": "docker_compose",
       "target": "github_actions_cicd"
+    },
+    {
+      "relation": "deployed_via",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Tech stack table",
+      "weight": 1.0,
+      "_src": "new_site_project",
+      "_tgt": "docker_compose",
+      "source": "docker_compose",
+      "target": "new_site_project"
+    },
+    {
+      "relation": "contains_container",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 Container Topology",
+      "weight": 1.0,
+      "_src": "docker_compose",
+      "_tgt": "nextjs_15_frontend",
+      "source": "docker_compose",
+      "target": "nextjs_15_frontend"
+    },
+    {
+      "relation": "contains_container",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 Container Topology",
+      "weight": 1.0,
+      "_src": "docker_compose",
+      "_tgt": "dotnet_9_api",
+      "source": "docker_compose",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "contains_container",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 Container Topology",
+      "weight": 1.0,
+      "_src": "docker_compose",
+      "_tgt": "postgresql_16",
+      "source": "docker_compose",
+      "target": "postgresql_16"
     },
     {
       "relation": "terminates",
@@ -1395,11 +2030,59 @@
       "target": "ssl_letsencrypt"
     },
     {
-      "relation": "secured_by",
+      "relation": "proxies_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 architecture diagram",
+      "weight": 1.0,
+      "_src": "nginx_proxy",
+      "_tgt": "nextjs_15_frontend",
+      "source": "nginx_proxy",
+      "target": "nextjs_15_frontend"
+    },
+    {
+      "relation": "proxies_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 architecture diagram",
+      "weight": 1.0,
+      "_src": "nginx_proxy",
+      "_tgt": "dotnet_9_api",
+      "source": "nginx_proxy",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "uses_ssl_from",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: Auth",
+      "source_location": "Nginx config section",
+      "weight": 1.0,
+      "_src": "nginx_proxy",
+      "_tgt": "letsencrypt_ssl",
+      "source": "nginx_proxy",
+      "target": "letsencrypt_ssl"
+    },
+    {
+      "relation": "optimized_by",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "HTTP/2 + Brotli section",
+      "weight": 0.7,
+      "_src": "core_web_vitals",
+      "_tgt": "nginx_proxy",
+      "source": "nginx_proxy",
+      "target": "core_web_vitals"
+    },
+    {
+      "relation": "requires",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.4 Auth Guard",
       "weight": 1.0,
       "_src": "admin_panel",
       "_tgt": "jwt_auth",
@@ -1417,6 +2100,30 @@
       "_tgt": "feature_toggle_system",
       "source": "admin_panel",
       "target": "feature_toggle_system"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.4",
+      "weight": 1.0,
+      "_src": "nextjs_15_frontend",
+      "_tgt": "admin_panel",
+      "source": "admin_panel",
+      "target": "nextjs_15_frontend"
+    },
+    {
+      "relation": "manages",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.4 FeatureToggle component",
+      "weight": 1.0,
+      "_src": "admin_panel",
+      "_tgt": "feature_toggle",
+      "source": "admin_panel",
+      "target": "feature_toggle"
     },
     {
       "relation": "includes",
@@ -1467,11 +2174,35 @@
       "target": "core_web_vitals"
     },
     {
-      "relation": "processed_by",
+      "relation": "includes",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "provider_payment_id field",
+      "source_location": "SEO item 4",
+      "weight": 1.0,
+      "_src": "seo_strategy",
+      "_tgt": "schema_org",
+      "source": "schema_org",
+      "target": "seo_strategy"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.5 AuthController",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "jwt_auth",
+      "source": "jwt_auth",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "processed_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.4 YooKassaPaymentGateway",
       "weight": 1.0,
       "_src": "payments_entity",
       "_tgt": "yukassa_payments",
@@ -1491,6 +2222,18 @@
       "target": "feature_toggle_system"
     },
     {
+      "relation": "integrates_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.4 YooKassaPaymentGateway",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "yukassa_payments",
+      "source": "yukassa_payments",
+      "target": "dotnet_9_api"
+    },
+    {
       "relation": "controls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -1503,11 +2246,47 @@
       "target": "feature_toggle_system"
     },
     {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.5",
+      "weight": 1.0,
+      "_src": "nextjs_15_frontend",
+      "_tgt": "i18n_system",
+      "source": "i18n_system",
+      "target": "nextjs_15_frontend"
+    },
+    {
+      "relation": "enables",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.5",
+      "weight": 1.0,
+      "_src": "i18n_system",
+      "_tgt": "english_version",
+      "source": "i18n_system",
+      "target": "english_version"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.5 localePrefix comment",
+      "weight": 1.0,
+      "_src": "rationale_locale_prefix",
+      "_tgt": "i18n_system",
+      "source": "i18n_system",
+      "target": "rationale_locale_prefix"
+    },
+    {
       "relation": "deploys_to",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "Section: CI/CD",
+      "source_location": "CI/CD section",
       "weight": 1.0,
       "_src": "github_actions_cicd",
       "_tgt": "timeweb_vps",
@@ -1515,11 +2294,83 @@
       "target": "github_actions_cicd"
     },
     {
-      "relation": "references",
+      "relation": "runs",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "FK: coach_id",
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": "OS check",
+      "weight": 1.0,
+      "_src": "timeweb_vps",
+      "_tgt": "ubuntu_24_os",
+      "source": "timeweb_vps",
+      "target": "ubuntu_24_os"
+    },
+    {
+      "relation": "configured_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": "Firewall config",
+      "weight": 1.0,
+      "_src": "timeweb_vps",
+      "_tgt": "ufw_firewall",
+      "source": "timeweb_vps",
+      "target": "ufw_firewall"
+    },
+    {
+      "relation": "points_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "DNS A record to 45.10.40.194",
+      "weight": 1.0,
+      "_src": "dns_setup",
+      "_tgt": "timeweb_vps",
+      "source": "timeweb_vps",
+      "target": "dns_setup"
+    },
+    {
+      "relation": "documents_setup_of",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/SERVER_SETUP.md",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_setup_log",
+      "_tgt": "timeweb_vps",
+      "source": "timeweb_vps",
+      "target": "server_setup_log"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "pages_entity",
+      "source": "pages_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "news_entity",
+      "source": "news_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "references_fk",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4 schedule table",
       "weight": 1.0,
       "_src": "schedule_entity",
       "_tgt": "coaches_entity",
@@ -1527,11 +2378,23 @@
       "target": "schedule_entity"
     },
     {
-      "relation": "references",
+      "relation": "stores",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "docs/PROJECT_SPEC.md",
-      "source_location": "FK: group_id",
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "coaches_entity",
+      "source": "coaches_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "references_fk",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4 schedule table",
       "weight": 1.0,
       "_src": "schedule_entity",
       "_tgt": "training_groups_entity",
@@ -1549,6 +2412,42 @@
       "_tgt": "training_groups_entity",
       "source": "training_groups_entity",
       "target": "bookings_entity"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "training_groups_entity",
+      "source": "training_groups_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "references_fk",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4 bookings table",
+      "weight": 1.0,
+      "_src": "booking_entity",
+      "_tgt": "training_groups_entity",
+      "source": "training_groups_entity",
+      "target": "booking_entity"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "schedule_entity",
+      "source": "schedule_entity",
+      "target": "postgresql_16"
     },
     {
       "relation": "includes",
@@ -1587,6 +2486,18 @@
       "target": "pro_plan"
     },
     {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "pricing_plans_entity",
+      "source": "pricing_plans_entity",
+      "target": "postgresql_16"
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -1597,6 +2508,150 @@
       "_tgt": "bookings_entity",
       "source": "bookings_entity",
       "target": "payments_entity"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "reviews_entity",
+      "source": "reviews_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "gallery_entity",
+      "source": "gallery_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "payments_entity",
+      "source": "payments_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "references_fk",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4 payments table",
+      "weight": 1.0,
+      "_src": "payments_entity",
+      "_tgt": "booking_entity",
+      "source": "payments_entity",
+      "target": "booking_entity"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "admin_users_entity",
+      "source": "admin_users_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "site_settings_entity",
+      "source": "site_settings_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "stored_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4 site_settings table",
+      "weight": 1.0,
+      "_src": "feature_toggle",
+      "_tgt": "site_settings_entity",
+      "source": "site_settings_entity",
+      "target": "feature_toggle"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "contacts_entity",
+      "source": "contacts_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "partners_entity",
+      "source": "partners_entity",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "follows_pattern",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.1",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "clean_architecture",
+      "source": "clean_architecture",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.1 Dependency Rule comment",
+      "weight": 1.0,
+      "_src": "rationale_clean_arch",
+      "_tgt": "clean_architecture",
+      "source": "clean_architecture",
+      "target": "rationale_clean_arch"
+    },
+    {
+      "relation": "implements_pattern",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.3",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "cqrs_pattern",
+      "source": "cqrs_pattern",
+      "target": "dotnet_9_api"
     },
     {
       "relation": "depicts",
@@ -1611,6 +2666,18 @@
       "target": "site_screenshot"
     },
     {
+      "relation": "targets",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "SEO item 9",
+      "weight": 1.0,
+      "_src": "seo_strategy",
+      "_tgt": "core_web_vitals",
+      "source": "core_web_vitals",
+      "target": "seo_strategy"
+    },
+    {
       "relation": "includes_access_to",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -1623,6 +2690,42 @@
       "target": "partner_academies"
     },
     {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Design section",
+      "weight": 1.0,
+      "_src": "nextjs_15_frontend",
+      "_tgt": "design_system",
+      "source": "design_system",
+      "target": "nextjs_15_frontend"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.4",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "ef_core_orm",
+      "source": "ef_core_orm",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "connects_via",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.6 Npgsql",
+      "weight": 1.0,
+      "_src": "ef_core_orm",
+      "_tgt": "postgresql_16",
+      "source": "ef_core_orm",
+      "target": "postgresql_16"
+    },
+    {
       "relation": "rationale_for",
       "confidence": "INFERRED",
       "confidence_score": 0.75,
@@ -1633,27 +2736,567 @@
       "_tgt": "private_academy_goal",
       "source": "private_academy_goal",
       "target": "children_first_philosophy"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "scripts_server_setup_py",
+      "_tgt": "server_setup_create_connection",
+      "source": "scripts_server_setup_py",
+      "target": "server_setup_create_connection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_src": "scripts_server_setup_py",
+      "_tgt": "server_setup_run_command",
+      "source": "scripts_server_setup_py",
+      "target": "server_setup_run_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_src": "scripts_server_setup_py",
+      "_tgt": "server_setup_main",
+      "source": "scripts_server_setup_py",
+      "target": "server_setup_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_src": "server_setup_rationale_1",
+      "_tgt": "scripts_server_setup_py",
+      "source": "scripts_server_setup_py",
+      "target": "server_setup_rationale_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "server_setup_run_command",
+      "_tgt": "server_setup_create_connection",
+      "source": "server_setup_create_connection",
+      "target": "server_setup_run_command",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_src": "server_setup_main",
+      "_tgt": "server_setup_create_connection",
+      "source": "server_setup_create_connection",
+      "target": "server_setup_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_src": "server_setup_rationale_21",
+      "_tgt": "server_setup_create_connection",
+      "source": "server_setup_create_connection",
+      "target": "server_setup_rationale_21",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_src": "server_setup_main",
+      "_tgt": "server_setup_run_command",
+      "source": "server_setup_run_command",
+      "target": "server_setup_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\server_setup.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_src": "server_setup_rationale_42",
+      "_tgt": "server_setup_run_command",
+      "source": "server_setup_run_command",
+      "target": "server_setup_rationale_42",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "audits",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Summary",
+      "weight": 1.0,
+      "_src": "design_review",
+      "_tgt": "current_tilda_site",
+      "source": "current_tilda_site",
+      "target": "design_review"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Problems section",
+      "weight": 1.0,
+      "_src": "rationale_tilda_migration",
+      "_tgt": "current_tilda_site",
+      "source": "current_tilda_site",
+      "target": "rationale_tilda_migration"
+    },
+    {
+      "relation": "uses_frontend",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Tech stack table",
+      "weight": 1.0,
+      "_src": "new_site_project",
+      "_tgt": "nextjs_15_frontend",
+      "source": "new_site_project",
+      "target": "nextjs_15_frontend"
+    },
+    {
+      "relation": "uses_backend",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Tech stack table",
+      "weight": 1.0,
+      "_src": "new_site_project",
+      "_tgt": "dotnet_9_api",
+      "source": "new_site_project",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "uses_database",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Tech stack table",
+      "weight": 1.0,
+      "_src": "new_site_project",
+      "_tgt": "postgresql_16",
+      "source": "new_site_project",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "hosted_at_domain",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Domain section",
+      "weight": 1.0,
+      "_src": "new_site_project",
+      "_tgt": "domain_fcarsenal92",
+      "source": "new_site_project",
+      "target": "domain_fcarsenal92"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "SEO section",
+      "weight": 1.0,
+      "_src": "new_site_project",
+      "_tgt": "seo_strategy",
+      "source": "new_site_project",
+      "target": "seo_strategy"
+    },
+    {
+      "relation": "analyzes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/GRAPH_REPORT.md",
+      "source_location": "Summary",
+      "weight": 1.0,
+      "_src": "graph_report",
+      "_tgt": "new_site_project",
+      "source": "new_site_project",
+      "target": "graph_report"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Goal section",
+      "weight": 1.0,
+      "_src": "rationale_tilda_migration",
+      "_tgt": "new_site_project",
+      "source": "new_site_project",
+      "target": "rationale_tilda_migration"
+    },
+    {
+      "relation": "addressed_by",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Remediation Plan",
+      "weight": 0.8,
+      "_src": "remediation_plan",
+      "_tgt": "new_site_project",
+      "source": "new_site_project",
+      "target": "remediation_plan"
+    },
+    {
+      "relation": "calls_api",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.3 API Client",
+      "weight": 1.0,
+      "_src": "nextjs_15_frontend",
+      "_tgt": "dotnet_9_api",
+      "source": "nextjs_15_frontend",
+      "target": "dotnet_9_api"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 3.2 Rendering Strategy table",
+      "weight": 1.0,
+      "_src": "rationale_ssr_ssg",
+      "_tgt": "nextjs_15_frontend",
+      "source": "nextjs_15_frontend",
+      "target": "rationale_ssr_ssg"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "SEO section - SSR/SSG",
+      "weight": 0.8,
+      "_src": "nextjs_15_frontend",
+      "_tgt": "seo_strategy",
+      "source": "nextjs_15_frontend",
+      "target": "seo_strategy"
+    },
+    {
+      "relation": "connects_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 1 architecture diagram",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "postgresql_16",
+      "source": "dotnet_9_api",
+      "target": "postgresql_16"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.6 NuGet table",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "fluent_validation",
+      "source": "dotnet_9_api",
+      "target": "fluent_validation"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.6 NuGet table",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "serilog_logging",
+      "source": "dotnet_9_api",
+      "target": "serilog_logging"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.5 ExceptionHandlingMiddleware",
+      "weight": 1.0,
+      "_src": "dotnet_9_api",
+      "_tgt": "rfc7807_errors",
+      "source": "dotnet_9_api",
+      "target": "rfc7807_errors"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 4",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "booking_entity",
+      "source": "postgresql_16",
+      "target": "booking_entity"
+    },
+    {
+      "relation": "stores",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "DB Schema",
+      "weight": 1.0,
+      "_src": "postgresql_16",
+      "_tgt": "shop_products_entity",
+      "source": "postgresql_16",
+      "target": "shop_products_entity"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Google-specific section",
+      "weight": 1.0,
+      "_src": "seo_strategy",
+      "_tgt": "google_analytics",
+      "source": "seo_strategy",
+      "target": "google_analytics"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Yandex-specific section",
+      "weight": 1.0,
+      "_src": "seo_strategy",
+      "_tgt": "yandex_metrika",
+      "source": "seo_strategy",
+      "target": "yandex_metrika"
+    },
+    {
+      "relation": "recommends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 12",
+      "weight": 1.0,
+      "_src": "seo_strategy",
+      "_tgt": "google_business",
+      "source": "seo_strategy",
+      "target": "google_business"
+    },
+    {
+      "relation": "recommends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 12",
+      "weight": 1.0,
+      "_src": "seo_strategy",
+      "_tgt": "yandex_business",
+      "source": "seo_strategy",
+      "target": "yandex_business"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": null,
+      "weight": 0.7,
+      "_src": "accessibility_issues",
+      "_tgt": "seo_strategy",
+      "source": "seo_strategy",
+      "target": "accessibility_issues"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Optional features description",
+      "weight": 1.0,
+      "_src": "rationale_feature_toggles",
+      "_tgt": "feature_toggle",
+      "source": "feature_toggle",
+      "target": "rationale_feature_toggles"
+    },
+    {
+      "relation": "requires",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 1",
+      "weight": 1.0,
+      "_src": "domain_fcarsenal92",
+      "_tgt": "dns_setup",
+      "source": "domain_fcarsenal92",
+      "target": "dns_setup"
+    },
+    {
+      "relation": "identifies",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Issues 23, 24",
+      "weight": 1.0,
+      "_src": "design_review",
+      "_tgt": "accessibility_issues",
+      "source": "design_review",
+      "target": "accessibility_issues"
+    },
+    {
+      "relation": "identifies",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Issue 25",
+      "weight": 1.0,
+      "_src": "design_review",
+      "_tgt": "form_security_issues",
+      "source": "design_review",
+      "target": "form_security_issues"
+    },
+    {
+      "relation": "produces",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/DESIGN_REVIEW_AUTO.md",
+      "source_location": "Priority Remediation Plan",
+      "weight": 1.0,
+      "_src": "design_review",
+      "_tgt": "remediation_plan",
+      "source": "design_review",
+      "target": "remediation_plan"
+    },
+    {
+      "relation": "addressed_by",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "docs/ARCHITECTURE.md",
+      "source_location": "Section 2.3 CreateBookingValidator",
+      "weight": 0.8,
+      "_src": "form_security_issues",
+      "_tgt": "fluent_validation",
+      "source": "form_security_issues",
+      "target": "fluent_validation"
+    },
+    {
+      "relation": "legally_required_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 10",
+      "weight": 0.8,
+      "_src": "privacy_policy_152fz",
+      "_tgt": "booking_entity",
+      "source": "booking_entity",
+      "target": "privacy_policy_152fz"
+    },
+    {
+      "relation": "replaces",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/PROJECT_SPEC.md",
+      "source_location": "Shop section",
+      "weight": 0.7,
+      "_src": "shop_products_entity",
+      "_tgt": "telegram_shop",
+      "source": "shop_products_entity",
+      "target": "telegram_shop"
+    },
+    {
+      "relation": "requests",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 1",
+      "weight": 1.0,
+      "_src": "client_requirements",
+      "_tgt": "dns_setup",
+      "source": "client_requirements",
+      "target": "dns_setup"
+    },
+    {
+      "relation": "requests",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 10",
+      "weight": 1.0,
+      "_src": "client_requirements",
+      "_tgt": "privacy_policy_152fz",
+      "source": "client_requirements",
+      "target": "privacy_policy_152fz"
+    },
+    {
+      "relation": "plans",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 9",
+      "weight": 1.0,
+      "_src": "client_requirements",
+      "_tgt": "english_version",
+      "source": "client_requirements",
+      "target": "english_version"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/FOR_CLIENT.md",
+      "source_location": "Section 12",
+      "weight": 0.8,
+      "_src": "google_business",
+      "_tgt": "yandex_business",
+      "source": "google_business",
+      "target": "yandex_business"
     }
   ],
   "hyperedges": [
     {
-      "id": "docker_infrastructure_stack",
+      "id": "he_docker_stack",
       "label": "Docker Infrastructure Stack",
       "nodes": [
         "docker_compose",
         "nginx_proxy",
-        "nextjs_frontend",
-        "dotnet_backend",
-        "postgresql_db"
+        "nextjs_15_frontend",
+        "dotnet_9_api",
+        "postgresql_16"
       ],
-      "relation": "participate_in",
+      "relation": "infrastructure_composition",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "docs/PROJECT_SPEC.md"
+      "source_file": "docs/ARCHITECTURE.md"
     },
     {
-      "id": "database_schema",
-      "label": "Database Schema Entities",
+      "id": "he_db_schema",
+      "label": "Database Schema Entity Model",
       "nodes": [
         "pages_entity",
         "news_entity",
@@ -1661,33 +3304,36 @@
         "training_groups_entity",
         "schedule_entity",
         "pricing_plans_entity",
-        "bookings_entity",
+        "booking_entity",
         "reviews_entity",
         "gallery_entity",
+        "shop_products_entity",
         "payments_entity",
-        "admin_users_entity",
         "site_settings_entity",
         "contacts_entity",
+        "admin_users_entity",
         "partners_entity"
       ],
-      "relation": "form",
+      "relation": "schema_composition",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "docs/PROJECT_SPEC.md"
+      "source_file": "docs/ARCHITECTURE.md"
     },
     {
-      "id": "club_identity",
-      "label": "Club Identity and Branding",
+      "id": "he_seo_ecosystem",
+      "label": "SEO and Analytics Ecosystem",
       "nodes": [
-        "fc_arsenal_92",
-        "club_logo",
-        "design_system",
-        "nike_equipment",
-        "children_first_philosophy"
+        "seo_strategy",
+        "schema_org",
+        "google_analytics",
+        "yandex_metrika",
+        "core_web_vitals",
+        "google_business",
+        "yandex_business"
       ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
+      "relation": "seo_optimization_system",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "docs/PROJECT_SPEC.md"
     }
   ]

@@ -1,0 +1,2045 @@
+{
+  "nodes": [
+    {
+      "id": "g0",
+      "type": "group",
+      "label": "Backend Architecture",
+      "x": 0,
+      "y": 0,
+      "width": 1100,
+      "height": 920,
+      "color": "1"
+    },
+    {
+      "id": "n_dotnet_backend",
+      "type": "file",
+      "file": "graphify/obsidian/.NET 9 Web API Backend.md",
+      "x": 20,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_dotnet_9_api",
+      "type": "file",
+      "file": "graphify/obsidian/.NET 9 Web API Backend (Clean Architecture).md",
+      "x": 220,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_admin_panel",
+      "type": "file",
+      "file": "graphify/obsidian/Admin Panel SPA (React, client-side).md",
+      "x": 420,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_cqrs_pattern",
+      "type": "file",
+      "file": "graphify/obsidian/CQRS Pattern (MediatR commandsqueries).md",
+      "x": 20,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_clean_architecture",
+      "type": "file",
+      "file": "graphify/obsidian/Clean Architecture Pattern (DomainApplicationInfrastructureAPI).md",
+      "x": 220,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_design_system",
+      "type": "file",
+      "file": "graphify/obsidian/Design System (Color Palette Red E10005, Navy 101A7A).md",
+      "x": 420,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ef_core_orm",
+      "type": "file",
+      "file": "graphify/obsidian/Entity Framework Core ORM.md",
+      "x": 20,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_feature_toggle_system",
+      "type": "file",
+      "file": "graphify/obsidian/Feature Toggle System.md",
+      "x": 220,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_fluent_validation",
+      "type": "file",
+      "file": "graphify/obsidian/FluentValidation (input validation).md",
+      "x": 420,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_i18n_system",
+      "type": "file",
+      "file": "graphify/obsidian/Internationalization (ruen via next-intl).md",
+      "x": 20,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_jwt_auth",
+      "type": "file",
+      "file": "graphify/obsidian/JWT Authentication (access + refresh tokens).md",
+      "x": 220,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_letsencrypt_ssl",
+      "type": "file",
+      "file": "graphify/obsidian/Let's Encrypt SSL (Certbot).md",
+      "x": 420,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_nextjs_frontend",
+      "type": "file",
+      "file": "graphify/obsidian/Next.js 15 Frontend.md",
+      "x": 20,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_nextjs_15_frontend",
+      "type": "file",
+      "file": "graphify/obsidian/Next.js 15 Frontend (React, TypeScript, App Router).md",
+      "x": 220,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_nginx_proxy",
+      "type": "file",
+      "file": "graphify/obsidian/Nginx Reverse Proxy (SSL, HTTP2, Brotli).md",
+      "x": 420,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_rfc7807_errors",
+      "type": "file",
+      "file": "graphify/obsidian/RFC 7807 Problem Details (error handling).md",
+      "x": 20,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_rationale_clean_arch",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale Clean Architecture chosen for separation of concerns.md",
+      "x": 220,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_rationale_ssr_ssg",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale SSRSSG rendering strategy per page type.md",
+      "x": 420,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_rationale_locale_prefix",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale locale prefix 'as-needed' for clean Russian URLs.md",
+      "x": 20,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ssl_letsencrypt",
+      "type": "file",
+      "file": "graphify/obsidian/SSLHTTPS (Let's Encrypt).md",
+      "x": 220,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_serilog_logging",
+      "type": "file",
+      "file": "graphify/obsidian/Serilog Structured Logging.md",
+      "x": 420,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tdd_methodology",
+      "type": "file",
+      "file": "graphify/obsidian/TDD Methodology.md",
+      "x": 20,
+      "y": 640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_yukassa_payments",
+      "type": "file",
+      "file": "graphify/obsidian/YuKassa Payment System (optional).md",
+      "x": 220,
+      "y": 640,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g1",
+      "type": "group",
+      "label": "Database Schema",
+      "x": 1180,
+      "y": 0,
+      "width": 1100,
+      "height": 820,
+      "color": "2"
+    },
+    {
+      "id": "n_admin_users_entity",
+      "type": "file",
+      "file": "graphify/obsidian/AdminUsers Entity (superadmineditor roles).md",
+      "x": 1200,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_bookings_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Bookings Entity.md",
+      "x": 1400,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_booking_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Bookings Entity (trial training requests).md",
+      "x": 1600,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_coaches_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Coaches Entity.md",
+      "x": 1200,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_contacts_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Contacts Entity (singleton, phones, social links).md",
+      "x": 1400,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_feature_toggle",
+      "type": "file",
+      "file": "graphify/obsidian/Feature Toggle System (SiteSettings.features_enabled).md",
+      "x": 1600,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_gallery_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Gallery Entity (albums + items).md",
+      "x": 1200,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_news_entity",
+      "type": "file",
+      "file": "graphify/obsidian/NewsBlog Entity.md",
+      "x": 1400,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_pages_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Pages Entity (static CMS pages).md",
+      "x": 1600,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_partners_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Partners Entity (Medobory, A2).md",
+      "x": 1200,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_payments_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Payments Entity (YuKassa transactions).md",
+      "x": 1400,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_postgresql_16",
+      "type": "file",
+      "file": "graphify/obsidian/PostgreSQL 16 Database_1.md",
+      "x": 1600,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_postgresql_db",
+      "type": "file",
+      "file": "graphify/obsidian/PostgreSQL 16 Database.md",
+      "x": 1200,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_rationale_feature_toggles",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale Feature toggles for optional features.md",
+      "x": 1400,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_reviews_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Reviews Entity (parentplayer testimonials).md",
+      "x": 1600,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_schedule_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Schedule Entity (training timetable).md",
+      "x": 1200,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_shop_products_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Shop Products Entity (equipment catalog).md",
+      "x": 1400,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_site_settings_entity",
+      "type": "file",
+      "file": "graphify/obsidian/SiteSettings Entity (singleton, feature flags).md",
+      "x": 1600,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_training_groups_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Training Groups Entity.md",
+      "x": 1200,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "label": "Club Identity & Content",
+      "x": 2360,
+      "y": 0,
+      "width": 1100,
+      "height": 720,
+      "color": "3"
+    },
+    {
+      "id": "n_club_logo",
+      "type": "file",
+      "file": "graphify/obsidian/Arsenal-92 Club Logo.md",
+      "x": 2380,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_children_first_philosophy",
+      "type": "file",
+      "file": "graphify/obsidian/Children-First Philosophy.md",
+      "x": 2580,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_site_screenshot",
+      "type": "file",
+      "file": "graphify/obsidian/Current Site Screenshot.md",
+      "x": 2780,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tilda_current_site",
+      "type": "file",
+      "file": "graphify/obsidian/Current Tilda Website.md",
+      "x": 2380,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_fc_arsenal_92",
+      "type": "file",
+      "file": "graphify/obsidian/FC Arsenal-92 Children's Football Club.md",
+      "x": 2580,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_international_camps",
+      "type": "file",
+      "file": "graphify/obsidian/International Camps (SpainSeville, Turkey).md",
+      "x": 2780,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_kuliev_igor",
+      "type": "file",
+      "file": "graphify/obsidian/Kuliev Igor Ramizovich (Director & Head Coach).md",
+      "x": 2380,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sevastopol_location",
+      "type": "file",
+      "file": "graphify/obsidian/Location Sevastopol, SOSh 61, Kosareva 12.md",
+      "x": 2580,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_nike_equipment",
+      "type": "file",
+      "file": "graphify/obsidian/Nike Equipment and Uniforms.md",
+      "x": 2780,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_player_zaliznyak",
+      "type": "file",
+      "file": "graphify/obsidian/Player Zaliznyak (18).md",
+      "x": 2380,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_private_academy_goal",
+      "type": "file",
+      "file": "graphify/obsidian/Private Academy Goal.md",
+      "x": 2580,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sevastopol",
+      "type": "file",
+      "file": "graphify/obsidian/Sevastopol.md",
+      "x": 2780,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_team_photos",
+      "type": "file",
+      "file": "graphify/obsidian/Team and Training Photos.md",
+      "x": 2380,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_telegram_shop",
+      "type": "file",
+      "file": "graphify/obsidian/Telegram Shop Channel (@arsenalarena).md",
+      "x": 2580,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tournaments",
+      "type": "file",
+      "file": "graphify/obsidian/Tournaments and Competitions.md",
+      "x": 2780,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_training_location",
+      "type": "file",
+      "file": "graphify/obsidian/Training Location (SOSh 61).md",
+      "x": 2380,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_uefa_c_license",
+      "type": "file",
+      "file": "graphify/obsidian/UEFA C License.md",
+      "x": 2580,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "label": "Deployment & Client",
+      "x": 3540,
+      "y": 0,
+      "width": 880,
+      "height": 520,
+      "color": "4"
+    },
+    {
+      "id": "n_client_requirements",
+      "type": "file",
+      "file": "graphify/obsidian/Client Requirements Document (FOR_CLIENT.md).md",
+      "x": 3560,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_dns_setup",
+      "type": "file",
+      "file": "graphify/obsidian/DNS Configuration (A records to 45.10.40.194).md",
+      "x": 3760,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docker_compose",
+      "type": "file",
+      "file": "graphify/obsidian/Docker Compose Deployment (4 containers).md",
+      "x": 3960,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_domain_fcarsenal92",
+      "type": "file",
+      "file": "graphify/obsidian/Domain fcarsenal92.ru (Timeweb).md",
+      "x": 3560,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_english_version",
+      "type": "file",
+      "file": "graphify/obsidian/English Language Version of Site.md",
+      "x": 3760,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_actions_cicd",
+      "type": "file",
+      "file": "graphify/obsidian/GitHub Actions CICD Pipeline.md",
+      "x": 3960,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_privacy_policy_152fz",
+      "type": "file",
+      "file": "graphify/obsidian/Privacy Policy (152-FZ compliance).md",
+      "x": 3560,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_server_setup_log",
+      "type": "file",
+      "file": "graphify/obsidian/Server Setup Log (Ubuntu 24.04 LTS).md",
+      "x": 3760,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_timeweb_vps",
+      "type": "file",
+      "file": "graphify/obsidian/Timeweb VPS Server (45.10.40.194, Kazakhstan).md",
+      "x": 3960,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ufw_firewall",
+      "type": "file",
+      "file": "graphify/obsidian/UFW Firewall (ports 22, 80, 443).md",
+      "x": 3560,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ubuntu_24_os",
+      "type": "file",
+      "file": "graphify/obsidian/Ubuntu 24.04.3 LTS (Noble Numbat).md",
+      "x": 3760,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "label": "SEO & Analytics",
+      "x": 0,
+      "y": 1000,
+      "width": 880,
+      "height": 520,
+      "color": "5"
+    },
+    {
+      "id": "n_core_web_vitals",
+      "type": "file",
+      "file": "graphify/obsidian/Core Web Vitals (LCP, FID, CLS targets).md",
+      "x": 20,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_google_analytics",
+      "type": "file",
+      "file": "graphify/obsidian/Google Analytics 4 Integration.md",
+      "x": 220,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_google_business",
+      "type": "file",
+      "file": "graphify/obsidian/Google Business Profile (local SEO).md",
+      "x": 420,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_google_integration",
+      "type": "file",
+      "file": "graphify/obsidian/Google Integration.md",
+      "x": 20,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_seo_optimization",
+      "type": "file",
+      "file": "graphify/obsidian/SEO Optimization Strategy.md",
+      "x": 220,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_seo_strategy",
+      "type": "file",
+      "file": "graphify/obsidian/SEO Optimization Strategy (Google + Yandex).md",
+      "x": 420,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_schema_org",
+      "type": "file",
+      "file": "graphify/obsidian/Schema.org Structured Data (JSON-LD).md",
+      "x": 20,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_yandex_integration",
+      "type": "file",
+      "file": "graphify/obsidian/Yandex Integration.md",
+      "x": 220,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_yandex_business",
+      "type": "file",
+      "file": "graphify/obsidian/Yandex.Business Profile (local SEO).md",
+      "x": 420,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_yandex_metrika",
+      "type": "file",
+      "file": "graphify/obsidian/Yandex.Metrika Integration.md",
+      "x": 20,
+      "y": 1320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "label": "Design Audit & Issues",
+      "x": 1180,
+      "y": 1000,
+      "width": 660,
+      "height": 420,
+      "color": "6"
+    },
+    {
+      "id": "n_accessibility_issues",
+      "type": "file",
+      "file": "graphify/obsidian/Accessibility Issues (WCAG violations).md",
+      "x": 1200,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_design_review",
+      "type": "file",
+      "file": "graphify/obsidian/Automated Design Quality Review (Score 52100).md",
+      "x": 1400,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_current_tilda_site",
+      "type": "file",
+      "file": "graphify/obsidian/Current Tilda Website (fcarsenal-92.tilda.ws).md",
+      "x": 1600,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_form_security_issues",
+      "type": "file",
+      "file": "graphify/obsidian/Form Security Issues (no reCAPTCHA, no required fields).md",
+      "x": 1200,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_graph_report",
+      "type": "file",
+      "file": "graphify/obsidian/Knowledge Graph Report (58 nodes, 73 edges, 9 communities).md",
+      "x": 1400,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_new_site_project",
+      "type": "file",
+      "file": "graphify/obsidian/New Website Project (fcarsenal92.ru).md",
+      "x": 1600,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_remediation_plan",
+      "type": "file",
+      "file": "graphify/obsidian/Priority Remediation Plan (P0-P2).md",
+      "x": 1200,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_rationale_tilda_migration",
+      "type": "file",
+      "file": "graphify/obsidian/Rationale Migration from Tilda due to SEOaccessibility deficiencies.md",
+      "x": 1400,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g6",
+      "type": "group",
+      "label": "Server Setup",
+      "x": 2360,
+      "y": 1000,
+      "width": 660,
+      "height": 420,
+      "color": "1"
+    },
+    {
+      "id": "n_server_setup_rationale_21",
+      "type": "file",
+      "file": "graphify/obsidian/Create a fresh SSH connection with keepalive..md",
+      "x": 2380,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_server_setup_rationale_42",
+      "type": "file",
+      "file": "graphify/obsidian/Run a command via SSH with auto-reconnect. ssh_holder is a list ssh so we can.md",
+      "x": 2580,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_server_setup_rationale_1",
+      "type": "file",
+      "file": "graphify/obsidian/Server setup script for FC Arsenal-92 football site. Connects via paramiko and c.md",
+      "x": 2780,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_server_setup_create_connection",
+      "type": "file",
+      "file": "graphify/obsidian/create_connection().md",
+      "x": 2380,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_server_setup_main",
+      "type": "file",
+      "file": "graphify/obsidian/main().md",
+      "x": 2580,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_server_setup_run_command",
+      "type": "file",
+      "file": "graphify/obsidian/run_command().md",
+      "x": 2780,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_server_setup_py",
+      "type": "file",
+      "file": "graphify/obsidian/server_setup.py.md",
+      "x": 2380,
+      "y": 1240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g7",
+      "type": "group",
+      "label": "Pricing & Academies",
+      "x": 3540,
+      "y": 1000,
+      "width": 660,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n_pro_plan",
+      "type": "file",
+      "file": "graphify/obsidian/PRO Plan (6000 RUB).md",
+      "x": 3560,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_partner_academies",
+      "type": "file",
+      "file": "graphify/obsidian/Partner Academies (Krasnodar, Rostov, CSKA, Lokomotiv, etc.).md",
+      "x": 3760,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_pricing_plans_entity",
+      "type": "file",
+      "file": "graphify/obsidian/Pricing Plans Entity (StandardStandard+PRO).md",
+      "x": 3960,
+      "y": 1080,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_standard_plan",
+      "type": "file",
+      "file": "graphify/obsidian/Standard Plan (4000 RUB).md",
+      "x": 3560,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_standard_plus_plan",
+      "type": "file",
+      "file": "graphify/obsidian/Standard+ Plan (5400 RUB).md",
+      "x": 3760,
+      "y": 1160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g8",
+      "type": "group",
+      "label": "UI Icons",
+      "x": 0,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_field_icon",
+      "type": "file",
+      "file": "graphify/obsidian/Football Field Icon (SVG).md",
+      "x": 20,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g9",
+      "type": "group",
+      "label": "UI Icons",
+      "x": 1180,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "4"
+    },
+    {
+      "id": "n_whistle_icon",
+      "type": "file",
+      "file": "graphify/obsidian/Whistle Icon (SVG).md",
+      "x": 1200,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g10",
+      "type": "group",
+      "label": "UI Icons",
+      "x": 2360,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_trophy_icon",
+      "type": "file",
+      "file": "graphify/obsidian/TrophyWin Icon (SVG).md",
+      "x": 2380,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_fc_arsenal_92_sevastopol",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_sevastopol",
+      "label": "located_in [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_kuliev_igor",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_kuliev_igor",
+      "label": "directed_by [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_tilda_current_site",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_tilda_current_site",
+      "label": "migrating_from [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_nextjs_frontend",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_nextjs_frontend",
+      "label": "implemented_with [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_dotnet_backend",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_dotnet_backend",
+      "label": "implemented_with [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_training_location",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_training_location",
+      "label": "trains_at [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_partner_academies",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_partner_academies",
+      "label": "partners_with [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_tournaments",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_tournaments",
+      "label": "participates_in [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_club_logo",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_club_logo",
+      "label": "branding [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_children_first_philosophy",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_children_first_philosophy",
+      "label": "adheres_to [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_private_academy_goal",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_private_academy_goal",
+      "label": "strategic_goal [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_uefa_c_license",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_uefa_c_license",
+      "label": "certified_by [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_team_photos",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_team_photos",
+      "label": "depicts [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_player_zaliznyak",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_player_zaliznyak",
+      "label": "player_of [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_current_tilda_site",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_current_tilda_site",
+      "label": "currently_hosted_on [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_new_site_project",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_new_site_project",
+      "label": "migrating_to [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_sevastopol_location",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_sevastopol_location",
+      "label": "located_at [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_international_camps",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_international_camps",
+      "label": "organizes [EXTRACTED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_telegram_shop",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_telegram_shop",
+      "label": "sells_via [EXTRACTED]"
+    },
+    {
+      "id": "e_sevastopol_training_location",
+      "fromNode": "n_sevastopol",
+      "toNode": "n_training_location",
+      "label": "located_in [EXTRACTED]"
+    },
+    {
+      "id": "e_kuliev_igor_client_requirements",
+      "fromNode": "n_kuliev_igor",
+      "toNode": "n_client_requirements",
+      "label": "addressed_to [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_dotnet_backend",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_dotnet_backend",
+      "label": "communicates_with [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_i18n_system",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_i18n_system",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_admin_panel",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_admin_panel",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_nginx_proxy",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_nginx_proxy",
+      "label": "routes_to [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_docker_compose",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_docker_compose",
+      "label": "orchestrates [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_tdd_methodology",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_tdd_methodology",
+      "label": "applied_to [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_postgresql_db",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_postgresql_db",
+      "label": "stores_data_in [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_ef_core_orm",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_ef_core_orm",
+      "label": "uses [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_clean_architecture",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_clean_architecture",
+      "label": "follows [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_cqrs_pattern",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_cqrs_pattern",
+      "label": "follows [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_jwt_auth",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_jwt_auth",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_yukassa_payments",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_yukassa_payments",
+      "label": "integrates_with [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_nginx_proxy",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_nginx_proxy",
+      "label": "routes_to [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_docker_compose",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_docker_compose",
+      "label": "orchestrates [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_backend_tdd_methodology",
+      "fromNode": "n_dotnet_backend",
+      "toNode": "n_tdd_methodology",
+      "label": "applied_to [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_docker_compose",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_docker_compose",
+      "label": "orchestrates [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_pages_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_pages_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_news_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_news_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_coaches_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_coaches_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_training_groups_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_training_groups_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_schedule_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_schedule_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_pricing_plans_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_pricing_plans_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_bookings_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_bookings_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_reviews_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_reviews_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_gallery_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_gallery_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_payments_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_payments_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_admin_users_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_admin_users_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_site_settings_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_site_settings_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_contacts_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_contacts_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_db_partners_entity",
+      "fromNode": "n_postgresql_db",
+      "toNode": "n_partners_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_nginx_proxy",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_nginx_proxy",
+      "label": "contains_container [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_timeweb_vps",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_timeweb_vps",
+      "label": "hosts [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_github_actions_cicd",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_github_actions_cicd",
+      "label": "deploys_via [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_new_site_project",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_new_site_project",
+      "label": "deployed_via [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_nextjs_15_frontend",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_nextjs_15_frontend",
+      "label": "contains_container [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_dotnet_9_api",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_dotnet_9_api",
+      "label": "contains_container [EXTRACTED]"
+    },
+    {
+      "id": "e_docker_compose_postgresql_16",
+      "fromNode": "n_docker_compose",
+      "toNode": "n_postgresql_16",
+      "label": "contains_container [EXTRACTED]"
+    },
+    {
+      "id": "e_nginx_proxy_ssl_letsencrypt",
+      "fromNode": "n_nginx_proxy",
+      "toNode": "n_ssl_letsencrypt",
+      "label": "terminates [EXTRACTED]"
+    },
+    {
+      "id": "e_nginx_proxy_nextjs_15_frontend",
+      "fromNode": "n_nginx_proxy",
+      "toNode": "n_nextjs_15_frontend",
+      "label": "proxies_to [EXTRACTED]"
+    },
+    {
+      "id": "e_nginx_proxy_dotnet_9_api",
+      "fromNode": "n_nginx_proxy",
+      "toNode": "n_dotnet_9_api",
+      "label": "proxies_to [EXTRACTED]"
+    },
+    {
+      "id": "e_nginx_proxy_letsencrypt_ssl",
+      "fromNode": "n_nginx_proxy",
+      "toNode": "n_letsencrypt_ssl",
+      "label": "uses_ssl_from [EXTRACTED]"
+    },
+    {
+      "id": "e_admin_panel_jwt_auth",
+      "fromNode": "n_admin_panel",
+      "toNode": "n_jwt_auth",
+      "label": "requires [EXTRACTED]"
+    },
+    {
+      "id": "e_admin_panel_feature_toggle_system",
+      "fromNode": "n_admin_panel",
+      "toNode": "n_feature_toggle_system",
+      "label": "manages [EXTRACTED]"
+    },
+    {
+      "id": "e_admin_panel_nextjs_15_frontend",
+      "fromNode": "n_admin_panel",
+      "toNode": "n_nextjs_15_frontend",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_admin_panel_feature_toggle",
+      "fromNode": "n_admin_panel",
+      "toNode": "n_feature_toggle",
+      "label": "manages [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_optimization_yandex_integration",
+      "fromNode": "n_seo_optimization",
+      "toNode": "n_yandex_integration",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_optimization_google_integration",
+      "fromNode": "n_seo_optimization",
+      "toNode": "n_google_integration",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_optimization_schema_org",
+      "fromNode": "n_seo_optimization",
+      "toNode": "n_schema_org",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_optimization_core_web_vitals",
+      "fromNode": "n_seo_optimization",
+      "toNode": "n_core_web_vitals",
+      "label": "optimizes_for [EXTRACTED]"
+    },
+    {
+      "id": "e_schema_org_seo_strategy",
+      "fromNode": "n_schema_org",
+      "toNode": "n_seo_strategy",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_jwt_auth_dotnet_9_api",
+      "fromNode": "n_jwt_auth",
+      "toNode": "n_dotnet_9_api",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_yukassa_payments_payments_entity",
+      "fromNode": "n_yukassa_payments",
+      "toNode": "n_payments_entity",
+      "label": "processed_by [EXTRACTED]"
+    },
+    {
+      "id": "e_yukassa_payments_feature_toggle_system",
+      "fromNode": "n_yukassa_payments",
+      "toNode": "n_feature_toggle_system",
+      "label": "controls [EXTRACTED]"
+    },
+    {
+      "id": "e_yukassa_payments_dotnet_9_api",
+      "fromNode": "n_yukassa_payments",
+      "toNode": "n_dotnet_9_api",
+      "label": "integrates_with [EXTRACTED]"
+    },
+    {
+      "id": "e_i18n_system_feature_toggle_system",
+      "fromNode": "n_i18n_system",
+      "toNode": "n_feature_toggle_system",
+      "label": "controls [EXTRACTED]"
+    },
+    {
+      "id": "e_i18n_system_nextjs_15_frontend",
+      "fromNode": "n_i18n_system",
+      "toNode": "n_nextjs_15_frontend",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_i18n_system_english_version",
+      "fromNode": "n_i18n_system",
+      "toNode": "n_english_version",
+      "label": "enables [EXTRACTED]"
+    },
+    {
+      "id": "e_i18n_system_rationale_locale_prefix",
+      "fromNode": "n_i18n_system",
+      "toNode": "n_rationale_locale_prefix",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_timeweb_vps_github_actions_cicd",
+      "fromNode": "n_timeweb_vps",
+      "toNode": "n_github_actions_cicd",
+      "label": "deploys_to [EXTRACTED]"
+    },
+    {
+      "id": "e_timeweb_vps_ubuntu_24_os",
+      "fromNode": "n_timeweb_vps",
+      "toNode": "n_ubuntu_24_os",
+      "label": "runs [EXTRACTED]"
+    },
+    {
+      "id": "e_timeweb_vps_ufw_firewall",
+      "fromNode": "n_timeweb_vps",
+      "toNode": "n_ufw_firewall",
+      "label": "configured_with [EXTRACTED]"
+    },
+    {
+      "id": "e_timeweb_vps_dns_setup",
+      "fromNode": "n_timeweb_vps",
+      "toNode": "n_dns_setup",
+      "label": "points_to [EXTRACTED]"
+    },
+    {
+      "id": "e_timeweb_vps_server_setup_log",
+      "fromNode": "n_timeweb_vps",
+      "toNode": "n_server_setup_log",
+      "label": "documents_setup_of [EXTRACTED]"
+    },
+    {
+      "id": "e_pages_entity_postgresql_16",
+      "fromNode": "n_pages_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_news_entity_postgresql_16",
+      "fromNode": "n_news_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_coaches_entity_schedule_entity",
+      "fromNode": "n_coaches_entity",
+      "toNode": "n_schedule_entity",
+      "label": "references_fk [EXTRACTED]"
+    },
+    {
+      "id": "e_coaches_entity_postgresql_16",
+      "fromNode": "n_coaches_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_training_groups_entity_schedule_entity",
+      "fromNode": "n_training_groups_entity",
+      "toNode": "n_schedule_entity",
+      "label": "references_fk [EXTRACTED]"
+    },
+    {
+      "id": "e_training_groups_entity_bookings_entity",
+      "fromNode": "n_training_groups_entity",
+      "toNode": "n_bookings_entity",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_training_groups_entity_postgresql_16",
+      "fromNode": "n_training_groups_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_training_groups_entity_booking_entity",
+      "fromNode": "n_training_groups_entity",
+      "toNode": "n_booking_entity",
+      "label": "references_fk [EXTRACTED]"
+    },
+    {
+      "id": "e_schedule_entity_postgresql_16",
+      "fromNode": "n_schedule_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_pricing_plans_entity_standard_plan",
+      "fromNode": "n_pricing_plans_entity",
+      "toNode": "n_standard_plan",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_pricing_plans_entity_standard_plus_plan",
+      "fromNode": "n_pricing_plans_entity",
+      "toNode": "n_standard_plus_plan",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_pricing_plans_entity_pro_plan",
+      "fromNode": "n_pricing_plans_entity",
+      "toNode": "n_pro_plan",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_pricing_plans_entity_postgresql_16",
+      "fromNode": "n_pricing_plans_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_bookings_entity_payments_entity",
+      "fromNode": "n_bookings_entity",
+      "toNode": "n_payments_entity",
+      "label": "references [EXTRACTED]"
+    },
+    {
+      "id": "e_reviews_entity_postgresql_16",
+      "fromNode": "n_reviews_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_gallery_entity_postgresql_16",
+      "fromNode": "n_gallery_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_payments_entity_postgresql_16",
+      "fromNode": "n_payments_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_payments_entity_booking_entity",
+      "fromNode": "n_payments_entity",
+      "toNode": "n_booking_entity",
+      "label": "references_fk [EXTRACTED]"
+    },
+    {
+      "id": "e_admin_users_entity_postgresql_16",
+      "fromNode": "n_admin_users_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_site_settings_entity_postgresql_16",
+      "fromNode": "n_site_settings_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_site_settings_entity_feature_toggle",
+      "fromNode": "n_site_settings_entity",
+      "toNode": "n_feature_toggle",
+      "label": "stored_in [EXTRACTED]"
+    },
+    {
+      "id": "e_contacts_entity_postgresql_16",
+      "fromNode": "n_contacts_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_partners_entity_postgresql_16",
+      "fromNode": "n_partners_entity",
+      "toNode": "n_postgresql_16",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_clean_architecture_dotnet_9_api",
+      "fromNode": "n_clean_architecture",
+      "toNode": "n_dotnet_9_api",
+      "label": "follows_pattern [EXTRACTED]"
+    },
+    {
+      "id": "e_clean_architecture_rationale_clean_arch",
+      "fromNode": "n_clean_architecture",
+      "toNode": "n_rationale_clean_arch",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_cqrs_pattern_dotnet_9_api",
+      "fromNode": "n_cqrs_pattern",
+      "toNode": "n_dotnet_9_api",
+      "label": "implements_pattern [EXTRACTED]"
+    },
+    {
+      "id": "e_tilda_current_site_site_screenshot",
+      "fromNode": "n_tilda_current_site",
+      "toNode": "n_site_screenshot",
+      "label": "depicts [EXTRACTED]"
+    },
+    {
+      "id": "e_core_web_vitals_seo_strategy",
+      "fromNode": "n_core_web_vitals",
+      "toNode": "n_seo_strategy",
+      "label": "targets [EXTRACTED]"
+    },
+    {
+      "id": "e_pro_plan_partner_academies",
+      "fromNode": "n_pro_plan",
+      "toNode": "n_partner_academies",
+      "label": "includes_access_to [EXTRACTED]"
+    },
+    {
+      "id": "e_design_system_nextjs_15_frontend",
+      "fromNode": "n_design_system",
+      "toNode": "n_nextjs_15_frontend",
+      "label": "uses [EXTRACTED]"
+    },
+    {
+      "id": "e_ef_core_orm_dotnet_9_api",
+      "fromNode": "n_ef_core_orm",
+      "toNode": "n_dotnet_9_api",
+      "label": "uses [EXTRACTED]"
+    },
+    {
+      "id": "e_ef_core_orm_postgresql_16",
+      "fromNode": "n_ef_core_orm",
+      "toNode": "n_postgresql_16",
+      "label": "connects_via [EXTRACTED]"
+    },
+    {
+      "id": "e_scripts_server_setup_py_server_setup_create_connection",
+      "fromNode": "n_scripts_server_setup_py",
+      "toNode": "n_server_setup_create_connection",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_scripts_server_setup_py_server_setup_run_command",
+      "fromNode": "n_scripts_server_setup_py",
+      "toNode": "n_server_setup_run_command",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_scripts_server_setup_py_server_setup_main",
+      "fromNode": "n_scripts_server_setup_py",
+      "toNode": "n_server_setup_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_scripts_server_setup_py_server_setup_rationale_1",
+      "fromNode": "n_scripts_server_setup_py",
+      "toNode": "n_server_setup_rationale_1",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_server_setup_create_connection_server_setup_run_command",
+      "fromNode": "n_server_setup_create_connection",
+      "toNode": "n_server_setup_run_command",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_server_setup_create_connection_server_setup_main",
+      "fromNode": "n_server_setup_create_connection",
+      "toNode": "n_server_setup_main",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_server_setup_create_connection_server_setup_rationale_21",
+      "fromNode": "n_server_setup_create_connection",
+      "toNode": "n_server_setup_rationale_21",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_server_setup_run_command_server_setup_main",
+      "fromNode": "n_server_setup_run_command",
+      "toNode": "n_server_setup_main",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_server_setup_run_command_server_setup_rationale_42",
+      "fromNode": "n_server_setup_run_command",
+      "toNode": "n_server_setup_rationale_42",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_current_tilda_site_design_review",
+      "fromNode": "n_current_tilda_site",
+      "toNode": "n_design_review",
+      "label": "audits [EXTRACTED]"
+    },
+    {
+      "id": "e_current_tilda_site_rationale_tilda_migration",
+      "fromNode": "n_current_tilda_site",
+      "toNode": "n_rationale_tilda_migration",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_nextjs_15_frontend",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_nextjs_15_frontend",
+      "label": "uses_frontend [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_dotnet_9_api",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_dotnet_9_api",
+      "label": "uses_backend [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_postgresql_16",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_postgresql_16",
+      "label": "uses_database [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_domain_fcarsenal92",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_domain_fcarsenal92",
+      "label": "hosted_at_domain [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_seo_strategy",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_seo_strategy",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_graph_report",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_graph_report",
+      "label": "analyzes [EXTRACTED]"
+    },
+    {
+      "id": "e_new_site_project_rationale_tilda_migration",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_rationale_tilda_migration",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_15_frontend_dotnet_9_api",
+      "fromNode": "n_nextjs_15_frontend",
+      "toNode": "n_dotnet_9_api",
+      "label": "calls_api [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_15_frontend_rationale_ssr_ssg",
+      "fromNode": "n_nextjs_15_frontend",
+      "toNode": "n_rationale_ssr_ssg",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_9_api_postgresql_16",
+      "fromNode": "n_dotnet_9_api",
+      "toNode": "n_postgresql_16",
+      "label": "connects_to [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_9_api_fluent_validation",
+      "fromNode": "n_dotnet_9_api",
+      "toNode": "n_fluent_validation",
+      "label": "uses [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_9_api_serilog_logging",
+      "fromNode": "n_dotnet_9_api",
+      "toNode": "n_serilog_logging",
+      "label": "uses [EXTRACTED]"
+    },
+    {
+      "id": "e_dotnet_9_api_rfc7807_errors",
+      "fromNode": "n_dotnet_9_api",
+      "toNode": "n_rfc7807_errors",
+      "label": "implements [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_16_booking_entity",
+      "fromNode": "n_postgresql_16",
+      "toNode": "n_booking_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_postgresql_16_shop_products_entity",
+      "fromNode": "n_postgresql_16",
+      "toNode": "n_shop_products_entity",
+      "label": "stores [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_strategy_google_analytics",
+      "fromNode": "n_seo_strategy",
+      "toNode": "n_google_analytics",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_strategy_yandex_metrika",
+      "fromNode": "n_seo_strategy",
+      "toNode": "n_yandex_metrika",
+      "label": "includes [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_strategy_google_business",
+      "fromNode": "n_seo_strategy",
+      "toNode": "n_google_business",
+      "label": "recommends [EXTRACTED]"
+    },
+    {
+      "id": "e_seo_strategy_yandex_business",
+      "fromNode": "n_seo_strategy",
+      "toNode": "n_yandex_business",
+      "label": "recommends [EXTRACTED]"
+    },
+    {
+      "id": "e_feature_toggle_rationale_feature_toggles",
+      "fromNode": "n_feature_toggle",
+      "toNode": "n_rationale_feature_toggles",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_domain_fcarsenal92_dns_setup",
+      "fromNode": "n_domain_fcarsenal92",
+      "toNode": "n_dns_setup",
+      "label": "requires [EXTRACTED]"
+    },
+    {
+      "id": "e_design_review_accessibility_issues",
+      "fromNode": "n_design_review",
+      "toNode": "n_accessibility_issues",
+      "label": "identifies [EXTRACTED]"
+    },
+    {
+      "id": "e_design_review_form_security_issues",
+      "fromNode": "n_design_review",
+      "toNode": "n_form_security_issues",
+      "label": "identifies [EXTRACTED]"
+    },
+    {
+      "id": "e_design_review_remediation_plan",
+      "fromNode": "n_design_review",
+      "toNode": "n_remediation_plan",
+      "label": "produces [EXTRACTED]"
+    },
+    {
+      "id": "e_client_requirements_dns_setup",
+      "fromNode": "n_client_requirements",
+      "toNode": "n_dns_setup",
+      "label": "requests [EXTRACTED]"
+    },
+    {
+      "id": "e_client_requirements_privacy_policy_152fz",
+      "fromNode": "n_client_requirements",
+      "toNode": "n_privacy_policy_152fz",
+      "label": "requests [EXTRACTED]"
+    },
+    {
+      "id": "e_client_requirements_english_version",
+      "fromNode": "n_client_requirements",
+      "toNode": "n_english_version",
+      "label": "plans [EXTRACTED]"
+    },
+    {
+      "id": "e_nextjs_frontend_seo_optimization",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_seo_optimization",
+      "label": "enables [INFERRED]"
+    },
+    {
+      "id": "e_nextjs_frontend_design_system",
+      "fromNode": "n_nextjs_frontend",
+      "toNode": "n_design_system",
+      "label": "applied_to [INFERRED]"
+    },
+    {
+      "id": "e_fc_arsenal_92_nike_equipment",
+      "fromNode": "n_fc_arsenal_92",
+      "toNode": "n_nike_equipment",
+      "label": "equipped_by [INFERRED]"
+    },
+    {
+      "id": "e_kuliev_igor_uefa_c_license",
+      "fromNode": "n_kuliev_igor",
+      "toNode": "n_uefa_c_license",
+      "label": "holds_certification [INFERRED]"
+    },
+    {
+      "id": "e_new_site_project_remediation_plan",
+      "fromNode": "n_new_site_project",
+      "toNode": "n_remediation_plan",
+      "label": "addressed_by [INFERRED]"
+    },
+    {
+      "id": "e_nextjs_15_frontend_seo_strategy",
+      "fromNode": "n_nextjs_15_frontend",
+      "toNode": "n_seo_strategy",
+      "label": "implements [INFERRED]"
+    },
+    {
+      "id": "e_form_security_issues_fluent_validation",
+      "fromNode": "n_form_security_issues",
+      "toNode": "n_fluent_validation",
+      "label": "addressed_by [INFERRED]"
+    },
+    {
+      "id": "e_booking_entity_privacy_policy_152fz",
+      "fromNode": "n_booking_entity",
+      "toNode": "n_privacy_policy_152fz",
+      "label": "legally_required_for [INFERRED]"
+    },
+    {
+      "id": "e_google_business_yandex_business",
+      "fromNode": "n_google_business",
+      "toNode": "n_yandex_business",
+      "label": "semantically_similar_to [INFERRED]"
+    },
+    {
+      "id": "e_private_academy_goal_children_first_philosophy",
+      "fromNode": "n_private_academy_goal",
+      "toNode": "n_children_first_philosophy",
+      "label": "rationale_for [INFERRED]"
+    },
+    {
+      "id": "e_nginx_proxy_core_web_vitals",
+      "fromNode": "n_nginx_proxy",
+      "toNode": "n_core_web_vitals",
+      "label": "optimized_by [INFERRED]"
+    },
+    {
+      "id": "e_seo_strategy_accessibility_issues",
+      "fromNode": "n_seo_strategy",
+      "toNode": "n_accessibility_issues",
+      "label": "semantically_similar_to [INFERRED]"
+    },
+    {
+      "id": "e_shop_products_entity_telegram_shop",
+      "fromNode": "n_shop_products_entity",
+      "toNode": "n_telegram_shop",
+      "label": "replaces [INFERRED]"
+    }
+  ]
+}

@@ -1,0 +1,541 @@
+{
+  "Pages": [
+    {
+      "slug": "about",
+      "title_ru": "О клубе",
+      "title_en": "About the Club",
+      "content_ru": "<p>Квалифицированная школа футбола в Севастополе для детей от 6 до 14 лет. Педагогический состав собран из профессиональных квалифицированных тренеров с опытом игры в большом футболе.</p><p>Мы воспитываем в детях стремление к победе, дисциплину, выносливость, спортивный дух и командную работу.</p><p>Наше видение развития детского футбола заключается в том, что мы в первую очередь хотим видеть СЧАСТЛИВЫХ ДЕТЕЙ! Именно они нас объединяют, а не футбол, как стереотипно утверждают многие.</p>",
+      "content_en": "",
+      "meta_title_ru": "О клубе — ДФК Арсенал Севастополь",
+      "meta_description_ru": "Детская футбольная школа Арсенал в Севастополе. Профессиональные тренеры с лицензией УЕФА, группы для детей от 6 до 14 лет.",
+      "meta_title_en": "About — FC Arsenal-92 Sevastopol",
+      "meta_description_en": "Arsenal youth football school in Sevastopol. Professional UEFA licensed coaches, groups for children aged 6 to 14.",
+      "og_image": null,
+      "is_published": true,
+      "sort_order": 1
+    },
+    {
+      "slug": "mission",
+      "title_ru": "Наша философия",
+      "title_en": "Our Philosophy",
+      "content_ru": "<p>Мы создаём качественный и интересный детям проект, где каждый ребёнок будет чувствовать себя частью Команды. Знать, что у него есть личные отношения с тренером независимо от его способностей, уровня.</p><p>Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство, при котором:</p><ul><li>Мы делаем фокус на развитие каждого ребёнка, а не результаты Команды;</li><li>Мы хвалим усилия, а не результаты матчей;</li><li>Мы устанавливаем цели, ориентированные на мастерство каждого, а не на результаты Команды.</li></ul><p>Очевидно, что большинство не станут профессиональными спортсменами, но в наших силах создать качественный проект, который обеспечит вовлеченность ребёнка в футбол или спорт на всю жизнь!</p>",
+      "content_en": "",
+      "meta_title_ru": "Наша философия — ДФК Арсенал",
+      "meta_description_ru": "Философия ДФК Арсенал: индивидуальное развитие каждого ребёнка, командная работа и любовь к спорту.",
+      "meta_title_en": "Our Philosophy — FC Arsenal-92",
+      "meta_description_en": "FC Arsenal-92 philosophy: individual development, teamwork and love for sports.",
+      "og_image": null,
+      "is_published": true,
+      "sort_order": 2
+    },
+    {
+      "slug": "parents",
+      "title_ru": "Родителям",
+      "title_en": "For Parents",
+      "content_ru": "<p>Отличительной особенностью нашего дружного коллектива является понимание, что родители – это не враг тренеру, а его помощники в создании мотивации, философии, атмосферы. На самом деле это фантастическое, светлое и добрейшее чувство – быть на одной волне с родителями и делать одно большое дело для наших детей!</p>",
+      "content_en": "",
+      "meta_title_ru": "Родителям — ДФК Арсенал",
+      "meta_description_ru": "Информация для родителей юных футболистов ДФК Арсенал Севастополь.",
+      "meta_title_en": "For Parents — FC Arsenal-92",
+      "meta_description_en": "Information for parents of young FC Arsenal-92 players.",
+      "og_image": null,
+      "is_published": true,
+      "sort_order": 3
+    }
+  ],
+
+  "Coaches": [
+    {
+      "name_ru": "Кулиев Игорь Рамизович",
+      "name_en": "Igor Kuliev",
+      "position_ru": "Генеральный директор и старший тренер",
+      "position_en": "General Director and Head Coach",
+      "bio_ru": "Мы верим в то, что совместно способны создать лучшую школу футбола в Севастополе! Мы не обещаем, что ваши дети у нас станут чемпионами, будут завоёвывать кубки, медали и грамоты, мы реально не ставим во главу угла результаты. У нас абсолютно иные цели и модель построения отношений тренера с подопечными. Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство каждого!",
+      "bio_en": "",
+      "photo": null,
+      "certifications": ["Тренерская лицензия категории С УЕФА"],
+      "sort_order": 1,
+      "is_active": true
+    }
+  ],
+
+  "TrainingGroups": [
+    {
+      "name": "Основная группа",
+      "age_range": "6-14 лет",
+      "level": "all",
+      "max_capacity": 20,
+      "description_ru": "Групповые тренировки по футболу для детей от 6 до 14 лет. Группы формируются по уровню подготовки.",
+      "description_en": "Football training for children aged 6 to 14. Groups formed by skill level.",
+      "is_active": true
+    }
+  ],
+
+  "PricingPlans": [
+    {
+      "name_ru": "СТАНДАРТ",
+      "name_en": "STANDARD",
+      "price": 4000,
+      "currency": "RUB",
+      "sessions_count": 12,
+      "description_ru": "12 групповых занятий в месяц",
+      "description_en": "12 group sessions per month",
+      "features_ru": [
+        "Три занятия в неделю",
+        "Групповые тренировки",
+        "2 товарищеских матча",
+        "Участие в турнирах"
+      ],
+      "features_en": [
+        "Three sessions per week",
+        "Group training",
+        "2 friendly matches",
+        "Tournament participation"
+      ],
+      "is_featured": false,
+      "sort_order": 1,
+      "is_active": true
+    },
+    {
+      "name_ru": "СТАНДАРТ+",
+      "name_en": "STANDARD+",
+      "price": 5400,
+      "currency": "RUB",
+      "sessions_count": 16,
+      "description_ru": "12 групповых занятий в месяц + 4 дополнительных тренировки по физической подготовке в малых группах",
+      "description_en": "12 group sessions + 4 additional fitness sessions in small groups",
+      "features_ru": [
+        "Четыре занятия в неделю",
+        "Групповые тренировки",
+        "4 дополнительных тренировки по физической подготовке",
+        "Участие в матчах и турнирах"
+      ],
+      "features_en": [
+        "Four sessions per week",
+        "Group training",
+        "4 additional fitness training sessions",
+        "Match and tournament participation"
+      ],
+      "is_featured": true,
+      "sort_order": 2,
+      "is_active": true
+    },
+    {
+      "name_ru": "PRO",
+      "name_en": "PRO",
+      "price": 6000,
+      "currency": "RUB",
+      "sessions_count": 20,
+      "description_ru": "Пять тренировок в неделю с расширенной программой и стажировками",
+      "description_en": "Five sessions per week with extended program and internships",
+      "features_ru": [
+        "Пять тренировок в неделю",
+        "Групповые тренировки",
+        "Участие в играх",
+        "Стажировки, просмотры в академиях и клубах партнёров в РФ, СНГ и в Европе"
+      ],
+      "features_en": [
+        "Five sessions per week",
+        "Group training",
+        "Match participation",
+        "Internships and trials at partner academies in Russia, CIS and Europe"
+      ],
+      "is_featured": false,
+      "sort_order": 3,
+      "is_active": true
+    }
+  ],
+
+  "Schedule": [
+    {
+      "group_ref": "Основная группа",
+      "day_of_week": "Monday",
+      "start_time": "18:00",
+      "end_time": "19:30",
+      "location": "Спорткомплекс школы №61, ул. Косарева, д.12",
+      "coach_ref": "Кулиев Игорь Рамизович",
+      "is_active": true
+    },
+    {
+      "group_ref": "Основная группа",
+      "day_of_week": "Tuesday",
+      "start_time": "18:00",
+      "end_time": "19:30",
+      "location": "Спорткомплекс школы №61, ул. Косарева, д.12",
+      "coach_ref": "Кулиев Игорь Рамизович",
+      "is_active": true
+    },
+    {
+      "group_ref": "Основная группа",
+      "day_of_week": "Wednesday",
+      "start_time": "18:00",
+      "end_time": "19:30",
+      "location": "Спорткомплекс школы №61, ул. Косарева, д.12",
+      "coach_ref": "Кулиев Игорь Рамизович",
+      "is_active": true
+    },
+    {
+      "group_ref": "Основная группа",
+      "day_of_week": "Thursday",
+      "start_time": "18:00",
+      "end_time": "19:30",
+      "location": "Спорткомплекс школы №61, ул. Косарева, д.12",
+      "coach_ref": "Кулиев Игорь Рамизович",
+      "is_active": true
+    },
+    {
+      "group_ref": "Основная группа",
+      "day_of_week": "Friday",
+      "start_time": "18:00",
+      "end_time": "19:30",
+      "location": "Спорткомплекс школы №61, ул. Косарева, д.12",
+      "coach_ref": "Кулиев Игорь Рамизович",
+      "is_active": true
+    },
+    {
+      "group_ref": "Основная группа",
+      "day_of_week": "Saturday",
+      "start_time": "12:00",
+      "end_time": "13:30",
+      "location": "Спорткомплекс школы №61, ул. Косарева, д.12",
+      "coach_ref": "Кулиев Игорь Рамизович",
+      "is_active": true
+    }
+  ],
+
+  "Reviews": [
+    {
+      "author_name": "Мама начинающего футболиста",
+      "author_role": "parent",
+      "text_ru": "Были на бесплатном занятии, ребенку очень понравилось и мы записались на постоянку. Отличная задумка — первый уровень, где только показывают и рассказывают, что такое футбол.",
+      "text_en": "",
+      "rating": 5,
+      "is_published": true,
+      "sort_order": 1
+    },
+    {
+      "author_name": "Папа Татьяны Н.",
+      "author_role": "parent",
+      "text_ru": "Благодарим \"Арсенал\" за возможность быть частью команды столько лет. Годы тренировок не прошли даром и теперь мы - участники женской команды Футбольной Академии Крыма. Спасибо тренеру и ребятам за полученный опыт!",
+      "text_en": "",
+      "rating": 5,
+      "is_published": true,
+      "sort_order": 2
+    },
+    {
+      "author_name": "Родитель воспитанника",
+      "author_role": "parent",
+      "text_ru": "Огромная благодарность клубу за возможность тренироваться в таком составе и с такими партнёрами! Сын значительно вырос в собственных навыках дриблинга, скорости и формировании позиционных атак.",
+      "text_en": "",
+      "rating": 5,
+      "is_published": true,
+      "sort_order": 3
+    }
+  ],
+
+  "Contacts": {
+    "phones": ["+7-978-813-09-82", "+7-978-812-64-32", "+7-978-10-40-940"],
+    "emails": [],
+    "address_ru": "г. Севастополь, ул. Косарева, д.12, Спорткомплекс школы №61",
+    "address_en": "Sevastopol, Kosareva st. 12, School №61 Sports Complex",
+    "map_coordinates": {
+      "latitude": null,
+      "longitude": null,
+      "_comment": "Exact coordinates of school №61 to be provided by client"
+    },
+    "transport_info_ru": "Спорткомплекс школы №61",
+    "transport_info_en": "School №61 Sports Complex",
+    "vk_url": "https://vk.com/arsenal_92",
+    "telegram_url": "https://t.me/arsenal_sevastopol",
+    "youtube_url": "https://www.youtube.com/@arsenal92",
+    "dzen_url": "https://dzen.ru/arsenal92",
+    "telegram_shop_url": "https://t.me/s/arsenalarena",
+    "instagram_url": null
+  },
+
+  "Partners": [
+    {
+      "name": "МЕДОБОРЫ",
+      "description_ru": "Семейная кондитерская, лидер по производству кондитерских изделий. Компания «Медоборы» – это, прежде всего, качество. И качество во всем!",
+      "logo_url": "https://static.tildacdn.info/tild3930-6361-4931-a561-613939393439/-/empty/medobory_logo.png",
+      "website_url": "https://medobory.com/",
+      "sort_order": 1,
+      "is_active": true
+    },
+    {
+      "name": "А2",
+      "description_ru": "Собственный бренд экипировки и инвентаря",
+      "logo_url": "https://static.tildacdn.info/tild6637-3331-4331-b838-386461376331/-/empty/1756323661504.png",
+      "website_url": "https://t.me/s/arsenalarena",
+      "sort_order": 2,
+      "is_active": true
+    }
+  ],
+
+  "News": [
+    {
+      "slug": "winter-cup-2023-krasnodar",
+      "title_ru": "Winter Cup 2023 — визит на базу ФК «Краснодар»",
+      "title_en": "Winter Cup 2023 — Visit to FC Krasnodar Training Base",
+      "excerpt_ru": "В рамках зимнего турнира Winter Cup 2023 футбольный клуб «Арсенал» посетил тренировочную базу ФК «Краснодар».",
+      "excerpt_en": "",
+      "content_ru": "<p>В рамках зимнего турнира Winter Cup 2023 футбольный клуб «Арсенал», Севастополь посетил тренировочную базу ФК «Краснодар», где провёл пробную тренировку с футболистами Детской академии. Скауты ФК «Краснодар» были приятно удивлены мастерству наших ребят.</p>",
+      "content_en": "",
+      "cover_image": null,
+      "meta_title": "Winter Cup 2023 — ДФК Арсенал на базе ФК Краснодар",
+      "meta_description": "Арсенал Севастополь посетил тренировочную базу ФК Краснодар в рамках Winter Cup 2023.",
+      "tags": ["турнир", "Winter Cup", "Краснодар", "2023"],
+      "is_published": true,
+      "published_at": "2023-01-15T12:00:00Z"
+    },
+    {
+      "slug": "winter-cup-2023-results",
+      "title_ru": "Зимний кубок 2023 — итоги участия",
+      "title_en": "Winter Cup 2023 — Results",
+      "excerpt_ru": "С 12 по 15 января 2023 года наша команда приняла участие в Зимнем кубке среди команд 2010-2011 гг. в Краснодаре.",
+      "excerpt_en": "",
+      "content_ru": "<p>С 12 по 15 января 2023 года наша команда «Арсенал» приняла участие в Зимнем кубке среди команд 2010-2011 гг. в Краснодаре. Ребята получили большую игровую практику в не самых простых условиях. Ждём новых турниров и желаем новых побед!</p>",
+      "content_en": "",
+      "cover_image": null,
+      "meta_title": "Зимний кубок 2023 — ДФК Арсенал Севастополь",
+      "meta_description": "Арсенал Севастополь на Зимнем кубке 2023 в Краснодаре среди команд 2010-2011 гг.",
+      "tags": ["турнир", "Зимний кубок", "Краснодар", "2023"],
+      "is_published": true,
+      "published_at": "2023-01-16T12:00:00Z"
+    },
+    {
+      "slug": "itogi-2022",
+      "title_ru": "Итоги 2022 года",
+      "title_en": "2022 Year in Review",
+      "excerpt_ru": "Год стремительно подходит к своему завершению и мы в клубе подводим итоги. 2022-й получился насыщенным и эмоциональным.",
+      "excerpt_en": "",
+      "content_ru": "<p>Год стремительно подходит к своему завершению и мы в клубе подводим итоги. 2022-й получился насыщенным и эмоциональным. Многое пришлось познавать заново, а в чём-то еще сильнее утвердиться. Мы рады, что прошли этот год вместе, а пока — Итоги года!</p>",
+      "content_en": "",
+      "cover_image": null,
+      "meta_title": "Итоги 2022 года — ДФК Арсенал",
+      "meta_description": "Подводим итоги 2022 года в ДФК Арсенал Севастополь.",
+      "tags": ["итоги", "2022"],
+      "is_published": true,
+      "published_at": "2022-12-28T12:00:00Z"
+    }
+  ],
+
+  "ShopCategories": [
+    {
+      "name_ru": "Бутсы",
+      "name_en": "Football Boots",
+      "slug": "boots",
+      "sort_order": 1,
+      "is_active": true
+    },
+    {
+      "name_ru": "Клубная экипировка",
+      "name_en": "Club Kit",
+      "slug": "kit",
+      "sort_order": 2,
+      "is_active": true
+    },
+    {
+      "name_ru": "Зимние куртки",
+      "name_en": "Winter Jackets",
+      "slug": "jackets",
+      "sort_order": 3,
+      "is_active": true
+    },
+    {
+      "name_ru": "Защита",
+      "name_en": "Protection",
+      "slug": "protection",
+      "sort_order": 4,
+      "is_active": true
+    }
+  ],
+
+  "ShopProducts": [
+    {
+      "category_ref": "boots",
+      "name_ru": "Профессиональные бутсы",
+      "name_en": "Professional Football Boots",
+      "slug": "professional-boots",
+      "description_ru": "Футбольные бутсы — отличный подарок как маленькому болельщику, так и начинающей звезде футбола. Хотите купить детскую футбольную форму, бутсы, защиту? Обращайтесь, мы подберем вам лучшее решение по отличной цене!",
+      "description_en": "Football boots — a great gift for young football fans and aspiring stars.",
+      "price": null,
+      "old_price": null,
+      "currency": "RUB",
+      "images": [],
+      "sizes": [],
+      "in_stock": true,
+      "stock_quantity": null,
+      "order_type": "telegram",
+      "external_order_url": "https://t.me/s/arsenalarena",
+      "meta_title_ru": "Профессиональные бутсы — Магазин ДФК Арсенал",
+      "meta_description_ru": "Детские футбольные бутсы. Отличная цена и качество.",
+      "is_published": true,
+      "is_featured": true,
+      "sort_order": 1
+    },
+    {
+      "category_ref": "kit",
+      "name_ru": "Спортивная форма — Лето 2025",
+      "name_en": "Sports Kit — Summer 2025",
+      "slug": "sports-kit-summer-2025",
+      "description_ru": "Администрация футбольного клуба АРСЕНАЛ предлагает широкий ассортимент спортивной и повседневной одежды. Гарантия качества и выгодные условия на групповые покупки. Отличная цена и возможность оперативной доставки.",
+      "description_en": "FC Arsenal offers a wide range of sports and casual clothing. Quality guarantee and group purchase discounts.",
+      "price": null,
+      "old_price": null,
+      "currency": "RUB",
+      "images": [],
+      "sizes": [],
+      "in_stock": true,
+      "stock_quantity": null,
+      "order_type": "telegram",
+      "external_order_url": "https://t.me/s/arsenalarena",
+      "meta_title_ru": "Спортивная форма Лето 2025 — Магазин ДФК Арсенал",
+      "meta_description_ru": "Клубная спортивная форма ДФК Арсенал. Широкий ассортимент, выгодные цены.",
+      "is_published": true,
+      "is_featured": false,
+      "sort_order": 2
+    },
+    {
+      "category_ref": "jackets",
+      "name_ru": "Зимние дутые куртки — Зима 2025-2026",
+      "name_en": "Winter Puffer Jackets — Winter 2025-2026",
+      "slug": "winter-jackets-2025-2026",
+      "description_ru": "Зимние спортивные куртки позволят не делать перерывов в тренировках даже при минусовой температуре. Удобная и теплая одежда. Отличное качество. Высокие стандарты в производстве при сохранении доступной цены.",
+      "description_en": "Winter sports jackets for training in cold weather. Comfortable, warm, and affordable.",
+      "price": null,
+      "old_price": null,
+      "currency": "RUB",
+      "images": [],
+      "sizes": [],
+      "in_stock": true,
+      "stock_quantity": null,
+      "order_type": "telegram",
+      "external_order_url": "https://t.me/s/arsenalarena",
+      "meta_title_ru": "Зимние куртки — Магазин ДФК Арсенал",
+      "meta_description_ru": "Зимние спортивные куртки для тренировок. Тепло, удобство, доступная цена.",
+      "is_published": true,
+      "is_featured": false,
+      "sort_order": 3
+    }
+  ],
+
+  "SiteSettings": {
+    "site_name_ru": "ДФК Арсенал — Детская футбольная школа Севастополь",
+    "site_name_en": "FC Arsenal-92 — Youth Football School Sevastopol",
+    "logo_url": "/images/logo.png",
+    "favicon_url": "/favicon.ico",
+    "primary_color": "#E10005",
+    "secondary_color": "#101A7A",
+    "background_dark": "#111111",
+    "text_primary": "#FFFFFF",
+    "text_secondary": "#635959",
+    "success_color": "#22C55E",
+    "yandex_metrika_id": "",
+    "google_analytics_id": "",
+    "yandex_verification": "",
+    "google_verification": "",
+    "hero_video_rutube_id": "1335a9553dac12ea586c0ce0a90456cf",
+    "features_enabled": {
+      "booking": true,
+      "blog": true,
+      "gallery": true,
+      "payments": false,
+      "reviews": true,
+      "i18n": true,
+      "shop": true
+    }
+  },
+
+  "Advantages": [
+    {
+      "icon": "trophy",
+      "title_ru": "Профессиональные тренеры",
+      "description_ru": "Тренерская лицензия категории С УЕФА. Мы любим детей и знаем, как привить любовь к спорту и добиться поставленных целей!"
+    },
+    {
+      "icon": "football",
+      "title_ru": "Современная методика",
+      "description_ru": "Обучение игре в футбол проводится в соответствии с методиками и рекомендациями ведущих мировых академий. Упор на качество подготовки, а не количество детей в школе."
+    },
+    {
+      "icon": "users",
+      "title_ru": "Группы для начинающих",
+      "description_ru": "Не важно, есть ли у вашего ребенка опыт. Мы учим с нуля и помогаем каждому раскрыть свой потенциал. Группы формируются по уровню подготовки."
+    },
+    {
+      "icon": "handshake",
+      "title_ru": "Просмотры, стажировки",
+      "description_ru": "Связь с академиями ФК «Краснодар», «Ростов», «Сочи», «Локомотив», «Строгино», «Родина», ЦСКА, «Акрон-Академия Коноплёва», «Кубань», Рамзан. Стажировки в Испании и Турции."
+    },
+    {
+      "icon": "target",
+      "title_ru": "Участие в турнирах",
+      "description_ru": "Первенства Севастополя, Симферополя, Крыма, региональные турниры «Локобол» и «Кожаный мяч», общероссийские турниры в Москве, Санкт-Петербурге, Казани, Сочи, Краснодаре."
+    },
+    {
+      "icon": "equipment",
+      "title_ru": "Современный инвентарь",
+      "description_ru": "Катапульта для мячей, спинбайки, манекены. Мы не экономим на инвентаре."
+    },
+    {
+      "icon": "clock",
+      "title_ru": "Гибкое расписание",
+      "description_ru": "Групповые занятия ежедневно, индивидуальные и тренировки по физической подготовке — в любое удобное время по согласованию с тренером."
+    },
+    {
+      "icon": "goal",
+      "title_ru": "Цель клуба",
+      "description_ru": "Строительство частной академии профессиональных футболистов."
+    },
+    {
+      "icon": "team",
+      "title_ru": "Играют все дети",
+      "description_ru": "Мы не выставляем сильнейших в угоду результату. У нас играют все."
+    },
+    {
+      "icon": "heart",
+      "title_ru": "Воспитание личности",
+      "description_ru": "Характер, ценности, любовь к спорту."
+    }
+  ],
+
+  "HeroFeatures": [
+    {
+      "icon": "whistle",
+      "text_ru": "Регулярные занятия с профессиональным тренером",
+      "text_en": "Regular sessions with a professional coach"
+    },
+    {
+      "icon": "field",
+      "text_ru": "Тренировки проходят на базе спортивного комплекса Школы №61",
+      "text_en": "Training at School №61 Sports Complex"
+    },
+    {
+      "icon": "trophy",
+      "text_ru": "Участие в соревнованиях и товарищеских матчах",
+      "text_en": "Participation in competitions and friendly matches"
+    }
+  ],
+
+  "SeasonInfo": {
+    "current_season": "Сентябрь 2025 — Июнь 2026",
+    "location": "Косарева, 12 — спортивный комплекс школы № 61",
+    "trial_offer": "Первые 2 тренировки бесплатно"
+  },
+
+  "_metadata": {
+    "source": "Scraped from https://fcarsenal-92.tilda.ws/ + PROJECT_SPEC.md",
+    "generated_at": "2026-04-12",
+    "notes": [
+      "Prices for ShopProducts are null — to be filled from Telegram channel or by client",
+      "Coach photos are null — to be provided by client",
+      "News cover_image are null — to be sourced from original site images or provided by client",
+      "Contacts.map_coordinates are null — exact GPS coordinates to be provided by client",
+      "english translations (content_en, text_en) are empty — to be translated or filled by client",
+      "Schedule uses _ref fields (group_ref, coach_ref) for FK resolution at seed time",
+      "ShopProducts uses category_ref (slug) for FK resolution at seed time",
+      "Analytics IDs (yandex_metrika_id, google_analytics_id) empty — to be provided by client"
+    ]
+  }
+}
