@@ -83,7 +83,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/dotnet-api
           tags: |
-            type=sha,prefix=sha-
+            type=sha,prefix=sha-,format=long
             type=raw,value=latest
 
       - name: Build and push backend image
@@ -103,7 +103,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/nextjs
           tags: |
-            type=sha,prefix=sha-
+            type=sha,prefix=sha-,format=long
             type=raw,value=latest
 
       - name: Build and push frontend image
@@ -128,6 +128,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "docker-compose.yml,config/seed-data.json,scripts/deploy.sh"
+          target: /opt/football_site
+          strip_components: 0
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -136,5 +146,26 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -euo pipefail
+            mkdir -p /opt/football_site/config
             cd /opt/football_site
-            bash /opt/football_site/deploy.sh
+
+            # Write .env from GitHub secrets
+            cat > .env <<EOF
+            GITHUB_REPOSITORY=${{ github.repository }}
+            IMAGE_TAG=sha-${{ github.sha }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            S3_ENDPOINT=${{ secrets.S3_ENDPOINT }}
+            S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}
+            S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}
+            S3_BUCKET=${{ secrets.S3_BUCKET }}
+            ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+            ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+            NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
+            NEXT_PUBLIC_YM_ID=${{ secrets.NEXT_PUBLIC_YM_ID }}
+            EOF
+
+            # Login to GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+            bash scripts/deploy.sh
