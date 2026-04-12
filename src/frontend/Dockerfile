@@ -26,6 +26,7 @@ RUN addgroup --system nextjs && adduser --system --ingroup nextjs nextjs
 # Standalone output (requires next.config: output: 'standalone')
 COPY --from=builder --chown=nextjs:nextjs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nextjs /app/.next/static ./.next/static
+RUN mkdir -p ./public
 COPY --from=builder --chown=nextjs:nextjs /app/public ./public
 
 USER nextjs
