@@ -4,7 +4,8 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=https://fcarsenal92.ru/api/v1
+      - NEXT_PUBLIC_API_URL=https://fcarsenal92.ru
+      - API_INTERNAL_URL=http://dotnet-api:5000
       - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}
       - NEXT_PUBLIC_YM_ID=${NEXT_PUBLIC_YM_ID}
     env_file:
