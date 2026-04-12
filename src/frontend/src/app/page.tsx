@@ -31,30 +31,19 @@ export default async function HomePage() {
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative bg-brand-blue text-white overflow-hidden min-h-[700px] flex items-center">
-        {/* Rutube fullscreen looping background */}
-        {settings.heroVideoRutubeId ? (
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <iframe
-              src={`https://rutube.ru/play/embed/${settings.heroVideoRutubeId}/?autoPlay=1&isLoop=1&isNoSound=1&skinColor=00000000&titleVisible=false&shareButton=false&chatButton=false&relatedVideos=false`}
-              title="Видео фон"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-0"
-              style={{ width: 'max(100%, 177.78vh)', height: 'max(56.25vw, 100%)' }}
-              tabIndex={-1}
-            />
-            {/* Fallback background image visible while video loads */}
-            <div
-              className="absolute inset-0 bg-cover bg-center -z-10"
-              style={{ backgroundImage: "url('https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg')" }}
-            />
-          </div>
-        ) : (
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg')" }}
-          />
-        )}
+        {/* Self-hosted looping video background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
+          >
+            <source src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/hero_video.mp4" type="video/mp4" />
+          </video>
+        </div>
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20" />
         {/* Content */}
