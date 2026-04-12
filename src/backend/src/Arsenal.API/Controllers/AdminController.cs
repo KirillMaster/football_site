@@ -18,6 +18,7 @@ public class AdminPricingController : ControllerBase
     private readonly IArsenalDbContext _db;
     public AdminPricingController(IArsenalDbContext db) => _db = db;
 
+    [AllowAnonymous]
     [HttpGet("api/pricing")]
     public async Task<IActionResult> GetAll(CancellationToken ct)
         => Ok(await _db.PricingPlans.AsNoTracking().OrderBy(p => p.SortOrder).ToListAsync(ct));
