@@ -1,16 +1,39 @@
-# Claude Code Configuration - RuFlo V3
+# Claude Code — ФК Арсенал-92 · RuFlo V3.5
+
+## Language
+
+Always respond in **Russian**. No exceptions, even for technical topics, error messages, or code comments in output.
+
+---
 
 ## Skill-First Workflow
 
-- Before starting any task, check if an available skill matches the request. If it does — **invoke the skill first**, then proceed.
-- When a skill would benefit the user but requires manual invocation (e.g. `/graphify`, `/sparc:architect`, `/github:code-review`), **proactively suggest it** with a short explanation of why it's useful here.
-- Do not silently skip a relevant skill. If unsure whether a skill applies, mention it and let the user decide.
-- For complex multi-step tasks, suggest combining skills (e.g. `/sparc:spec-pseudocode` for planning, then `/sparc:code` for implementation).
-- When multiple skills are relevant, list them briefly with one-line descriptions so the user can pick.
+**Before starting ANY task — check skills. If a skill matches, invoke it FIRST, then proceed.**
 
-## Prompt Engineering (from project prompt_guide.txt)
+### Priority order:
 
-When crafting prompts for agents, subagents, or any LLM-facing instructions in this project, follow these patterns from the project's prompt guide:
+| Priority | Skill | When to invoke |
+|----------|-------|----------------|
+| **1** | `/graphify` | Любой поиск по кодовой базе, анализ архитектуры, "покажи где X", "как устроено Y", навигация по файлам проекта — сначала graphify, потом Grep/Glob |
+| **2** | UI/UX skill | Анализ дизайна, оценка компонентов, улучшение визуального интерфейса |
+| **3** | SEO skill | Мета-теги, schema.org, sitemap, Core Web Vitals, индексация |
+| **4** | `/sparc:architect` | Проектирование новых фич, рефакторинг, архитектурные решения |
+| **5** | `/github:code-review` | Ревью PR, анализ качества кода |
+
+### Правила:
+- Не молчи про скилл — если он применим, скажи явно и предложи
+- Для сложных задач комбинируй скиллы: `/graphify` для понимания базы → `/sparc:architect` для плана → реализация
+- Если несколько скиллов применимы — кратко перечисли с описанием в 1 строку
+
+### graphify — первичный инструмент разведки кодовой базы:
+- Используй graphify для построения/обновления графа знаний ПЕРЕД глубоким поиском
+- `graphify query "..."` — семантический поиск по базе
+- `graphify --update` — инкрементальное обновление при изменениях
+- Grep/Glob — только для точечных lookups по конкретному символу/файлу, когда цель известна заранее
+
+---
+
+## Prompt Engineering
 
 <output_verbosity_spec>
 - Default: 3–6 sentences or ≤5 bullets for typical answers.
@@ -20,264 +43,242 @@ When crafting prompts for agents, subagents, or any LLM-facing instructions in t
   - then ≤5 bullets tagged: What changed, Where, Risks, Next steps, Open questions.
 - Avoid long narrative paragraphs; prefer compact bullets and short sections.
 - Do not rephrase the user's request unless it changes semantics.
+- Never narrate routine tool calls ("читаю файл...", "запускаю тесты...").
 </output_verbosity_spec>
 
+<user_updates_spec>
+- Send brief updates (1–2 sentences) only when:
+  - You start a new major phase of work, or
+  - You discover something that changes the plan.
+- Each update must include at least one concrete outcome ("Нашёл X", "Подтвердил Y", "Обновил Z").
+- Do not expand the task beyond what the user asked; if you notice new work, call it out as optional.
+</user_updates_spec>
+
 <design_and_scope_constraints>
+- Explore any existing design systems and understand it deeply (Tailwind config, globals.css, component patterns).
 - Implement EXACTLY and ONLY what the user requests.
 - No extra features, no added components, no UX embellishments.
+- Style aligned to brand: brand-blue (#1e3a5f), brand-red (#c0392b), white. No inventing new tokens.
 - If any instruction is ambiguous, choose the simplest valid interpretation.
 </design_and_scope_constraints>
 
 <uncertainty_and_ambiguity>
 - If the question is ambiguous or underspecified, ask up to 1–3 precise clarifying questions OR present 2–3 plausible interpretations with clearly labeled assumptions.
 - Never fabricate exact figures, line numbers, or external references when uncertain.
+- When unsure, prefer "Based on current code..." instead of absolute claims.
 </uncertainty_and_ambiguity>
 
 <tool_usage_rules>
 - Prefer tools over internal knowledge whenever you need fresh or user-specific data.
-- Parallelize independent reads/searches when possible to reduce latency.
+- Parallelize ALL independent reads/searches in ONE message — never sequential if not dependent.
 - After any write/update tool call, briefly restate: what changed, where, any follow-up validation.
+- For codebase exploration: graphify FIRST, then Grep/Glob for pinpoint lookups.
+- For DB operations: use Docker + psql with credentials from C:\Pet\secrets\secrets.txt.
 </tool_usage_rules>
+
+<long_context_handling>
+- For inputs longer than ~10k tokens (multi-file tasks, large diffs):
+  - First, produce a short internal outline of sections relevant to the request.
+  - Re-state constraints explicitly before answering.
+  - Anchor claims to specific files/lines rather than speaking generically.
+</long_context_handling>
+
+---
+
+## Project Context
+
+**Stack:** Next.js 15 (App Router, TypeScript) + .NET 9 (DDD, EF Core) + PostgreSQL + Docker + nginx
+
+**Domain:** ФК Арсенал-92 — детская футбольная школа, г. Севастополь
+
+**Server:** `147.45.229.110` (root, пароль в C:\Pet\secrets\secrets.txt)
+
+**DB:** `postgresql://gen_user@188.225.75.81:5432/football` (пароль в secrets.txt)
+
+**Deploy:** GitHub Actions → GHCR → SSH pull → `docker compose up -d --no-deps nextjs dotnet-api`
+
+**Nginx config:** `config/nginx/fcarsenal92.ru.conf` — именно этот файл деплоится на сервер
+
+**Admin:** `admin@fcarsenal92.ru` (email из GitHub Secret ADMIN_EMAIL)
+
+---
 
 ## Behavioral Rules (Always Enforced)
 
 - Do what has been asked; nothing more, nothing less
-- NEVER create files unless they're absolutely necessary for achieving your goal
+- NEVER create files unless absolutely necessary
 - ALWAYS prefer editing an existing file to creating a new one
-- NEVER proactively create documentation files (*.md) or README files unless explicitly requested
-- NEVER save working files, text/mds, or tests to the root folder
-- Never continuously check status after spawning a swarm — wait for results
+- NEVER proactively create documentation (`*.md`) or README unless explicitly asked
+- NEVER save working files or tests to the root folder
 - ALWAYS read a file before editing it
 - NEVER commit secrets, credentials, or .env files
+- NEVER continuously poll agent status — spawn once, wait for result
+- ALWAYS run tests after code changes; verify build before commit
+- После каждого коммита — `git push origin master` для запуска CI/CD
+
+---
 
 ## File Organization
 
-- NEVER save to root folder — use the directories below
-- Use `/src` for source code files
-- Use `/tests` for test files
-- Use `/docs` for documentation and markdown files
-- Use `/config` for configuration files
-- Use `/scripts` for utility scripts
-- Use `/examples` for example code
+| Purpose | Directory |
+|---------|-----------|
+| Source code | `/src` |
+| Tests | `/tests` |
+| Documentation | `/docs` |
+| Configuration | `/config` |
+| Scripts | `/scripts` |
+| Examples | `/examples` |
 
-## Project Architecture
+---
 
-- Follow Domain-Driven Design with bounded contexts
-- Keep files under 500 lines
-- Use typed interfaces for all public APIs
-- Prefer TDD London School (mock-first) for new code
-- Use event sourcing for state changes
-- Ensure input validation at system boundaries
+## Architecture
 
-### Project Config
+- **Pattern**: Domain-Driven Design, bounded contexts
+- **Files**: keep under 500 lines
+- **APIs**: typed interfaces for all public APIs
+- **Testing**: TDD London School (mock-first) for new code
+- **State**: event sourcing for state changes
+- **Validation**: input validation at system boundaries only
 
-- **Topology**: hierarchical-mesh
-- **Max Agents**: 15
-- **Memory**: hybrid
-- **HNSW**: Enabled
-- **Neural**: Enabled
+### Frontend structure:
+- `src/frontend/src/app/` — Next.js pages (App Router)
+- `src/frontend/src/components/` — переиспользуемые компоненты
+- `src/frontend/src/lib/api.ts` — все API вызовы (SSR: API_INTERNAL_URL, client: relative URL)
+- `src/frontend/src/types/` — TypeScript типы
+
+### Backend structure:
+- `Arsenal.API` — Controllers, Program.cs
+- `Arsenal.Application` — Commands, Queries, DTOs
+- `Arsenal.Domain` — Entities, Value Objects
+- `Arsenal.Infrastructure` — EF Core, DbInitializer, Repositories
+
+---
 
 ## Build & Test
 
 ```bash
-# Build
-npm run build
+# Frontend
+cd src/frontend && npm run build && npm run lint
 
-# Test
-npm test
+# Backend
+dotnet build src/backend && dotnet test src/backend
 
-# Lint
-npm run lint
+# Docker (локально перед пушем)
+docker compose -f docker-compose.yml build
 ```
 
-- ALWAYS run tests after making code changes
-- ALWAYS verify build succeeds before committing
+---
 
 ## Security Rules
 
 - NEVER hardcode API keys, secrets, or credentials in source files
-- NEVER commit .env files or any file containing secrets
+- NEVER commit .env files or files containing secrets
 - Always validate user input at system boundaries
 - Always sanitize file paths to prevent directory traversal
-- Run `npx @claude-flow/cli@latest security scan` after security-related changes
 
-## Concurrency: 1 MESSAGE = ALL RELATED OPERATIONS
+---
+
+## Concurrency — 1 MESSAGE = ALL RELATED OPERATIONS
 
 - All operations MUST be concurrent/parallel in a single message
-- Use Claude Code's Agent tool for spawning agents, not just MCP
-- ALWAYS spawn ALL agents in ONE message with full instructions via Agent tool
+- ALWAYS spawn ALL agents in ONE message via Agent tool
 - ALWAYS batch ALL file reads/writes/edits in ONE message
 - ALWAYS batch ALL Bash commands in ONE message
 
-## Swarm Orchestration
+---
 
-- MUST initialize the swarm using CLI tools when starting complex tasks
-- MUST spawn concurrent agents using Claude Code's Agent tool
-- Never use CLI tools alone for execution — Agent tool agents do the actual work
-- MUST call CLI tools AND Agent tool in ONE message for complex work
+## Swarm Orchestration (RuFlo V3.5)
 
-### 3-Tier Model Routing (ADR-026)
-
-| Tier | Handler | Latency | Cost | Use Cases |
-|------|---------|---------|------|-----------|
-| **1** | Agent Booster (WASM) | <1ms | $0 | Simple transforms (var→const, add types) — Skip LLM |
-| **2** | Haiku | ~500ms | $0.0002 | Simple tasks, low complexity (<30%) |
-| **3** | Sonnet/Opus | 2-5s | $0.003-0.015 | Complex reasoning, architecture, security (>30%) |
-
-- For Tier 1 simple transforms, use Edit tool directly — no LLM agent needed
-
-## Swarm Configuration & Anti-Drift
-
-- ALWAYS use hierarchical topology for coding swarms
-- Keep maxAgents at 6-8 for tight coordination
-- Use specialized strategy for clear role boundaries
-- Use `raft` consensus for hive-mind (leader maintains authoritative state)
-- Run frequent checkpoints via `post-task` hooks
-- Keep shared memory namespace for all agents
-
+### Инициализация:
 ```bash
 npx @claude-flow/cli@latest swarm init --topology hierarchical --max-agents 8 --strategy specialized
 ```
 
-## Swarm Execution Rules
+### Правила:
+- Для сложных задач (>3 файлов, >1 домен) — ОБЯЗАТЕЛЬНО используй swarm
+- Topology: hierarchical для coding swarms (anti-drift)
+- maxAgents: 6-8 для tight coordination
+- Consensus: `raft` для hive-mind
+- `run_in_background: true` для ВСЕХ Agent calls
+- После spawn — СТОП. Не добавляй tool calls, не проверяй статус
 
-- ALWAYS use `run_in_background: true` for all Agent tool calls
-- ALWAYS put ALL Agent calls in ONE message for parallel execution
-- After spawning, STOP — do NOT add more tool calls or check status
-- Never poll agent status repeatedly — trust agents to return
-- When agent results arrive, review ALL results before proceeding
+### 3-Tier Model Routing:
 
-## V3 CLI Commands
+| Tier | Handler | Latency | Use Cases |
+|------|---------|---------|-----------|
+| **1** | Edit tool (direct) | <1ms | Simple transforms — no LLM |
+| **2** | Haiku | ~500ms | Simple tasks (<30% complexity) |
+| **3** | Sonnet/Opus | 2-5s | Architecture, security, complex reasoning |
 
-### Core Commands
+---
 
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `init` | 4 | Project initialization |
-| `agent` | 8 | Agent lifecycle management |
-| `swarm` | 6 | Multi-agent swarm coordination |
-| `memory` | 11 | AgentDB memory with HNSW search |
-| `task` | 6 | Task creation and lifecycle |
-| `session` | 7 | Session state management |
-| `hooks` | 17 | Self-learning hooks + 12 workers |
-| `hive-mind` | 6 | Byzantine fault-tolerant consensus |
+## RuFlo V3.5 — Memory & Tools
 
-### Quick CLI Examples
+### Активные скиллы этого проекта:
+- **graphify** — knowledge graph кодовой базы (ПРИОРИТЕТ для поиска)
+- **UI/UX analysis** — дизайн аудит и улучшения
+- **SEO** — технический SEO, schema.org, sitemap
+- **swarm-orchestration** — multi-agent coordination
 
+### Memory tools (через ToolSearch):
+
+```
+ToolSearch("memory search")      → memory_store, memory_search, memory_search_unified
+ToolSearch("swarm")              → swarm_init, swarm_status, swarm_health
+ToolSearch("+aidefence")         → aidefence_scan, aidefence_is_safe
+ToolSearch("hooks intelligence") → hooks_intelligence, neural_train
+```
+
+### Key MCP tools:
+
+| Category | Tools |
+|----------|-------|
+| Memory | `memory_store`, `memory_search`, `memory_search_unified` |
+| Swarm | `swarm_init`, `swarm_status`, `agent_spawn` |
+| Hive-Mind | `hive-mind_init`, `hive-mind_consensus` |
+| Hooks | `hooks_route`, `hooks_post-task`, `hooks_intelligence` |
+
+### CLI:
 ```bash
-npx @claude-flow/cli@latest init --wizard
+npx @claude-flow/cli@latest memory search --query "..."
 npx @claude-flow/cli@latest agent spawn -t coder --name my-coder
-npx @claude-flow/cli@latest swarm init --v3-mode
-npx @claude-flow/cli@latest memory search --query "authentication patterns"
 npx @claude-flow/cli@latest doctor --fix
 ```
 
-## Available Agents (16 Roles + Custom)
+---
 
-### Core Development
-`coder`, `reviewer`, `tester`, `planner`, `researcher`
+## UI/UX Skill — Activation Rules
 
-### Specialized
-`security-architect`, `security-auditor`, `memory-specialist`, `performance-engineer`
+Invoke UI/UX skill when:
+- Пользователь просит оценить / улучшить дизайн
+- Есть жалобы на внешний вид компонентов
+- Добавляются новые страницы или секции
 
-### Coordination
-`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`
+Design system enforcement:
+- Цвета: `brand-blue` (#1e3a5f), `brand-red` (#c0392b) — только через CSS переменные
+- Анимации: `transition-all duration-200` как стандарт
+- Hover states: `hover:shadow-xl hover:-translate-y-1` для карточек
+- Focus: `focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2` для интерактивных элементов
 
-### GitHub & Repository
-`pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`
+---
 
-Any string can be used as a custom agent type — these are the typed roles with specialized behavior.
+## SEO Skill — Activation Rules
 
-## Memory & Vector Search
+Invoke SEO skill when:
+- Добавляются новые страницы (нужны метатеги + schema.org)
+- Изменяется sitemap.ts
+- Работа с robots.txt, Open Graph, canonical URLs
+- Любые изменения в layout.tsx
 
-### MCP Tools (use via ToolSearch to discover)
+SEO checklist для каждой страницы:
+- `export const metadata: Metadata` с title + description
+- Schema.org JSON-LD через `<JsonLd />`
+- Запись в `src/frontend/src/app/sitemap.ts`
+- Image alt-тексты на русском
 
-| Tool | Description |
-|------|-------------|
-| `memory_store` | Store value with ONNX 384-dim vector embedding |
-| `memory_search` | Semantic vector search by query |
-| `memory_retrieve` | Get entry by key |
-| `memory_list` | List entries in namespace |
-| `memory_delete` | Delete entry |
-| `memory_import_claude` | Import Claude Code memories into AgentDB (allProjects=true for all) |
-| `memory_search_unified` | Search across ALL namespaces (Claude + AgentDB + patterns) |
-| `memory_bridge_status` | Show bridge health, vectors, SONA, intelligence |
-
-### CLI Commands
-
-```bash
-# Store with vector embedding
-npx @claude-flow/cli@latest memory store --key "pattern-auth" --value "JWT with refresh" --namespace patterns
-
-# Semantic search
-npx @claude-flow/cli@latest memory search --query "authentication patterns"
-
-# Import all Claude Code memories into AgentDB
-node .claude/helpers/auto-memory-hook.mjs import-all
-```
-
-### Claude Code ↔ AgentDB Bridge
-
-Claude Code auto-memory files (`~/.claude/projects/*/memory/*.md`) are automatically imported into AgentDB with ONNX vector embeddings on session start. Use `memory_search_unified` to search across both stores.
-
-## Key MCP Tools (314 available — use ToolSearch to discover)
-
-### Most Used Tools
-
-| Category | Tools | What They Do |
-|----------|-------|-------------|
-| **Memory** | `memory_store`, `memory_search`, `memory_search_unified` | Store/search with ONNX vector embeddings |
-| **Claude Bridge** | `memory_import_claude`, `memory_bridge_status` | Import Claude memories into AgentDB |
-| **Swarm** | `swarm_init`, `swarm_status`, `swarm_health` | Multi-agent coordination |
-| **Agents** | `agent_spawn`, `agent_list`, `agent_status` | Agent lifecycle |
-| **Hive-Mind** | `hive-mind_init`, `hive-mind_spawn`, `hive-mind_consensus` | Byzantine/Raft consensus |
-| **Hooks** | `hooks_route`, `hooks_session-start`, `hooks_post-task` | Task routing + learning |
-| **Workers** | `hooks_worker-list`, `hooks_worker-dispatch` | 12 background workers |
-| **Security** | `aidefence_scan`, `aidefence_is_safe` | Prompt injection detection |
-| **Intelligence** | `hooks_intelligence`, `neural_status` | Pattern learning + SONA |
-
-### Swarm Capabilities
-
-- **Topologies**: hierarchical (anti-drift), mesh, ring, star, adaptive
-- **Consensus**: Raft (leader-based), Byzantine (PBFT), Gossip (eventual)
-- **Hive-Mind**: Queen-led coordination with spawn, broadcast, consensus voting, shared memory
-- **12 Background Workers**: audit, optimize, testgaps, map, deepdive, document, refactor, benchmark, ultralearn, consolidate, predict, preload
-
-### Memory Capabilities
-
-- **ONNX Embeddings**: all-MiniLM-L6-v2, 384 dimensions — real neural vectors
-- **DiskANN**: SSD-friendly vector search (8,000x faster insert than HNSW, perfect recall at 1K)
-- **sql.js**: Cross-platform SQLite (WASM, no native compilation)
-- **Claude Code Bridge**: Auto-imports MEMORY.md files into AgentDB on session start
-- **Unified Search**: `memory_search_unified` searches Claude memories + AgentDB + patterns
-- **SONA Learning**: Trajectory recording → pattern extraction → file persistence
-
-### How to Discover Tools
-
-Use ToolSearch to find specific tools:
-```
-ToolSearch("memory search")     → memory_store, memory_search, memory_search_unified
-ToolSearch("swarm")             → swarm_init, swarm_status, swarm_health, swarm_shutdown
-ToolSearch("hive consensus")    → hive-mind_consensus, hive-mind_status
-ToolSearch("+aidefence")        → aidefence_scan, aidefence_is_safe, aidefence_has_pii
-```
-
-## Quick Setup
-
-```bash
-claude mcp add claude-flow -- npx -y @claude-flow/cli@latest
-npx @claude-flow/cli@latest daemon start
-npx @claude-flow/cli@latest doctor --fix
-```
-
-## Claude Code vs MCP Tools
-
-- **Claude Code Agent tool** handles execution: agents, file ops, code generation, git
-- **MCP tools** (via ToolSearch) handle coordination: swarm, memory, hooks, routing, hive-mind
-- **CLI commands** (via Bash) are the same tools with terminal output
-- Use `ToolSearch("keyword")` to discover available MCP tools
+---
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/ruflo
-- Issues: https://github.com/ruvnet/ruflo/issues
+- RuFlo docs: https://github.com/ruvnet/ruflo
+- CI/CD status: https://github.com/KirillMaster/football_site/actions
