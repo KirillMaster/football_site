@@ -30,11 +30,10 @@ export default async function RaspisaniePage() {
 
           {/* Legend */}
           <div className="mt-8 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-2">Все тренировки проводятся на:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Стадионе «Арсенал» — ул. Спортивная, 1</li>
-              <li>Спортзал №2 — ул. Спортивная, 3 (в случае дождя)</li>
-            </ul>
+            <p className="font-medium mb-2">Место проведения тренировок:</p>
+            <p>Спорткомплекс школы №61, ул. Косарева, д.12</p>
+            <p className="mt-1 text-gray-500">Сезон: сентябрь 2025 — июнь 2026</p>
+            <p className="mt-1 text-gray-500">Понедельник — пятница: 18:00–19:30, суббота: 12:00–13:30</p>
           </div>
         </div>
       </section>
