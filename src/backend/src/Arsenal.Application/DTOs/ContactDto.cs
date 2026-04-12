@@ -7,8 +7,8 @@ public record CreateTryoutRequestRequest(
     int ChildAge,
     string ParentName,
     string Phone,
-    string? Email,
-    string? Message
+    string? Email = null,
+    string? Message = null
 );
 
 public record SitemapDataDto(
