@@ -2,6 +2,7 @@ using Arsenal.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -13,21 +14,29 @@ public class WebAppFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
 
+        // Inject test config BEFORE services are built (so AddInfrastructure can read them)
+        builder.ConfigureAppConfiguration((_, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["DATABASE_URL"] = "Host=localhost;Database=arsenaltest",
+                ["JWT_SECRET"] = "test-secret-key-minimum-32-characters-long!",
+                ["JWT_ISSUER"] = "arsenal-api",
+                ["JWT_AUDIENCE"] = "arsenal-frontend",
+                ["S3_ENDPOINT"] = "https://s3.example.com",
+                ["S3_BUCKET"] = "test-bucket",
+                ["S3_ACCESS_KEY"] = "test-key",
+                ["S3_SECRET_KEY"] = "test-secret"
+            });
+        });
+
         builder.ConfigureServices(services =>
         {
             // Replace real Postgres with InMemory
             services.RemoveAll<DbContextOptions<ArsenalDbContext>>();
             services.RemoveAll<ArsenalDbContext>();
-
             services.AddDbContext<ArsenalDbContext>(opts =>
                 opts.UseInMemoryDatabase("ArsenalTest_" + Guid.NewGuid()));
-
-            // Override env vars for JWT
-            Environment.SetEnvironmentVariable("JWT_SECRET", "test-secret-key-minimum-32-characters-long!");
-            Environment.SetEnvironmentVariable("DATABASE_URL", "Host=localhost;Database=test");
-            Environment.SetEnvironmentVariable("S3_BUCKET", "test-bucket");
-            Environment.SetEnvironmentVariable("S3_ACCESS_KEY", "test-key");
-            Environment.SetEnvironmentVariable("S3_SECRET_KEY", "test-secret");
 
             // Ensure DB is created
             var sp = services.BuildServiceProvider();

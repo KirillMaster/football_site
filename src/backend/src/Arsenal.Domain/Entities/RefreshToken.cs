@@ -15,7 +15,7 @@ public class RefreshToken : BaseEntity
 
     public static RefreshToken Create(Guid userId, string token, DateTime expiresAt)
     {
-        if (string.IsNullOrWhiteSpace(token)) throw new ArgumentException("Token is required");
+        if (string.IsNullOrWhiteSpace(token)) throw new ArgumentException("Token is required", nameof(token));
 
         return new RefreshToken
         {
