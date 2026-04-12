@@ -54,7 +54,7 @@
 | S3 Storage | Timeweb S3 (s3.twcstorage.ru, region ru-1) — фото, видео, загрузки |
 | Container | Docker Compose (nginx + nextjs + dotnet-api + postgres) |
 | Reverse proxy | Nginx с SSL (Let's Encrypt / certbot) |
-| Server | Timeweb VPS, Казахстан (45.10.40.194) |
+| Server | Timeweb VPS, Казахстан (147.45.229.110) |
 | CI/CD | GitHub Actions → SSH deploy |
 
 ---
@@ -383,7 +383,7 @@ AdminUsers         — пользователи админки
 ### Сервер
 
 - Timeweb VPS, Казахстан
-- IP: 45.10.40.194
+- IP: 147.45.229.110
 - OS: предполагается Ubuntu/Debian
 
 ### Настройка сервера
@@ -397,9 +397,9 @@ AdminUsers         — пользователи админки
 ### Домен
 
 - Домен: **fcarsenal92.ru** (куплен на Timeweb)
-- Привязан к серверу: 45.10.40.194
-- DNS A-запись: fcarsenal92.ru → 45.10.40.194
-- DNS A-запись: www.fcarsenal92.ru → 45.10.40.194 (или CNAME → fcarsenal92.ru)
+- Привязан к серверу: 147.45.229.110
+- DNS A-запись: fcarsenal92.ru → 147.45.229.110
+- DNS A-запись: www.fcarsenal92.ru → 147.45.229.110 (или CNAME → fcarsenal92.ru)
 - www → 301 redirect на fcarsenal92.ru (без www — основной)
 
 ### S3 хранилище (Timeweb S3)
@@ -479,8 +479,8 @@ AdminUsers         — пользователи админки
 
 **3. Домен и DNS**
 - [x] Домен fcarsenal92.ru куплен на Timeweb
-- [ ] Настроить DNS A-запись: fcarsenal92.ru → 45.10.40.194 (в панели Timeweb)
-- [ ] Настроить DNS A-запись: www.fcarsenal92.ru → 45.10.40.194
+- [ ] Настроить DNS A-запись: fcarsenal92.ru → 147.45.229.110 (в панели Timeweb)
+- [ ] Настроить DNS A-запись: www.fcarsenal92.ru → 147.45.229.110
 
 ### Для онлайн-оплаты (если нужна)
 

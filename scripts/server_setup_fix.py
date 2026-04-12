@@ -11,7 +11,7 @@ import sys
 import os
 import socket
 
-HOST = "45.10.40.194"
+HOST = "147.45.229.110"
 USER = "root"
 PASSWORD = "emJkYbtCzY@+i4"
 

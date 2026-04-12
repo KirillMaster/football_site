@@ -1,6 +1,6 @@
 # Server Setup Summary - FC Arsenal-92
 
-**Server:** 45.10.40.194
+**Server:** 147.45.229.110
 **OS:** Ubuntu 24.04.3 LTS (Noble Numbat)
 **Kernel:** 6.8.0-100-generic x86_64
 **Date:** 2026-04-12
@@ -69,7 +69,7 @@ Default: deny incoming, allow outgoing
 
 ## Next Steps
 
-1. Configure DNS to point domain to 45.10.40.194
+1. Configure DNS to point domain to 147.45.229.110
 2. Deploy application to /opt/football-site
 3. Set up SSL certificate: `certbot certonly --standalone -d yourdomain.com`
 4. Configure nginx reverse proxy or Docker-based web server
