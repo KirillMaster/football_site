@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Видео',
-  description: 'Видеогалерея ФК Арсенал-92 — лучшие моменты тренировок и матчей.',
+  description: 'Видеогалерея футбольного клуба «Арсенал» Севастополь — лучшие моменты тренировок и матчей.',
 };
 
-// Real Rutube videos — add IDs as new videos are published
+const S3_BASE = 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads';
+
 const mockVideos = [
   {
     id: 1,
@@ -25,8 +26,30 @@ export default function VideoPage() {
         </div>
       </section>
 
+      {/* Featured — Arsenal Sevastopol promo */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title mb-6 text-center">Арсенал Севастополь</h2>
+          <div className="relative aspect-video bg-black rounded-xl overflow-hidden shadow-lg">
+            <video
+              controls
+              preload="metadata"
+              poster={`${S3_BASE}/promo_1.jpg`}
+              className="absolute inset-0 w-full h-full object-contain"
+            >
+              <source src={`${S3_BASE}/arsenal_full.mp4`} type="video/mp4" />
+              Ваш браузер не поддерживает воспроизведение видео.
+            </video>
+          </div>
+          <p className="text-center text-sm text-gray-500 mt-3">
+            Промо-ролик футбольного клуба «Арсенал» Севастополь
+          </p>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title mb-8 text-center">Другие видео</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mockVideos.map((video) => (
               <div key={video.id} className="bg-white rounded-xl shadow-md overflow-hidden">

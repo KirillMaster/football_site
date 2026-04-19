@@ -7,7 +7,7 @@ import { getCoachSchema } from '@/lib/schema';
 export const metadata: Metadata = {
   title: 'Тренеры',
   description:
-    'Тренерский состав ФК Арсенал-92. Опытные специалисты с лицензиями UEFA и РФС. Узнайте о каждом тренере клуба.',
+    'Тренерский состав футбольного клуба «Арсенал» Севастополь. Лицензия УЕФА категории C. Узнайте о каждом тренере клуба.',
 };
 
 export default async function TreneryPage() {

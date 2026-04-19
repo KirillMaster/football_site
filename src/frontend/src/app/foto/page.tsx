@@ -5,7 +5,7 @@ import PhotoGallery from '@/components/PhotoGallery';
 export const metadata: Metadata = {
   title: 'Фото',
   description:
-    'Фотогалерея ФК Арсенал-92 — тренировки, турниры, жизнь клуба.',
+    'Фотогалерея футбольного клуба «Арсенал» Севастополь — тренировки, турниры, жизнь клуба.',
 };
 
 export default async function FotoPage() {

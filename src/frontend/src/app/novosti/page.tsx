@@ -5,7 +5,7 @@ import NewsCard from '@/components/NewsCard';
 export const metadata: Metadata = {
   title: 'Новости',
   description:
-    'Последние новости ФК Арсенал-92: турниры, результаты матчей, события клуба.',
+    'Последние новости футбольного клуба «Арсенал» Севастополь: турниры, результаты матчей, события клуба.',
 };
 
 interface Props {
@@ -23,7 +23,7 @@ export default async function NovostiPage({ searchParams }: Props) {
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-black mb-3">Новости</h1>
-          <p className="text-blue-300 text-lg">События клуба ФК Арсенал-92</p>
+          <p className="text-blue-300 text-lg">События футбольного клуба «Арсенал» Севастополь</p>
         </div>
       </section>
 

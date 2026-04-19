@@ -9,7 +9,7 @@ import { mockGroups } from '@/lib/mock-data';
 export const metadata: Metadata = {
   title: 'Цены на тренировки',
   description:
-    'Стоимость занятий в ФК Арсенал-92: Standard — 4000₽, Standard+ — 5400₽, PRO — 6000₽ в месяц. Первое занятие бесплатно.',
+    'Стоимость занятий в футбольном клубе «Арсенал» Севастополь: Standard — 4000₽, Standard+ — 5400₽, PRO — 6000₽ в месяц. Первое занятие бесплатно.',
 };
 
 const faq = [

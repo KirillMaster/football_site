@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Экипировка и снаряжение',
   description:
-    'Спортивная экипировка ДФК Арсенал-92: бутсы, форма, зимние куртки. Заказ через Telegram.',
+    'Спортивная экипировка футбольного клуба «Арсенал» Севастополь: бутсы, форма, зимние куртки. Заказ через Telegram.',
 };
 
 const products = [

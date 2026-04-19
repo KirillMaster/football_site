@@ -9,9 +9,9 @@ import { JsonLd } from '@/components/JsonLd';
 import { getSportsClubSchema, getWebSiteSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
-  title: 'ФК Арсенал-92 — Детская футбольная школа Севастополя',
+  title: 'Футбольный клуб «Арсенал» Севастополь — Детская футбольная школа',
   description:
-    'Детская футбольная школа ФК Арсенал-92 в Севастополе. Тренировки для детей от 5 до 17 лет. Запишитесь на бесплатное пробное занятие!',
+    'Детская футбольная школа «Арсенал» в Севастополе. 64 воспитанника 6–16 лет. Лицензия УЕФА C. Открыт набор 2026. Запишитесь на пробное занятие!',
   openGraph: { type: 'website' },
 };
 
@@ -41,7 +41,7 @@ export default async function HomePage() {
             poster="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
           >
-            <source src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/hero_video.mp4" type="video/mp4" />
+            <source src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/hero_video_new.mp4" type="video/mp4" />
           </video>
         </div>
         {/* Dark overlay */}
@@ -51,17 +51,17 @@ export default async function HomePage() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-brand-red/20 border border-brand-red/40 rounded-full px-4 py-1.5 text-sm text-red-300 mb-6">
               <span className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
-              Набор открыт — 2026
+              Открыт набор 2026
             </div>
-            <h1 className="text-4xl md:text-6xl font-black leading-tight mb-4">
-              ФК <span className="text-brand-red">Арсенал-92</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-4">
+              Футбольный клуб <span className="text-brand-red">«Арсенал»</span>
+              <span className="block text-3xl md:text-4xl lg:text-5xl mt-2">Севастополь</span>
             </h1>
-            <p className="text-xl md:text-2xl text-blue-200 font-medium mb-3">
-              Детская футбольная школа Севастополя
-            </p>
-            <p className="text-base text-blue-300 mb-8 leading-relaxed">
-              Воспитываем чемпионов с 1992 года. Профессиональные тренеры, современные методики,
-              дружный коллектив. Для детей от&nbsp;5 до&nbsp;17 лет.
+            <p className="text-base md:text-lg text-blue-200 leading-relaxed mb-8">
+              Мы не обещаем, что ваши дети станут чемпионами и будут завоёвывать кубки — мы не ставим результаты во главу угла.
+              Идеология клуба: <span className="text-white font-semibold">фокус на развитии каждого ребёнка</span>, похвала за усилия,
+              цели, ориентированные на индивидуальное мастерство. Наша задача — создать среду, в которой ребёнок обретёт
+              мотивацию, уверенность и любовь к спорту на всю жизнь.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4">
@@ -75,12 +75,12 @@ export default async function HomePage() {
             {/* Stats */}
             <div className="mt-12 grid grid-cols-3 gap-6 max-w-sm">
               {[
-                { value: '30+', label: 'лет опыта' },
-                { value: '4', label: 'тренера' },
-                { value: '100+', label: 'детей' },
+                { value: '64', label: 'воспитанника' },
+                { value: '6–16', label: 'лет' },
+                { value: 'УЕФА C', label: 'лицензия тренера' },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-black text-white">{stat.value}</div>
+                  <div className="text-2xl md:text-3xl font-black text-white">{stat.value}</div>
                   <div className="text-xs text-blue-400 mt-1">{stat.label}</div>
                 </div>
               ))}
@@ -96,19 +96,19 @@ export default async function HomePage() {
             <div>
               <h2 className="section-title">О клубе</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
-                ФК Арсенал-92 основан в 1992 году в Севастополе. За более чем 30 лет клуб воспитал
-                сотни юных футболистов, многие из которых стали профессиональными игроками.
+                ФК «Арсенал» — это сплочённая команда тренеров, родителей, детей и наших друзей.
+                В июле 2022 года Игорь Кулиев воплотил свою мечту в жизнь и основал АНО «Футбольный клуб «Арсенал».
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">
-                Мы работаем с детьми от 5 до 17 лет. Наши тренеры имеют лицензии UEFA и применяют
-                современные европейские методики обучения.
+                Мы пытаемся сломать стереотип — не гонимся за количеством, делая акцент на качестве подготовки
+                и раскрытии потенциала каждого воспитанника. Группы формируем по способностям, а не по возрасту.
               </p>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 {[
-                  { label: 'Чемпионы Севастополя', value: '2020, 2022, 2024' },
-                  { label: 'Финалисты Кубка Крыма', value: '2023' },
-                  { label: 'В профессиональных клубах', value: '15+ воспитанников' },
-                  { label: 'Первое занятие', value: 'Бесплатно' },
+                  { label: 'воспитанников 6–16 лет', value: '64' },
+                  { label: 'лицензия тренера', value: 'УЕФА C' },
+                  { label: 'основан', value: 'июль 2022' },
+                  { label: 'пробное занятие', value: 'бесплатно' },
                 ].map((item) => (
                   <div key={item.label} className="bg-white rounded-lg p-3 border border-gray-200">
                     <div className="font-bold text-brand-red text-sm">{item.value}</div>
@@ -123,7 +123,7 @@ export default async function HomePage() {
             <div className="relative h-80 rounded-2xl overflow-hidden bg-gray-200">
               <Image
                 src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/2.jpg"
-                alt="Тренировка ДФК Арсенал-92 Севастополь"
+                alt="Тренировка футбольного клуба «Арсенал» Севастополь"
                 fill
                 className="object-cover"
               />
@@ -146,27 +146,34 @@ export default async function HomePage() {
               />
             </div>
             <div>
-              <div className="text-brand-red text-sm font-bold uppercase tracking-wide mb-1">Генеральный директор и старший тренер</div>
-              <h3 className="text-2xl font-black text-brand-blue mb-1">ДФК «АРСЕНАЛ»</h3>
+              <div className="text-brand-red text-sm font-bold uppercase tracking-wide mb-1">Генеральный директор и главный тренер</div>
+              <h3 className="text-2xl font-black text-brand-blue mb-1">ФК «Арсенал» Севастополь</h3>
               <h4 className="text-xl font-bold text-gray-700 mb-6">Кулиев Игорь Рамизович</h4>
-              <h5 className="font-bold text-gray-900 mb-3">Миссия и цели</h5>
               <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                Мы верим в то, что совместно способны создать лучшую школу футбола в Севастополе! Да, согласен, звучит громко и вызывающе, но если мыслить иначе, то зачем всё начинать?
+                Мы развиваем детей, а не компании, производящие грамоты, кубки и медали — такова наша миссия.
+                Она помогает нам не сбиваться с выбранного правильного пути. Наши тренеры работают с детьми,
+                а не командой или результатами.
+              </p>
+              <p className="text-gray-600 text-sm leading-relaxed mb-3 italic border-l-2 border-brand-red pl-4">
+                Хорошие тренеры тренируют физические качества, а великие — людей. С самооценкой у нас всё в порядке,
+                мы стремимся занять места во второй категории.
               </p>
               <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                Мы не обещаем, что ваши дети у нас станут чемпионами, будут завоёвывать кубки, медали и грамоты, мы реально не ставим во главу угла результаты. У нас абсолютно иные цели и модель построения отношений тренера с подопечными. Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство каждого!
+                Мы никогда не ставим результат во главу угла, нам важно воспитать индивидуально сильного игрока.
+                Наши дети стажируются и проходят просмотры в академиях «Строгино», «Локомотива», «Краснодара»,
+                «Ахмата», «Кубани», готовятся к просмотрам в Европе — в EFC Antalya (Турция) и FC Nervion (Испания).
               </p>
               <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Безусловно, в спорте главная цель победа, но мы должны понять и принять, что наши дети пришли сюда учиться и цель, в их случае, должна быть направлена на гармоничное и всестороннее развитие ребёнка.
+                Показательно, что несмотря на приглашения ведущих академий, дети совместно с родителями
+                принимают решение оставаться в «Арсенале». Один из воспитанников уже перешёл в ФК «Раднички» (Сербия);
+                налажены контакты с клубами Черногории и Турции. В 21 веке все дороги для детей открыты —
+                всё зависит исключительно от эффективности нашей работы.
               </p>
-              <h5 className="font-bold text-gray-900 mb-2">Задачи и принципы клуба:</h5>
-              <p className="text-gray-600 text-sm leading-relaxed mb-2">
-                Идеология проекта заключается в создании климата, ориентированного на индивидуальное мастерство, при котором:
-              </p>
+              <h5 className="font-bold text-gray-900 mb-2">Принципы работы клуба:</h5>
               <ul className="space-y-1 text-sm text-gray-600">
-                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">а)</span> Мы делаем фокус на развитие каждого ребёнка, а не результаты Команды;</li>
-                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">б)</span> Мы хвалим усилия, а не результаты матчей;</li>
-                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">в)</span> Мы устанавливаем цели, ориентированные на мастерство каждого, а не на результаты Команды.</li>
+                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">а)</span> Фокус на развитии каждого ребёнка, а не на результатах команды;</li>
+                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">б)</span> Хвалим усилия, а не результаты матчей;</li>
+                <li className="flex gap-2"><span className="text-brand-red font-bold flex-shrink-0">в)</span> Цели ориентированы на мастерство каждого, а не на результаты команды.</li>
               </ul>
             </div>
           </div>

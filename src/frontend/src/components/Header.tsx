@@ -27,15 +27,15 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
             <Image
-              src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg"
-              alt="ФК Арсенал-92"
+              src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_96.png"
+              alt="Футбольный клуб «Арсенал» Севастополь"
               width={40}
               height={40}
               className="rounded-full"
             />
             <div className="hidden sm:block">
-              <div className="font-black text-base leading-tight">ФК АРСЕНАЛ-92</div>
-              <div className="text-xs text-blue-300">Детская футбольная школа</div>
+              <div className="font-black text-sm leading-tight">Футбольный клуб</div>
+              <div className="text-xs text-blue-300">«Арсенал» Севастополь</div>
             </div>
           </Link>
 

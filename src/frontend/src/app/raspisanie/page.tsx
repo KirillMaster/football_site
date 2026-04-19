@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Расписание тренировок',
   description:
-    'Актуальное расписание тренировок ФК Арсенал-92 на неделю. Группы для детей от 5 до 17 лет.',
+    'Актуальное расписание тренировок футбольного клуба «Арсенал» Севастополь на неделю. Группы для детей 6–16 лет.',
 };
 
 export default async function RaspisaniePage() {

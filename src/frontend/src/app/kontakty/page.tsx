@@ -7,7 +7,7 @@ import { getLocalBusinessSchema } from '@/lib/schema';
 export const metadata: Metadata = {
   title: 'Контакты',
   description:
-    'Контакты ФК Арсенал-92 в Севастополе. Телефоны, адрес, карта проезда. Напишите нам онлайн.',
+    'Контакты футбольного клуба «Арсенал» Севастополь. Телефоны, адрес, карта проезда. Напишите нам онлайн.',
 };
 
 export default async function KontaktyPage() {
@@ -120,7 +120,7 @@ export default async function KontaktyPage() {
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="Карта проезда к ФК Арсенал-92"
+                    title="Карта проезда к ФК «Арсенал» Севастополь"
                   />
                 ) : (
                   <div className="h-full flex items-center justify-center text-gray-400 text-sm">

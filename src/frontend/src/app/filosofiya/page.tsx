@@ -4,7 +4,7 @@ import { getCmsPage } from '@/lib/api';
 export const metadata: Metadata = {
   title: 'Философия клуба',
   description:
-    'Ценности и методология ФК Арсенал-92. Как мы воспитываем детей через футбол.',
+    'Ценности и методология футбольного клуба «Арсенал» Севастополь. Как мы воспитываем детей через футбол.',
 };
 
 export default async function FilosofiyaPage() {

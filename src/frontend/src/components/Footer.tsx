@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { SiteSettings } from '@/types';
 
 interface FooterProps {
@@ -13,16 +14,20 @@ export default function Footer({ settings }: FooterProps) {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-black text-white text-sm">
-                92
-              </div>
+              <Image
+                src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_96.png"
+                alt="Футбольный клуб «Арсенал» Севастополь"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
               <div>
-                <div className="font-black text-base">ФК АРСЕНАЛ-92</div>
-                <div className="text-xs text-blue-300">Детская футбольная школа</div>
+                <div className="font-black text-sm leading-tight">Футбольный клуб</div>
+                <div className="text-xs text-blue-300">«Арсенал» Севастополь</div>
               </div>
             </div>
             <p className="text-sm text-blue-300 leading-relaxed">
-              Воспитываем чемпионов с 1992 года. Тренировки для детей от 5 до 17 лет в Севастополе.
+              Детская футбольная школа в Севастополе. 64 воспитанника 6–16 лет, лицензия УЕФА категории C.
             </p>
           </div>
 
@@ -121,7 +126,7 @@ export default function Footer({ settings }: FooterProps) {
         </div>
 
         <div className="mt-8 pt-8 border-t border-blue-700 text-center text-sm text-blue-400">
-          <p>© {new Date().getFullYear()} ФК Арсенал-92. Все права защищены.</p>
+          <p>© {new Date().getFullYear()} Футбольный клуб «Арсенал» Севастополь. Все права защищены.</p>
         </div>
       </div>
     </footer>

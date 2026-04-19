@@ -21,9 +21,9 @@ const address = {
 
 const logo = {
   '@type': 'ImageObject',
-  url: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
-  width: 1072,
-  height: 1037,
+  url: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
+  width: 512,
+  height: 561,
 } as const;
 
 const sameAs = [
@@ -55,10 +55,10 @@ export function getOrganizationSchema(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': ORG_ID,
-    name: 'ДФК Арсенал',
-    alternateName: 'FC Arsenal-92',
+    name: 'Футбольный клуб «Арсенал» Севастополь',
+    alternateName: ['ДФК Арсенал', 'ФК Арсенал-92'],
     description:
-      'Квалифицированная школа футбола в Севастополе для детей от 6 до 14 лет. Профессиональные тренеры с лицензией УЕФА категории С.',
+      'Детская футбольная школа «Арсенал» в Севастополе. 64 воспитанника 6–16 лет. Профессиональные тренеры с лицензией УЕФА категории C.',
     url: DOMAIN,
     logo,
     telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
@@ -85,13 +85,13 @@ export function getSportsClubSchema(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': ['SportsClub', 'LocalBusiness'],
     '@id': ORG_ID,
-    name: 'ДФК Арсенал',
-    alternateName: 'FC Arsenal-92',
+    name: 'Футбольный клуб «Арсенал» Севастополь',
+    alternateName: ['ДФК Арсенал', 'ФК Арсенал-92'],
     description:
-      'Квалифицированная школа футбола в Севастополе для детей от 6 до 14 лет. Профессиональные тренеры с лицензией УЕФА категории С.',
+      'Детская футбольная школа «Арсенал» в Севастополе. 64 воспитанника 6–16 лет. Профессиональные тренеры с лицензией УЕФА категории C. Группы формируются по уровню подготовки, а не по возрасту.',
     url: DOMAIN,
     logo,
-    image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
+    image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
     telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
     address,
     openingHoursSpecification: openingHours,
@@ -115,15 +115,15 @@ export function getLocalBusinessSchema(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${DOMAIN}/kontakty#localbusiness`,
-    name: 'ДФК Арсенал',
+    name: 'Футбольный клуб «Арсенал» Севастополь',
     description:
-      'Детская футбольная школа в Севастополе. Профессиональные тренеры, современная методика, группы для детей от 6 до 14 лет.',
+      'Детская футбольная школа в Севастополе. 64 воспитанника 6–16 лет, группы формируются по уровню подготовки.',
     url: `${DOMAIN}/kontakty`,
     telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
     address,
     openingHoursSpecification: openingHours,
-    image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
-    logo: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
+    image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
+    logo: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
     priceRange: '4000₽ - 6000₽/мес',
     sameAs,
     areaServed: {
@@ -163,7 +163,7 @@ export function getCoachSchema(coach: Coach): Record<string, unknown> {
     memberOf: {
       '@type': 'SportsTeam',
       '@id': `${DOMAIN}/o-klube#sportsteam`,
-      name: 'ДФК Арсенал',
+      name: 'Футбольный клуб «Арсенал» Севастополь',
     },
     worksFor: {
       '@id': ORG_ID,
@@ -183,7 +183,7 @@ export function getCourseSchema(group: TrainingGroup): Record<string, unknown> {
     provider: {
       '@type': 'SportsClub',
       '@id': ORG_ID,
-      name: 'ДФК Арсенал',
+      name: 'Футбольный клуб «Арсенал» Севастополь',
     },
     hasCourseInstance: {
       '@type': 'CourseInstance',
@@ -230,15 +230,15 @@ export function getArticleSchema(news: NewsArticle): Record<string, unknown> {
     author: {
       '@type': 'Organization',
       '@id': ORG_ID,
-      name: 'ДФК Арсенал',
+      name: 'Футбольный клуб «Арсенал» Севастополь',
     },
     publisher: {
       '@type': 'Organization',
       '@id': ORG_ID,
-      name: 'ДФК Арсенал',
+      name: 'Футбольный клуб «Арсенал» Севастополь',
       logo: {
         '@type': 'ImageObject',
-        url: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg`,
+        url: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
       },
     },
     mainEntityOfPage: {
@@ -299,7 +299,7 @@ export function getWebSiteSchema(): Record<string, unknown> {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
-    name: 'ДФК Арсенал — Детская футбольная школа Севастополь',
+    name: 'Футбольный клуб «Арсенал» Севастополь — Детская футбольная школа',
     url: DOMAIN,
     inLanguage: ['ru', 'en'],
     publisher: {

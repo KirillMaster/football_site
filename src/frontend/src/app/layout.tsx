@@ -13,25 +13,25 @@ const inter = Inter({ subsets: ['latin', 'cyrillic'], display: 'swap' });
 export const metadata: Metadata = {
   metadataBase: new URL('https://fcarsenal92.ru'),
   icons: {
-    icon: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg',
-    apple: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg',
+    icon: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_96.png',
+    apple: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_200.png',
   },
   title: {
-    default: 'ФК Арсенал-92 — Детская футбольная школа Севастополя от 5 до 17 лет',
-    template: '%s | ДФК Арсенал Севастополь',
+    default: 'Футбольный клуб «Арсенал» Севастополь — Детская футбольная школа',
+    template: '%s | Футбольный клуб «Арсенал» Севастополь',
   },
   description:
-    'Детская футбольная школа «Арсенал» в Севастополе. Профессиональные тренеры с лицензией УЕФА C. Группы для начинающих и продвинутых. Запишите ребёнка на пробную тренировку!',
+    'Детская футбольная школа «Арсенал» в Севастополе. 64 воспитанника 6–16 лет. Профессиональные тренеры с лицензией УЕФА C. Открыт набор 2026. Запишите ребёнка на пробную тренировку!',
   openGraph: {
-    siteName: 'ДФК Арсенал — Детская футбольная школа Севастополь',
+    siteName: 'Футбольный клуб «Арсенал» Севастополь',
     locale: 'ru_RU',
     type: 'website',
     images: [
       {
-        url: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/Logo_Arsenal_2.jpg',
-        width: 800,
-        height: 600,
-        alt: 'ДФК Арсенал-92 — Детская футбольная школа Севастополя',
+        url: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png',
+        width: 512,
+        height: 561,
+        alt: 'Футбольный клуб «Арсенал» Севастополь',
       },
     ],
   },

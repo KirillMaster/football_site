@@ -4,7 +4,7 @@ import TryoutForm from '@/components/TryoutForm';
 export const metadata: Metadata = {
   title: 'Записаться',
   description:
-    'Запишите ребёнка на пробное занятие в ФК Арсенал-92. Первое занятие бесплатно. Группы для детей 5–17 лет.',
+    'Запишите ребёнка на пробное занятие в футбольный клуб «Арсенал» Севастополь. Первое занятие бесплатно. Группы для детей 6–16 лет.',
 };
 
 export default function ZapisatsyaPage() {
