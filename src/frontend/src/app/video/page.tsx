@@ -34,7 +34,7 @@ export default function VideoPage() {
             <video
               controls
               preload="metadata"
-              poster={`${S3_BASE}/promo_1.jpg`}
+              poster={`${S3_BASE}/arsenal_full_poster.jpg`}
               className="absolute inset-0 w-full h-full object-contain"
             >
               <source src={`${S3_BASE}/arsenal_full.mp4`} type="video/mp4" />
