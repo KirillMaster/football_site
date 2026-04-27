@@ -1,0 +1,64 @@
+name: Server bootstrap (manual)
+
+# One-off / manual: add a pubkey to authorized_keys, clean docker images,
+# free disk. Use after security incident remediation.
+
+on:
+  workflow_dispatch:
+    inputs:
+      add_pubkey:
+        description: "ssh-ed25519 ... (public key to add to /root/.ssh/authorized_keys); leave empty to skip"
+        required: false
+        default: ""
+      docker_prune:
+        description: "Run 'docker image prune -a -f' on the server"
+        required: false
+        default: "true"
+      apt_clean:
+        description: "Run 'apt-get clean' and journal vacuum"
+        required: false
+        default: "true"
+
+jobs:
+  bootstrap:
+    name: Run on server
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and run
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -uo pipefail
+
+            ADD_KEY='${{ inputs.add_pubkey }}'
+            if [ -n "$ADD_KEY" ]; then
+              mkdir -p /root/.ssh && chmod 700 /root/.ssh
+              touch /root/.ssh/authorized_keys
+              if grep -qF "$ADD_KEY" /root/.ssh/authorized_keys; then
+                echo "[bootstrap] pubkey already authorized — skipping"
+              else
+                echo "$ADD_KEY" >> /root/.ssh/authorized_keys
+                chmod 600 /root/.ssh/authorized_keys
+                echo "[bootstrap] pubkey added to authorized_keys"
+              fi
+            fi
+
+            if [ "${{ inputs.apt_clean }}" = "true" ]; then
+              echo "[bootstrap] apt-get clean + journal vacuum"
+              apt-get clean
+              journalctl --vacuum-size=200M | tail -5 || true
+              truncate -s 0 /var/log/btmp /var/log/btmp.1 2>/dev/null || true
+            fi
+
+            if [ "${{ inputs.docker_prune }}" = "true" ]; then
+              echo "[bootstrap] docker image prune -a -f"
+              docker image prune -a -f
+              docker container prune -f
+              docker builder prune -af | tail -5 || true
+            fi
+
+            echo "[bootstrap] disk after:"
+            df -h /

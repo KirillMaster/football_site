@@ -14,6 +14,15 @@ services:
       dotnet-api:
         condition: service_healthy
     restart: unless-stopped
+    # Hardening: prevent RCE from writing/executing droppers
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+      - /home/nextjs/.next/cache:rw,nosuid,nodev,size=128m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
 
   dotnet-api:
     image: ghcr.io/${GITHUB_REPOSITORY:-kirillmaster/football_site}/dotnet-api:${IMAGE_TAG:-latest}
