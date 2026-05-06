@@ -95,7 +95,10 @@ export default async function OKlubePage() {
       <section className="py-12 bg-brand-red/5">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl font-bold text-brand-blue mb-3">Запишитесь на бесплатное занятие</h2>
-          <p className="text-gray-600 mb-6">Первые 2 тренировки бесплатно. Убедитесь сами!</p>
+          <p className="text-gray-600 mb-6">
+            Первые 2 тренировки бесплатно, чтобы вы могли убедиться, что мы именно то,
+            что нужно вашему ребёнку.
+          </p>
           <Link href="/zapisatsya" className="btn-primary text-base px-8 py-4 inline-flex">
             Записаться
           </Link>

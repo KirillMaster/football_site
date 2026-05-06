@@ -29,11 +29,18 @@ export default async function RaspisaniePage() {
           <WeeklySchedule groups={groups} />
 
           {/* Legend */}
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-            <p className="font-medium mb-2">Место проведения тренировок:</p>
+          <div className="mt-8 p-4 bg-gray-50 rounded-lg text-sm text-gray-600 space-y-1">
+            <p className="font-medium">Место проведения тренировок:</p>
             <p>Спорткомплекс школы №61, ул. Косарева, д.12</p>
-            <p className="mt-1 text-gray-500">Сезон: сентябрь 2025 — июнь 2026</p>
-            <p className="mt-1 text-gray-500">Понедельник — пятница: 18:00–19:30, суббота: 12:00–13:30</p>
+            <p className="text-gray-500 pt-2">
+              U-17: пн/ср/пт 18:00–19:30 — групповая тренировка; вт/чт 17:00–18:00 — физическая подготовка.
+            </p>
+            <p className="text-gray-500">
+              U-12 и U-10: вт/чт 18:00–19:30, сб 12:00–13:30 — групповые тренировки.
+            </p>
+            <p className="text-gray-500">
+              Сб/Вс — игры на Первенство г. Севастополя, ДЮФЛ Крыма и Симферополя.
+            </p>
           </div>
         </div>
       </section>
