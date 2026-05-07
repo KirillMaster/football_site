@@ -17,6 +17,30 @@ const staticPages: MetadataRoute.Sitemap = [
     priority: 0.8,
   },
   {
+    url: `${BASE_URL}/prodvizhenie`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  },
+  {
+    url: `${BASE_URL}/prodvizhenie/sbory`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  },
+  {
+    url: `${BASE_URL}/prodvizhenie/tryout-serbia`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  },
+  {
+    url: `${BASE_URL}/prodvizhenie/stazhirovki`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  },
+  {
     url: `${BASE_URL}/trenery`,
     lastModified: new Date(),
     changeFrequency: 'monthly',

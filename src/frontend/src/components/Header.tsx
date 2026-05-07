@@ -5,8 +5,28 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-const navLinks = [
+interface SubLink {
+  href: string;
+  label: string;
+}
+
+interface NavLink {
+  href: string;
+  label: string;
+  children?: SubLink[];
+}
+
+const navLinks: NavLink[] = [
   { href: '/o-klube', label: 'О клубе' },
+  {
+    href: '/prodvizhenie',
+    label: 'Proдвижение юных футболистов',
+    children: [
+      { href: '/prodvizhenie/sbory', label: 'Сборы — подготовка к просмотру в Европе' },
+      { href: '/prodvizhenie/tryout-serbia', label: 'Просмотр в Сербии' },
+      { href: '/prodvizhenie/stazhirovki', label: 'Стажировки в Европе' },
+    ],
+  },
   { href: '/trenery', label: 'Тренеры' },
   { href: '/gruppy', label: 'Группы' },
   { href: '/raspisanie', label: 'Расписание' },
@@ -20,6 +40,7 @@ const navLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   return (
     <header className="bg-brand-blue text-white shadow-lg sticky top-0 z-50">
@@ -42,15 +63,49 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.children ? (
+                <div
+                  key={link.href}
+                  className="relative"
+                  onMouseEnter={() => setOpenDropdown(link.href)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
+                  <Link
+                    href={link.href}
+                    className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors flex items-center gap-1"
+                  >
+                    {link.label}
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Link>
+                  {openDropdown === link.href && (
+                    <div className="absolute left-0 top-full pt-1 w-80">
+                      <div className="bg-blue-900 rounded-md shadow-xl border border-blue-700 py-1">
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="block px-4 py-2.5 text-sm text-blue-200 hover:text-white hover:bg-blue-800 transition-colors"
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* CTA + Hamburger */}
@@ -85,19 +140,34 @@ export default function Header() {
       <div
         className={cn(
           'lg:hidden overflow-hidden transition-all duration-300',
-          menuOpen ? 'max-h-[560px]' : 'max-h-0'
+          menuOpen ? 'max-h-[820px]' : 'max-h-0'
         )}
       >
         <nav className="px-4 pt-2 pb-6 flex flex-col gap-1 bg-blue-900 border-t border-blue-700">
           {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md"
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
+            <div key={link.href}>
+              <Link
+                href={link.href}
+                className="block px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md"
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+              {link.children && (
+                <div className="pl-4 border-l-2 border-blue-700 ml-3 mt-1 mb-1">
+                  {link.children.map((child) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      className="block px-3 py-1.5 text-xs text-blue-300 hover:text-white"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
           <Link
             href="/zapisatsya"
