@@ -362,8 +362,9 @@ export async function getAlbums(): Promise<Album[]> {
 
 export async function getPhotos(albumId?: number): Promise<Photo[]> {
   try {
-    const query = albumId ? `?albumId=${albumId}` : '';
-    const res = await fetch(`${API_URL}/api/photos${query}`, { next: { revalidate: 60 } });
+    const params = new URLSearchParams({ pageSize: '200' });
+    if (albumId) params.set('albumId', String(albumId));
+    const res = await fetch(`${API_URL}/api/photos?${params}`, { next: { revalidate: 60 } });
     if (!res.ok) return albumId ? mockPhotos.filter((p) => p.albumId === albumId) : mockPhotos;
     const raw = await res.json() as { items?: RawPhoto[] } | RawPhoto[];
     const photos: RawPhoto[] = Array.isArray(raw) ? raw : (raw.items ?? []);
