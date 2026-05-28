@@ -42,7 +42,18 @@ function SponsorModal({ onClose }: { onClose: () => void }) {
           ×
         </button>
         <div className="text-brand-red text-sm font-bold uppercase tracking-wide mb-1">Партнёрство</div>
-        <h2 className="text-2xl font-black text-brand-blue mb-4">Стать генеральным спонсором</h2>
+        <h2 className="text-2xl font-black text-brand-blue mb-2">Стать генеральным спонсором</h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Оставьте заявку ниже или напишите напрямую в{' '}
+          <a
+            href="https://t.me/Gurybuldi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-blue font-semibold hover:underline"
+          >
+            Telegram @Gurybuldi
+          </a>
+        </p>
 
         {submitted ? (
           <div className="text-center py-8">
