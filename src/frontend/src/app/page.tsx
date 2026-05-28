@@ -7,6 +7,7 @@ import NewsCard from '@/components/NewsCard';
 import PricingCard from '@/components/PricingCard';
 import { JsonLd } from '@/components/JsonLd';
 import { getSportsClubSchema, getWebSiteSchema } from '@/lib/schema';
+import SponsorSection from '@/components/SponsorSection';
 
 export const metadata: Metadata = {
   title: 'Футбольный клуб «Арсенал» Севастополь — Детская футбольная школа',
@@ -299,6 +300,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Sponsor / Donate ─────────────────────────────────────── */}
+      <SponsorSection />
 
       {/* ── Partners ─────────────────────────────────────────────── */}
       {partners.length > 0 && (
