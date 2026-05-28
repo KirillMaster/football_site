@@ -34,6 +34,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
               alt={photo.caption}
               fill
               className="object-cover"
+              style={{ imageOrientation: 'from-image' }}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               quality={85}
               loading="lazy"

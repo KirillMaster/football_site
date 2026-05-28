@@ -18,7 +18,7 @@ public class SiteSettingsController : ControllerBase
         return Ok(new
         {
             phones = new[] { "+7-978-813-09-82", "+7-978-812-64-32", "+7-978-10-40-940" },
-            email = "fcarsenal-92@ya.ru",
+            email = "ars2011sev@mail.ru",
             address = "г. Севастополь, ул. Косарева, д.12, Спорткомплекс школы №61",
             socials = new
             {
