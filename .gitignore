@@ -62,3 +62,7 @@ scripts/ssl-init.sh
 
 # Docker
 *.log
+
+# Local credentials — NEVER commit
+vps_creds.txt
+secrets.txt

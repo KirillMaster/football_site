@@ -11,6 +11,9 @@ docker compose pull
 echo "==> Bringing up nextjs and dotnet-api (no downtime for postgres/nginx)..."
 docker compose up -d --no-deps nextjs dotnet-api
 
+echo "==> Ensuring autoheal watchdog is running..."
+docker compose up -d --no-deps autoheal
+
 echo "==> Health check..."
 sleep 5
 HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/health)

@@ -14,6 +14,17 @@ services:
       dotnet-api:
         condition: service_healthy
     restart: unless-stopped
+    # autoheal restarts this container if it becomes unhealthy (e.g. event-loop hang)
+    labels:
+      - autoheal=true
+    # override the image's baked healthcheck (/api/health — 404 on the Next.js frontend);
+    # hit /, which the frontend serves 200. busybox wget: use -qO- (no --spider).
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     # Hardening: prevent RCE from writing/executing droppers
     read_only: true
     tmpfs:
@@ -23,6 +34,11 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   dotnet-api:
     image: ghcr.io/${GITHUB_REPOSITORY:-kirillmaster/football_site}/dotnet-api:${IMAGE_TAG:-latest}
@@ -52,6 +68,21 @@ services:
       timeout: 10s
       retries: 5
       start_period: 120s
+
+  # Watches containers labelled autoheal=true and restarts them when unhealthy.
+  # Fixes the failure mode where Next.js hung (event loop stuck) but never exited,
+  # so `restart: unless-stopped` alone did not recover it.
+  autoheal:
+    image: willfarrell/autoheal:latest
+    restart: unless-stopped
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+      - AUTOHEAL_INTERVAL=15
+      - AUTOHEAL_START_PERIOD=60
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    security_opt:
+      - no-new-privileges:true
 
 volumes:
   uploads_data:
