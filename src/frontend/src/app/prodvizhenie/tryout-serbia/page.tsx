@@ -165,13 +165,13 @@ export default function TryoutSerbiaPage() {
           <h2 className="text-2xl font-black mb-6">📩 Контакты</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <a
-              href="https://t.me/Gurybuldi"
+              href="https://t.me/garybuldi"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-blue-800 hover:bg-blue-700 rounded-lg p-4 transition-colors"
             >
               <div className="text-blue-300 text-xs uppercase tracking-wide mb-1">Telegram</div>
-              <div className="font-bold">@Gurybuldi</div>
+              <div className="font-bold">@Garybuldi</div>
             </a>
             <a
               href="https://wa.me/79788130982"

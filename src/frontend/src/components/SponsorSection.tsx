@@ -46,12 +46,12 @@ function SponsorModal({ onClose }: { onClose: () => void }) {
         <p className="text-sm text-gray-500 mb-4">
           Оставьте заявку ниже или напишите напрямую в{' '}
           <a
-            href="https://t.me/Gurybuldi"
+            href="https://t.me/garybuldi"
             target="_blank"
             rel="noopener noreferrer"
             className="text-brand-blue font-semibold hover:underline"
           >
-            Telegram @Gurybuldi
+            Telegram @Garybuldi
           </a>
         </p>
 
