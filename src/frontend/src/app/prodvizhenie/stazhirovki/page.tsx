@@ -184,7 +184,7 @@ export default function StazhirovkiPage() {
               <a href="tel:+79788130982" className="btn-primary text-center">📞 +7-978-813-09-82</a>
               <a href="mailto:ars2011sev@mail.ru" className="btn-secondary text-center">📧 ars2011sev@mail.ru</a>
               <a href="https://instagram.com/fc92arsenal" target="_blank" rel="noopener noreferrer" className="btn-outline text-center">📱 Instagram @fc92arsenal</a>
-              <a href="https://t.me/Gurybuldi" target="_blank" rel="noopener noreferrer" className="btn-outline text-center">✈️ Telegram @Gurybuldi</a>
+              <a href="https://t.me/garybuldi" target="_blank" rel="noopener noreferrer" className="btn-outline text-center">✈️ Telegram @garybuldi</a>
             </div>
           </div>
         </div>
@@ -217,12 +217,12 @@ export default function StazhirovkiPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://t.me/Gurybuldi"
+              href="https://t.me/garybuldi"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary text-center"
             >
-              Telegram @Gurybuldi
+              Telegram @garybuldi
             </a>
             <a
               href="mailto:ars2011sev@mail.ru"
