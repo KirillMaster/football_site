@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
 import { submitTryoutRequest } from '@/lib/api';
+import { reachGoal } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 const schema = z.object({
@@ -36,7 +37,7 @@ export default function TryoutForm() {
 
   const onSubmit = async (data: FormData) => {
     setServerError('');
-    const ok = await submitTryoutRequest({
+    const leadId = await submitTryoutRequest({
       childName: data.childName,
       age: data.age,
       parentName: data.parentName,
@@ -44,7 +45,8 @@ export default function TryoutForm() {
       email: data.email ?? '',
       message: data.message,
     });
-    if (ok) {
+    if (leadId) {
+      reachGoal('trial_form_submit', { leadId });
       setSuccess(true);
       reset();
     } else {
