@@ -1,0 +1,45 @@
+feature: "Яндекс.Метрика и сквозная веб-аналитика воронки заявок fcarsenal92.ru"
+branch: "001-yandex-metrika-analytics"
+summary: >
+  Активировать счётчик Яндекс.Метрики (Вебвизор + карты кликов/скроллинга + аналитика форм) и повесить 7 целей
+  reachGoal с гарантией срабатывания submit-событий только при подтверждённом сервером успехе. Захватывать UTM
+  первого касания и ym clientId на фронте, пробрасывать в payload заявок и сохранять в PostgreSQL (TryoutRequest,
+  ContactMessage) с показом в админке. Фронт (Next.js) — тонкий слой аналитики (lib/analytics.ts, lib/utm.ts,
+  PhoneLink, кнопки карт), бэк (.NET/EF Core) — новые поля + миграция.
+
+technical_context:
+  language_version: "TypeScript 5 / Next.js 15 (App Router) фронт; C# / .NET 9 бэк"
+  primary_dependencies:
+    - "Next.js 15 (next/script для загрузки счётчика)"
+    - "react-hook-form + zod (существующие формы)"
+    - "Яндекс.Метрика (ym API: init, reachGoal, getClientID)"
+    - ".NET 9, EF Core (Npgsql), CQRS/MediatR, FluentValidation"
+  storage: "PostgreSQL (таблицы TryoutRequest, ContactMessage — добавление UTM/clientId полей через EF-миграцию)"
+  testing: "Ручная проверка целей в кабинете Метрики; unit/integration на утилиты UTM и success-only логику; e2e-прогон форм"
+  target_platform: "Веб (прод: Docker + nginx на 147.45.229.110), кросс-браузерный клиент"
+  project_type: "web_application"
+  performance_goals: "Загрузка счётчика асинхронно (afterInteractive), без влияния на LCP/CLS; отправка заявки не блокируется аналитикой"
+  constraints: >
+    Submit-события — только при res.ok; сайт работает при заблокированном счётчике; UTM first-touch не перетирается;
+    номер счётчика приходит от заказчика (активация через env NEXT_PUBLIC_YM_ID без пересборки логики)
+  scale_scope: "Небольшой сайт детской футбольной школы; поток заявок десятки/мес; single-tenant"
+
+constitution_check:
+  - principle_id: "P1"
+    status: "not_applicable"
+    justification: "Конституция проекта — незаполненный стаб (плейсхолдер P1); реальные принципы не ратифицированы, поэтому гейт неприменим. Заполняется отдельно через /yamlkit-constitution."
+
+project_structure:
+  layout: "web_application"
+  description: >
+    Фронтенд Next.js в src/frontend/src (app-роуты, components, lib, types); бэкенд .NET по слоям DDD в src/backend/src
+    (Domain-сущности, Application-команды/DTO, Infrastructure-EF/миграции, API-контроллеры). Аналитика добавляется как
+    тонкий клиентский слой во фронте + новые поля/миграция в бэке; новых сервисов не вводится.
+  directories:
+    - "src/frontend/src/components/ (Analytics.tsx, TryoutForm.tsx, ContactForm.tsx, SponsorSection.tsx, Footer.tsx, новый PhoneLink)"
+    - "src/frontend/src/lib/ (api.ts + новые analytics.ts, utm.ts)"
+    - "src/frontend/src/app/ (kontakty, zapisatsya, страницы с телефонами/формой)"
+    - "src/backend/src/Arsenal.Domain/ (TryoutRequest, ContactMessage — новые поля)"
+    - "src/backend/src/Arsenal.Application/ (Commands/DTO — проброс UTM/clientId)"
+    - "src/backend/src/Arsenal.Infrastructure/ (EF-конфигурация + новая миграция)"
+    - "src/backend/src/Arsenal.API/ (ContactController — приём UTM/clientId, отдача в админку)"

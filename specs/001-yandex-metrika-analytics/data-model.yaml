@@ -1,0 +1,189 @@
+feature: "Яндекс.Метрика и сквозная веб-аналитика воронки заявок fcarsenal92.ru"
+entities:
+  - id: "tryout_request"
+    name: "TryoutRequest"
+    description: "Заявка на пробную тренировку (главная конверсия). Дополняется UTM первого касания и ym clientId."
+    fields:
+      - name: "id"
+        type: "string"
+        required: true
+        description: "GUID заявки — идентификатор лида, возвращается API и передаётся в params цели."
+      - name: "childName"
+        type: "string"
+        required: true
+        description: "Имя ребёнка."
+      - name: "age"
+        type: "number"
+        required: true
+        description: "Возраст ребёнка (5–17)."
+      - name: "parentName"
+        type: "string"
+        required: true
+        description: "Имя родителя/опекуна."
+      - name: "phone"
+        type: "string"
+        required: true
+        description: "Телефон для связи."
+      - name: "email"
+        type: "string"
+        required: false
+        description: "Email (необязательно)."
+      - name: "message"
+        type: "string"
+        required: false
+        description: "Комментарий (необязательно)."
+      - name: "utmSource"
+        type: "string"
+        required: false
+        description: "UTM source первого касания (nullable для прямых заходов)."
+      - name: "utmMedium"
+        type: "string"
+        required: false
+        description: "UTM medium первого касания."
+      - name: "utmCampaign"
+        type: "string"
+        required: false
+        description: "UTM campaign первого касания."
+      - name: "utmContent"
+        type: "string"
+        required: false
+        description: "UTM content первого касания."
+      - name: "utmTerm"
+        type: "string"
+        required: false
+        description: "UTM term первого касания."
+      - name: "ymClientId"
+        type: "string"
+        required: false
+        description: "Идентификатор посетителя Яндекс.Метрики (nullable, если счётчик не готов)."
+      - name: "createdAt"
+        type: "string"
+        required: true
+        description: "Момент создания заявки."
+    relationships: []
+
+  - id: "contact_message"
+    name: "ContactMessage"
+    description: "Общая заявка/сообщение: прочие направления (PRO, сборы, стажировки) и спонсорские обращения. Дополняется UTM и ym clientId."
+    fields:
+      - name: "id"
+        type: "string"
+        required: true
+        description: "GUID заявки — идентификатор лида, возвращается API."
+      - name: "name"
+        type: "string"
+        required: true
+        description: "Имя отправителя."
+      - name: "phone"
+        type: "string"
+        required: true
+        description: "Телефон."
+      - name: "email"
+        type: "string"
+        required: false
+        description: "Email (необязательно)."
+      - name: "message"
+        type: "string"
+        required: true
+        description: "Текст обращения."
+      - name: "source"
+        type: "string"
+        required: false
+        description: "Источник формы внутри сайта (например, 'sponsor-modal', направление PRO/сборы/стажировки)."
+      - name: "utmSource"
+        type: "string"
+        required: false
+        description: "UTM source первого касания."
+      - name: "utmMedium"
+        type: "string"
+        required: false
+        description: "UTM medium первого касания."
+      - name: "utmCampaign"
+        type: "string"
+        required: false
+        description: "UTM campaign первого касания."
+      - name: "utmContent"
+        type: "string"
+        required: false
+        description: "UTM content первого касания."
+      - name: "utmTerm"
+        type: "string"
+        required: false
+        description: "UTM term первого касания."
+      - name: "ymClientId"
+        type: "string"
+        required: false
+        description: "Идентификатор посетителя Яндекс.Метрики."
+      - name: "createdAt"
+        type: "string"
+        required: true
+        description: "Момент создания."
+    relationships: []
+
+  - id: "utm_first_touch"
+    name: "UtmFirstTouch"
+    description: "Клиентское хранилище (cookie) UTM-меток первого касания и ym clientId; читается при отправке любой формы."
+    fields:
+      - name: "utmSource"
+        type: "string"
+        required: false
+        description: "Захваченный source при первом визите."
+      - name: "utmMedium"
+        type: "string"
+        required: false
+        description: "Захваченный medium."
+      - name: "utmCampaign"
+        type: "string"
+        required: false
+        description: "Захваченная campaign."
+      - name: "utmContent"
+        type: "string"
+        required: false
+        description: "Захваченный content."
+      - name: "utmTerm"
+        type: "string"
+        required: false
+        description: "Захваченный term."
+      - name: "capturedAt"
+        type: "string"
+        required: false
+        description: "Момент первого захвата (для контроля срока хранения ~90 дней)."
+    relationships: []
+
+  - id: "analytics_goal"
+    name: "AnalyticsGoal"
+    description: "Именованное событие reachGoal, отправляемое в Яндекс.Метрику с параметрами (place, service, идентификатор заявки)."
+    fields:
+      - name: "name"
+        type: "enum"
+        required: true
+        description: "Имя цели (совпадает с ID цели в кабинете Метрики)."
+        enum_values:
+          - "trial_form_submit"
+          - "trial_form_open"
+          - "phone_click"
+          - "map_click"
+          - "other_lead_submit"
+          - "sponsor_click"
+          - "sponsor_form_submit"
+      - name: "place"
+        type: "enum"
+        required: false
+        description: "Место события для phone_click."
+        enum_values:
+          - "header"
+          - "contacts"
+          - "footer"
+          - "other"
+      - name: "service"
+        type: "enum"
+        required: false
+        description: "Сервис карт для map_click."
+        enum_values:
+          - "yandex"
+          - "2gis"
+      - name: "leadId"
+        type: "string"
+        required: false
+        description: "GUID заявки для submit-целей (сквозная связка)."
+    relationships: []

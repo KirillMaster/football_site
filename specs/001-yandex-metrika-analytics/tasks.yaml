@@ -1,0 +1,606 @@
+feature: "Яндекс.Метрика и сквозная веб-аналитика воронки заявок fcarsenal92.ru"
+tasks:
+  # ───────────────────────── Phase 1 · Setup (клиентский слой аналитики) ─────────────────────────
+  - id: "T001"
+    title: "Создать обёртку reachGoal (lib/analytics.ts)"
+    description: "Единая безопасная точка отправки целей в Яндекс.Метрику с guard'ом на отсутствие счётчика и хелперами под 7 согласованных целей."
+    context: "Нужна одна точка, чтобы имена целей не расходились и сайт не падал при заблокированном счётчике."
+    story_ref: "US1"
+    requirement_refs: ["FR-004", "FR-018", "FR-019"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["analytics_goal"]
+    contract_refs: ["reach_goal"]
+    steps:
+      - order: 1
+        action: "Создать файл lib/analytics.ts"
+        detail: "src/frontend/src/lib/analytics.ts — экспортировать reachGoal(name, params?) и getYmClientId(cb)."
+      - order: 2
+        action: "Реализовать guard"
+        detail: "Проверять наличие window.ym и NEXT_PUBLIC_YM_ID; при отсутствии — молча выходить (contract reach_goal → counter_unavailable), не бросать исключений."
+      - order: 3
+        action: "Добавить типизированные имена целей"
+        detail: "Литеральный union из enum analytics_goal.name: trial_form_submit, trial_form_open, phone_click, map_click, other_lead_submit, sponsor_click, sponsor_form_submit."
+      - order: 4
+        action: "Реализовать getYmClientId"
+        detail: "window.ym(YM_ID,'getClientID',cb) с fallback на пустую строку, если счётчик не готов (EC-4)."
+    technical_notes:
+      - path: "src/frontend/src/components/Analytics.tsx"
+        note: "Источник YM_ID из NEXT_PUBLIC_YM_ID — переиспользовать ту же переменную окружения."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "reachGoal вызывает window.ym только при наличии счётчика; при его отсутствии — no-op без ошибок."
+        done: false
+      - id: "AC-2"
+        description: "Экспортированы имена всех 7 целей, совпадающие с enum analytics_goal.name."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["window.ym не определён (счётчик заблокирован)"]
+        when: "Вызвана reachGoal('phone_click', {place:'footer'})"
+        then: ["Исключение не выброшено", "Никаких сетевых вызовов не произведено"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T002"
+    title: "Захват UTM первого касания (lib/utm.ts)"
+    description: "Считывать utm_* из адреса при первом визите, хранить в cookie (~90 дней, first-touch) и отдавать getStoredUtm() для payload заявок."
+    context: "Без сохранённого источника невозможно связать рекламу с заявкой; first-touch не должен перетираться."
+    story_ref: "US3"
+    requirement_refs: ["FR-011", "FR-012", "FR-017"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["utm_first_touch"]
+    contract_refs: ["get_utm_first_touch"]
+    steps:
+      - order: 1
+        action: "Создать файл lib/utm.ts"
+        detail: "src/frontend/src/lib/utm.ts — экспортировать captureUtmFirstTouch() и getStoredUtm()."
+      - order: 2
+        action: "Реализовать first-touch запись"
+        detail: "При наличии utm_* в location.search и отсутствии cookie записать cookie 'utm_ft' (JSON: utmSource/Medium/Campaign/Content/Term + capturedAt), max-age ~90 дней, path=/, SameSite=Lax."
+      - order: 3
+        action: "Реализовать чтение"
+        detail: "getStoredUtm() парсит cookie → объект UTM (contract get_utm_first_touch → found); при отсутствии → пустой объект (→ empty, EC-3)."
+      - order: 4
+        action: "Вызвать захват при загрузке"
+        detail: "Вызвать captureUtmFirstTouch() из клиентского слоя (например, в Analytics.tsx useEffect или отдельном client-компоненте в layout)."
+    technical_notes:
+      - path: "src/frontend/src/app/layout.tsx"
+        note: "Место монтирования клиентского захвата на всех страницах."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Первый визит с utm_* создаёт cookie; повторный визит с другими метками cookie не перезаписывает (FR-012)."
+        done: false
+      - id: "AC-2"
+        description: "getStoredUtm() возвращает пустой объект при прямом заходе без ошибок."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Cookie utm_ft уже установлен со source=A"]
+        when: "Визит с ?utm_source=B и повторный getStoredUtm()"
+        then: ["Возвращается source=A (первое касание сохранено)"]
+        verification: ["automated"]
+        level: "unit"
+
+  # ───────────────── Phase 2 · Foundational (бэкенд: хранение UTM/ymClientId) ─────────────────
+  - id: "T003"
+    title: "Добавить поля UTM и YmClientId в доменные сущности"
+    description: "Расширить TryoutRequest и ContactMessage nullable-полями UtmSource/UtmMedium/UtmCampaign/UtmContent/UtmTerm и YmClientId."
+    context: "Хранилище должно фиксировать источник каждой заявки, допуская пустые значения для прямых заходов."
+    story_ref: "US3"
+    requirement_refs: ["FR-014"]
+    depends_on: []
+    parallelizable: false
+    entity_refs: ["tryout_request", "contact_message"]
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Добавить свойства в TryoutRequest"
+        detail: "src/backend/src/Arsenal.Domain — string? UtmSource/UtmMedium/UtmCampaign/UtmContent/UtmTerm, string? YmClientId; учесть неизменяемость/фабричные методы, если сущность их использует."
+      - order: 2
+        action: "Добавить те же свойства в ContactMessage"
+        detail: "Аналогично в сущности ContactMessage."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Domain/"
+        note: "Соблюсти существующий стиль сущностей (конструкторы/фабрики DDD)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Обе сущности содержат 5 UTM-полей и YmClientId, все nullable."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Проект Arsenal.Domain"]
+        when: "dotnet build src/backend"
+        then: ["Сборка успешна с новыми полями"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T004"
+    title: "Проброс UTM/ymClientId через Application (Commands/DTO)"
+    description: "Расширить команды создания заявок и DTO приёма полями UTM и YmClientId, передать их в сущности."
+    context: "Слой приложения должен переносить метки из запроса в доменную сущность при сохранении."
+    story_ref: "US3"
+    requirement_refs: ["FR-013", "FR-014"]
+    depends_on: ["T003"]
+    parallelizable: false
+    entity_refs: ["tryout_request", "contact_message"]
+    contract_refs: ["post_tryout", "post_contact"]
+    steps:
+      - order: 1
+        action: "Расширить команды"
+        detail: "src/backend/src/Arsenal.Application — в Command/Handler создания TryoutRequest и ContactMessage добавить UTM + YmClientId и присвоить сущностям."
+      - order: 2
+        action: "Расширить DTO"
+        detail: "Добавить поля в request-DTO согласно contracts post_tryout/post_contact (utmSource..utmTerm, ymClientId), все optional."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Application/"
+        note: "Commands/DTO; FluentValidation — новые поля необязательные, без строгой валидации."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Команды и DTO принимают UTM/ymClientId и передают их в сохраняемую сущность."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Команда создания заявки с UTM"]
+        when: "Handler выполнен"
+        then: ["Сущность сохранена с переданными метками"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T005"
+    title: "EF-конфигурация и миграция AddUtmAndYmClientId"
+    description: "Настроить маппинг новых полей и создать одну EF Core миграцию, добавляющую колонки в обе таблицы."
+    context: "Новые поля должны появиться в PostgreSQL без потери существующих данных."
+    story_ref: "US3"
+    requirement_refs: ["FR-014"]
+    depends_on: ["T003"]
+    parallelizable: false
+    entity_refs: ["tryout_request", "contact_message"]
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Обновить EF-конфигурацию"
+        detail: "src/backend/src/Arsenal.Infrastructure — в конфигурациях сущностей отметить новые колонки nullable (при явном маппинге)."
+      - order: 2
+        action: "Создать миграцию"
+        detail: "dotnet ef migrations add AddUtmAndYmClientId --project src/backend/src/Arsenal.Infrastructure."
+      - order: 3
+        action: "Проверить SQL миграции"
+        detail: "Убедиться, что генерируются nullable-колонки для обеих таблиц; применить dotnet ef database update локально."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Infrastructure/"
+        note: "DbContext + Migrations; на проде миграция применяется при деплое/DbInitializer."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Миграция добавляет 6 nullable-колонок в TryoutRequests и ContactMessages, существующие строки сохраняются."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["БД с прежней схемой"]
+        when: "Применена миграция AddUtmAndYmClientId"
+        then: ["Колонки UTM/YmClientId присутствуют", "Старые записи не потеряны"]
+        verification: ["manual"]
+        level: "integration"
+
+  - id: "T006"
+    title: "Приём UTM/ymClientId в ContactController"
+    description: "Принять новые поля в POST /api/tryout и POST /api/contact и передать в команды; сохранить возврат { id } как сигнал успеха."
+    context: "API — граница, через которую метки попадают в хранилище; контракт успеха (GUID) остаётся прежним."
+    story_ref: "US3"
+    requirement_refs: ["FR-013", "FR-014", "FR-016"]
+    depends_on: ["T004"]
+    parallelizable: false
+    entity_refs: ["tryout_request", "contact_message"]
+    contract_refs: ["post_tryout", "post_contact"]
+    steps:
+      - order: 1
+        action: "Расширить модели запроса контроллера"
+        detail: "src/backend/src/Arsenal.API/Controllers/ContactController.cs — добавить UTM/ymClientId в обе request-модели."
+      - order: 2
+        action: "Передать в команды"
+        detail: "Прокинуть новые поля в MediatR-команды создания; ответ created по-прежнему { id, message }."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.API/Controllers/ContactController.cs"
+        note: "POST api/tryout и api/contact; id = GUID заявки (сигнал успеха для клиента)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Оба эндпоинта принимают UTM/ymClientId и возвращают { id } при created."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["POST /api/tryout с UTM-полями"]
+        when: "Запрос обработан успешно"
+        then: ["Ответ содержит id (GUID)", "Заявка в БД содержит UTM"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T007"
+    title: "Показ UTM-меток в админке"
+    description: "Отобразить сохранённые UTM (и ym clientId) рядом с каждой заявкой в админ-интерфейсе."
+    context: "Владелец должен видеть источник заявки, чтобы вручную довести воронку до продажи."
+    story_ref: "US3"
+    requirement_refs: ["FR-015"]
+    depends_on: ["T006"]
+    parallelizable: false
+    entity_refs: ["tryout_request", "contact_message"]
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Пробросить UTM в admin API/response"
+        detail: "Добавить UTM/ymClientId в DTO/ответ списка заявок, используемый админкой."
+      - order: 2
+        action: "Отрисовать в админ-таблице/карточке"
+        detail: "Показать utm_source/medium/campaign (и остальные при наличии) рядом с заявкой во фронтовой админке."
+    technical_notes:
+      - path: "src/frontend/src/app/"
+        note: "Страница/раздел админки со списком заявок — добавить колонки/поля UTM."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "В админке для заявки с UTM метки видны; для прямого захода поля пусты без ошибок."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Заявка с utm_source=test в БД"]
+        when: "Администратор открывает список заявок"
+        then: ["UTM отображаются рядом с заявкой"]
+        verification: ["manual"]
+        level: "e2e"
+
+  # ───────────────────────── Phase 3 · US1 (P1, главная конверсия) ─────────────────────────
+  - id: "T008"
+    title: "Проброс UTM/ymClientId в payload заявок (api.ts)"
+    description: "Дополнить submitTryoutRequest и submitContactMessage метками из getStoredUtm() и ym clientId перед отправкой."
+    context: "Метки, захваченные на фронте, должны уходить на сервер вместе с заявкой."
+    story_ref: "US1"
+    requirement_refs: ["FR-013"]
+    depends_on: ["T002"]
+    parallelizable: false
+    entity_refs: ["tryout_request", "contact_message"]
+    contract_refs: ["post_tryout", "post_contact"]
+    steps:
+      - order: 1
+        action: "Дополнить payload"
+        detail: "src/frontend/src/lib/api.ts — в submitTryoutRequest и submitContactMessage добавить в тело getStoredUtm() и ym clientId (getYmClientId из lib/analytics.ts)."
+      - order: 2
+        action: "Не блокировать отправку"
+        detail: "Если clientId недоступен — отправлять пустую строку, заявку не задерживать (EC-4, FR-018)."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "Функции возвращают boolean(res.ok) — контракт успеха сохранить."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Payload обоих запросов содержит UTM-поля и ymClientId (возможно пустые)."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Cookie utm_ft со source=test"]
+        when: "Вызвана submitTryoutRequest"
+        then: ["Тело запроса содержит utmSource=test"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T009"
+    title: "Событие trial_form_submit (success-only) в TryoutForm"
+    description: "Вызывать reachGoal('trial_form_submit', {leadId}) строго в ветке успеха отправки заявки на пробную."
+    context: "Главная конверсия должна считаться только при реальном сохранении заявки на сервере."
+    story_ref: "US1"
+    requirement_refs: ["FR-003", "FR-004", "FR-016"]
+    depends_on: ["T001", "T008"]
+    parallelizable: false
+    entity_refs: ["analytics_goal", "tryout_request"]
+    contract_refs: ["post_tryout", "reach_goal"]
+    steps:
+      - order: 1
+        action: "Вернуть id из api.ts"
+        detail: "При необходимости расширить submitTryoutRequest, чтобы отдать { ok, id } (leadId) для params цели."
+      - order: 2
+        action: "Вызвать reachGoal в if(ok)"
+        detail: "src/frontend/src/components/TryoutForm.tsx — внутри существующей ветки успеха (setSuccess(true)) вызвать reachGoal('trial_form_submit', { leadId: id })."
+      - order: 3
+        action: "Гарантировать один вызов"
+        detail: "Событие ровно один раз на одну успешную отправку; блокировать повторный сабмит при in-flight (EC-5)."
+    technical_notes:
+      - path: "src/frontend/src/components/TryoutForm.tsx"
+        note: "Уже есть if(ok) setSuccess(true) — точка вставки события."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Цель trial_form_submit срабатывает только после успеха сервера и несёт leadId."
+        done: false
+      - id: "AC-2"
+        description: "При ошибке сервера/клике по кнопке цель не срабатывает."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Валидная форма на /zapisatsya"]
+        when: "Отправка успешна (res.ok)"
+        then: ["trial_form_submit достигнута один раз", "В params есть leadId"]
+        verification: ["manual"]
+        level: "e2e"
+      - id: "TS-2"
+        given: ["Сервер возвращает ошибку"]
+        when: "Форма отправлена"
+        then: ["trial_form_submit не достигнута"]
+        verification: ["manual"]
+        level: "integration"
+
+  # ───────────────────────── Phase 4 · US2 (P1, активация счётчика) ─────────────────────────
+  - id: "T010"
+    title: "Включить Вебвизор и карты в инициализации счётчика (Analytics.tsx)"
+    description: "Добавить webvisor:true к init счётчика, сохранив clickmap/trackLinks/accurateTrackBounce; рендер только при заданном NEXT_PUBLIC_YM_ID."
+    context: "Счётчик подключён, но без Вебвизора; на проде активируется заданием идентификатора в окружении."
+    story_ref: "US2"
+    requirement_refs: ["FR-001", "FR-002"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: []
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Добавить webvisor в init"
+        detail: "src/frontend/src/components/Analytics.tsx — в объект инициализации ym добавить webvisor:true (clickmap/trackLinks/accurateTrackBounce уже есть)."
+      - order: 2
+        action: "Подтвердить условный рендер"
+        detail: "Компонент рендерится/инициализируется только при непустом NEXT_PUBLIC_YM_ID (strategy afterInteractive)."
+    technical_notes:
+      - path: "src/frontend/src/components/Analytics.tsx"
+        note: "next/script afterInteractive; карта скроллинга и аналитика форм включаются в кабинете (A-5)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Init счётчика содержит webvisor:true и clickmap:true."
+        done: false
+      - id: "AC-2"
+        description: "При пустом NEXT_PUBLIC_YM_ID счётчик не рендерится."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Задан NEXT_PUBLIC_YM_ID"]
+        when: "Загружается страница"
+        then: ["Скрипт счётчика присутствует", "webvisor включён в init"]
+        verification: ["manual"]
+        level: "e2e"
+
+  # ───────────────────────── Phase 5 · US4 (P2, вспомогательные точки) ─────────────────────────
+  - id: "T011"
+    title: "Компонент PhoneLink и замена tel:-ссылок"
+    description: "Создать <PhoneLink place> с событием phone_click и заменить прямые tel:-ссылки в Footer/kontakty/zapisatsya/stazhirovki."
+    context: "Клики по телефону нужно считать с указанием места на сайте."
+    story_ref: "US4"
+    requirement_refs: ["FR-006"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["analytics_goal"]
+    contract_refs: ["reach_goal"]
+    steps:
+      - order: 1
+        action: "Создать компонент"
+        detail: "src/frontend/src/components/PhoneLink.tsx — props place: 'header'|'contacts'|'footer'|'other'; onClick → reachGoal('phone_click', {place})."
+      - order: 2
+        action: "Заменить tel: в Footer"
+        detail: "src/frontend/src/components/Footer.tsx (settings.phones.map) — place='footer'."
+      - order: 3
+        action: "Заменить tel: на страницах"
+        detail: "/kontakty (place='contacts'), /zapisatsya (place='other'), /prodvizhenie/stazhirovki (place='other')."
+    technical_notes:
+      - path: "src/frontend/src/components/Footer.tsx"
+        note: "tel:-ссылки формируются из settings.phones."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Клик по любому телефону фиксирует phone_click с корректным place."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Страница контактов с PhoneLink place='contacts'"]
+        when: "Клик по номеру"
+        then: ["phone_click достигнута с place='contacts'"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T012"
+    title: "Событие trial_form_open при показе формы"
+    description: "Вызывать reachGoal('trial_form_open') один раз при монтировании формы пробной тренировки."
+    context: "Заказчик определил показ формы как её отображение на странице (mount)."
+    story_ref: "US4"
+    requirement_refs: ["FR-005"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["analytics_goal"]
+    contract_refs: ["reach_goal"]
+    steps:
+      - order: 1
+        action: "Добавить useEffect на mount"
+        detail: "src/frontend/src/components/TryoutForm.tsx — useEffect([], ...) с reachGoal('trial_form_open'); guard от повторного вызова в StrictMode (ref)."
+    technical_notes:
+      - path: "src/frontend/src/components/TryoutForm.tsx"
+        note: "Форма отображается сразу (выше сгиба) — mount = показ."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "trial_form_open фиксируется один раз за просмотр страницы с формой."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Открыта /zapisatsya"]
+        when: "Форма смонтирована"
+        then: ["trial_form_open достигнута один раз"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T013"
+    title: "Кнопки карт (Яндекс.Карты, 2ГИС) на /kontakty"
+    description: "Добавить две ссылки-кнопки с координатами клуба и событием map_click {service}."
+    context: "Прямых ссылок на карты нет, только iframe — нужен явный переход для измеримой цели."
+    story_ref: "US4"
+    requirement_refs: ["FR-007"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["analytics_goal"]
+    contract_refs: ["reach_goal"]
+    steps:
+      - order: 1
+        action: "Добавить кнопки на страницу контактов"
+        detail: "src/frontend/src/app/kontakty — две ссылки target=_blank: Яндекс.Карты и 2ГИС с координатами клуба."
+      - order: 2
+        action: "Повесить событие"
+        detail: "onClick → reachGoal('map_click', { service: 'yandex' | '2gis' })."
+    technical_notes:
+      - path: "src/frontend/src/app/kontakty/"
+        note: "Рядом с существующим iframe-эмбедом карты."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Обе кнопки присутствуют; клик фиксирует map_click с service=yandex/2gis."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Страница /kontakty"]
+        when: "Клик по кнопке 2ГИС"
+        then: ["map_click достигнута с service='2gis'"]
+        verification: ["manual"]
+        level: "e2e"
+
+  # ───────────────────────── Phase 6 · US5 (P2, прочие/спонсорские заявки) ─────────────────────────
+  - id: "T014"
+    title: "Событие other_lead_submit (success-only) в ContactForm"
+    description: "Вызывать reachGoal('other_lead_submit', {leadId}) в ветке успеха отправки общей формы."
+    context: "Заявки на прочие направления (PRO, сборы, стажировки) нужно считать отдельной целью."
+    story_ref: "US5"
+    requirement_refs: ["FR-004", "FR-008"]
+    depends_on: ["T001", "T008"]
+    parallelizable: false
+    entity_refs: ["analytics_goal", "contact_message"]
+    contract_refs: ["post_contact", "reach_goal"]
+    steps:
+      - order: 1
+        action: "Вызвать reachGoal в if(ok)"
+        detail: "src/frontend/src/components/ContactForm.tsx — в существующей ветке успеха вызвать reachGoal('other_lead_submit', { leadId: id })."
+    technical_notes:
+      - path: "src/frontend/src/components/ContactForm.tsx"
+        note: "success уже только при if(ok) — точка вставки события."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "other_lead_submit срабатывает только при подтверждённом успехе сервера."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Общая форма прочего направления"]
+        when: "Форма успешно отправлена"
+        then: ["other_lead_submit достигнута один раз"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T015"
+    title: "Фикс SponsorModal (success-only) + sponsor_click и sponsor_form_submit"
+    description: "Исправить показ успеха без проверки res.ok, повесить sponsor_click на кнопку и sponsor_form_submit на реальный успех."
+    context: "Сейчас спонсорская форма показывает успех даже при ошибке сервера — это баг; клики и заявки не считаются."
+    story_ref: "US5"
+    requirement_refs: ["FR-004", "FR-009", "FR-010"]
+    depends_on: ["T001", "T008"]
+    parallelizable: false
+    entity_refs: ["analytics_goal", "contact_message"]
+    contract_refs: ["post_contact", "reach_goal"]
+    steps:
+      - order: 1
+        action: "Исправить проверку успеха"
+        detail: "src/frontend/src/components/SponsorSection.tsx — в SponsorModal.handleSubmit ставить setSubmitted(true) только если res.ok (сейчас — всегда в try)."
+      - order: 2
+        action: "Повесить sponsor_click"
+        detail: "На кнопку '🤝 Стать генеральным спонсором' — onClick → reachGoal('sponsor_click')."
+      - order: 3
+        action: "Повесить sponsor_form_submit"
+        detail: "После подтверждённого res.ok — reachGoal('sponsor_form_submit', { leadId: id })."
+      - order: 4
+        action: "Пробросить UTM/ymClientId"
+        detail: "Отправку через submitContactMessage (source='sponsor-modal'), чтобы метки уходили из T008."
+    technical_notes:
+      - path: "src/frontend/src/components/SponsorSection.tsx"
+        note: "handleSubmit (баг success-detection); кнопка спонсорства ~строка 189."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Экран успеха и sponsor_form_submit только при res.ok; при ошибке — ни того, ни другого."
+        done: false
+      - id: "AC-2"
+        description: "Клик по кнопке спонсорства фиксирует sponsor_click."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Сервер возвращает ошибку"]
+        when: "Спонсорская форма отправлена"
+        then: ["Экран успеха не показан", "sponsor_form_submit не достигнута"]
+        verification: ["manual"]
+        level: "integration"
+      - id: "TS-2"
+        given: ["Кнопка 'Стать генеральным спонсором'"]
+        when: "Клик по кнопке"
+        then: ["sponsor_click достигнута"]
+        verification: ["manual"]
+        level: "e2e"
+
+  # ───────────────────────── Phase 7 · Polish / Cross-cutting ─────────────────────────
+  - id: "T016"
+    title: "Сборка, линт, тесты и проверка деградации при заблокированном счётчике"
+    description: "Прогнать frontend build+lint, backend build+test, применить миграцию и убедиться, что сайт работает без счётчика."
+    context: "Перед сдачей нужно подтвердить, что аналитика не ломает отправку заявок и всё собирается."
+    story_ref: "US1"
+    requirement_refs: ["FR-018"]
+    depends_on: ["T005", "T007", "T009", "T010", "T011", "T012", "T013", "T014", "T015"]
+    parallelizable: false
+    entity_refs: []
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Frontend проверки"
+        detail: "cd src/frontend && npm run build && npm run lint."
+      - order: 2
+        action: "Backend проверки"
+        detail: "dotnet build src/backend && dotnet test src/backend."
+      - order: 3
+        action: "Проверить деградацию"
+        detail: "С пустым NEXT_PUBLIC_YM_ID отправить заявку — сохранение работает, ошибок нет (EC-1)."
+    technical_notes:
+      - path: "src/frontend/"
+        note: "Единый прогон качества перед коммитом."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Все проверки зелёные; заявка отправляется при отсутствии счётчика без ошибок."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["NEXT_PUBLIC_YM_ID пуст"]
+        when: "Отправлена заявка на пробную"
+        then: ["Заявка сохранена", "Ошибок в консоли/на сайте нет"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T017"
+    title: "Настройка кабинета Метрики и 7 целей (после получения доступа)"
+    description: "Задать NEXT_PUBLIC_YM_ID, включить Вебвизор/карты/аналитику форм и создать 7 JS-целей с именами = enum analytics_goal.name."
+    context: "Финальная активация выполняется по кредам заказчика; имена целей должны совпасть с событиями для сдачи."
+    story_ref: "US2"
+    requirement_refs: ["FR-002", "FR-019"]
+    depends_on: ["T010"]
+    parallelizable: false
+    entity_refs: ["analytics_goal"]
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Задать идентификатор счётчика"
+        detail: "Прописать NEXT_PUBLIC_YM_ID в окружении прода (GitHub Secret / env), пересобрать/задеплоить фронт."
+      - order: 2
+        action: "Включить опции в кабинете"
+        detail: "Вебвизор, карта кликов, карта скроллинга, аналитика форм (A-5)."
+      - order: 3
+        action: "Создать 7 целей типа JS-событие"
+        detail: "Идентификаторы: trial_form_submit, trial_form_open, phone_click, map_click, other_lead_submit, sponsor_click, sponsor_form_submit."
+    technical_notes:
+      - path: "specs/001-yandex-metrika-analytics/quickstart.md"
+        note: "Чек-лист сдачи заказчику (номер счётчика, скриншоты достижений)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Счётчик активен на проде, 7 целей созданы и срабатывают в сценариях."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["Счётчик активирован, цели созданы"]
+        when: "Прогон 7 сценариев из quickstart"
+        then: ["Каждая цель фиксируется в отчёте Метрики"]
+        verification: ["manual"]
+        level: "e2e"

@@ -1,0 +1,193 @@
+feature: "Яндекс.Метрика и сквозная веб-аналитика воронки заявок fcarsenal92.ru"
+contracts:
+  - id: "post_tryout"
+    name: "POST /api/tryout — создание заявки на пробную тренировку"
+    kind: "interface"
+    entity_refs:
+      - "tryout_request"
+    request:
+      - name: "childName"
+        type: "string"
+        required: true
+        description: "Имя ребёнка."
+      - name: "age"
+        type: "number"
+        required: true
+        description: "Возраст ребёнка."
+      - name: "parentName"
+        type: "string"
+        required: true
+        description: "Имя родителя."
+      - name: "phone"
+        type: "string"
+        required: true
+        description: "Телефон."
+      - name: "email"
+        type: "string"
+        required: false
+        description: "Email."
+      - name: "message"
+        type: "string"
+        required: false
+        description: "Комментарий."
+      - name: "utmSource"
+        type: "string"
+        required: false
+        description: "UTM source первого касания."
+      - name: "utmMedium"
+        type: "string"
+        required: false
+        description: "UTM medium."
+      - name: "utmCampaign"
+        type: "string"
+        required: false
+        description: "UTM campaign."
+      - name: "utmContent"
+        type: "string"
+        required: false
+        description: "UTM content."
+      - name: "utmTerm"
+        type: "string"
+        required: false
+        description: "UTM term."
+      - name: "ymClientId"
+        type: "string"
+        required: false
+        description: "ID посетителя Метрики."
+    response_cases:
+      - outcome: "created"
+        fields:
+          - name: "id"
+            type: "string"
+            required: true
+            description: "GUID созданной заявки — сигнал успеха для success-only цели trial_form_submit."
+          - name: "message"
+            type: "string"
+            required: false
+            description: "Сообщение для пользователя."
+      - outcome: "validation_error"
+        fields:
+          - name: "errors"
+            type: "object"
+            required: true
+            description: "Ошибки валидации полей; цель НЕ фиксируется."
+      - outcome: "server_error"
+        fields:
+          - name: "error"
+            type: "string"
+            required: false
+            description: "Внутренняя ошибка; заявка не сохранена, цель НЕ фиксируется."
+
+  - id: "post_contact"
+    name: "POST /api/contact — создание общей/спонсорской заявки"
+    kind: "interface"
+    entity_refs:
+      - "contact_message"
+    request:
+      - name: "name"
+        type: "string"
+        required: true
+        description: "Имя."
+      - name: "phone"
+        type: "string"
+        required: true
+        description: "Телефон."
+      - name: "email"
+        type: "string"
+        required: false
+        description: "Email."
+      - name: "message"
+        type: "string"
+        required: true
+        description: "Текст обращения."
+      - name: "source"
+        type: "string"
+        required: false
+        description: "Источник формы (направление / 'sponsor-modal')."
+      - name: "utmSource"
+        type: "string"
+        required: false
+        description: "UTM source первого касания."
+      - name: "utmMedium"
+        type: "string"
+        required: false
+        description: "UTM medium."
+      - name: "utmCampaign"
+        type: "string"
+        required: false
+        description: "UTM campaign."
+      - name: "utmContent"
+        type: "string"
+        required: false
+        description: "UTM content."
+      - name: "utmTerm"
+        type: "string"
+        required: false
+        description: "UTM term."
+      - name: "ymClientId"
+        type: "string"
+        required: false
+        description: "ID посетителя Метрики."
+    response_cases:
+      - outcome: "created"
+        fields:
+          - name: "id"
+            type: "string"
+            required: true
+            description: "GUID заявки — сигнал успеха для other_lead_submit / sponsor_form_submit."
+          - name: "message"
+            type: "string"
+            required: false
+            description: "Сообщение для пользователя."
+      - outcome: "validation_error"
+        fields:
+          - name: "errors"
+            type: "object"
+            required: true
+            description: "Ошибки валидации; цель НЕ фиксируется, экран успеха не показывается."
+      - outcome: "server_error"
+        fields:
+          - name: "error"
+            type: "string"
+            required: false
+            description: "Ошибка сервера; заявка не сохранена, цель НЕ фиксируется."
+
+  - id: "reach_goal"
+    name: "Клиентская отправка цели reachGoal в Яндекс.Метрику"
+    kind: "interface"
+    entity_refs:
+      - "analytics_goal"
+    request:
+      - name: "name"
+        type: "string"
+        required: true
+        description: "Имя цели из согласованного списка."
+      - name: "params"
+        type: "object"
+        required: false
+        description: "Параметры (place / service / leadId)."
+    response_cases:
+      - outcome: "sent"
+        fields: []
+      - outcome: "counter_unavailable"
+        fields: []
+
+  - id: "get_utm_first_touch"
+    name: "Чтение UTM первого касания на клиенте"
+    kind: "interface"
+    entity_refs:
+      - "utm_first_touch"
+    request: []
+    response_cases:
+      - outcome: "found"
+        fields:
+          - name: "utm"
+            type: "object"
+            required: true
+            description: "Объект UTM-меток для проброса в payload заявки."
+      - outcome: "empty"
+        fields:
+          - name: "utm"
+            type: "object"
+            required: false
+            description: "Пустой объект при прямом заходе — заявка отправляется с пустыми метками."
