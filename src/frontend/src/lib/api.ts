@@ -27,6 +27,9 @@ import {
   mockReviews,
 } from './mock-data';
 
+import { getStoredUtm } from './utm';
+import { getYmClientId } from './analytics';
+
 // Server-side (SSR/RSC): use internal Docker network URL for performance
 // Client-side (browser): use public URL via Nginx
 const API_URL =
@@ -426,8 +429,10 @@ export async function submitContactMessage(data: ContactMessage): Promise<boolea
   }
 }
 
-export async function submitTryoutRequest(data: TryoutRequest): Promise<boolean> {
+export async function submitTryoutRequest(data: TryoutRequest): Promise<string | null> {
   try {
+    const utm = getStoredUtm();
+    const ymClientId = await getYmClientId();
     const res = await fetch(`${API_URL}/api/tryout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -438,11 +443,19 @@ export async function submitTryoutRequest(data: TryoutRequest): Promise<boolean>
         phone: data.phone,
         email: data.email,
         message: data.message ?? '',
+        utmSource: utm.utmSource,
+        utmMedium: utm.utmMedium,
+        utmCampaign: utm.utmCampaign,
+        utmContent: utm.utmContent,
+        utmTerm: utm.utmTerm,
+        ymClientId,
       }),
     });
-    return res.ok;
+    if (!res.ok) return null;
+    const json = await res.json().catch(() => null);
+    return json?.id ?? null;
   } catch {
-    return false;
+    return null;
   }
 }
 
