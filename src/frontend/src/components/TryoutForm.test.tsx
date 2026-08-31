@@ -49,6 +49,18 @@ describe('@US1-AS2', () => {
     expect(reachGoal).not.toHaveBeenCalled();
     expect(screen.queryByText(/Заявка отправлена/)).toBeNull();
   });
+
+  it('НЕ отправляет запрос и НЕ вызывает reachGoal при validation_error (невалидная форма)', async () => {
+    render(<TryoutForm />);
+    // возраст ниже минимума + пустые обязательные поля → zod-валидация блокирует submit
+    fireEvent.input(screen.getByLabelText(/Возраст/), { target: { value: '2' } });
+    fireEvent.click(submitBtn());
+
+    await waitFor(() => expect(screen.getByText(/Минимальный возраст/)).toBeInTheDocument());
+    expect(submitTryoutRequest).not.toHaveBeenCalled();
+    expect(reachGoal).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Заявка отправлена/)).toBeNull();
+  });
 });
 
 describe('@US1-EC2', () => {
