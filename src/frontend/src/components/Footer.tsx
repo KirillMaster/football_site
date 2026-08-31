@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { SiteSettings } from '@/types';
+import PhoneLink from '@/components/PhoneLink';
 
 interface FooterProps {
   settings: SiteSettings;
@@ -37,9 +38,7 @@ export default function Footer({ settings }: FooterProps) {
             <ul className="space-y-2 text-sm text-blue-200">
               {settings.phones.map((phone) => (
                 <li key={phone}>
-                  <a href={`tel:${phone.replace(/[^+\d]/g, '')}`} className="hover:text-white">
-                    {phone}
-                  </a>
+                  <PhoneLink phone={phone} place="footer" className="hover:text-white" />
                 </li>
               ))}
               <li>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import PhoneLink from '@/components/PhoneLink';
 
 export const metadata: Metadata = {
   title: 'Просмотры и стажировки — ФК «Арсенал» Севастополь',
@@ -181,7 +182,7 @@ export default function StazhirovkiPage() {
             </p>
             <p className="text-gray-700 font-semibold mb-4">Оставь заявку прямо сейчас:</p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <a href="tel:+79788130982" className="btn-primary text-center">📞 +7-978-813-09-82</a>
+              <PhoneLink phone="+7-978-813-09-82" place="other" className="btn-primary text-center">📞 +7-978-813-09-82</PhoneLink>
               <a href="mailto:ars2011sev@mail.ru" className="btn-secondary text-center">📧 ars2011sev@mail.ru</a>
               <a href="https://instagram.com/fc92arsenal" target="_blank" rel="noopener noreferrer" className="btn-outline text-center">📱 Instagram @fc92arsenal</a>
               <a href="https://t.me/garybuldi" target="_blank" rel="noopener noreferrer" className="btn-outline text-center">✈️ Telegram @Garybuldi</a>

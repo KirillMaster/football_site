@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { submitTryoutRequest } from '@/lib/api';
 import { reachGoal } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
@@ -25,6 +25,13 @@ type FormData = z.infer<typeof schema>;
 export default function TryoutForm() {
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
+
+  const openTracked = useRef(false);
+  useEffect(() => {
+    if (openTracked.current) return;
+    openTracked.current = true;
+    reachGoal('trial_form_open');
+  }, []);
 
   const {
     register,

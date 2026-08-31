@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import TryoutForm from '@/components/TryoutForm';
+import PhoneLink from '@/components/PhoneLink';
 
 export const metadata: Metadata = {
   title: 'Записаться',
@@ -79,13 +80,12 @@ export default function ZapisatsyaPage() {
                 <h3 className="font-bold text-gray-800 mb-3">Или позвоните нам</h3>
                 <div className="space-y-2">
                   {['+7-978-813-09-82', '+7-978-812-64-32', '+7-978-10-40-940'].map((phone) => (
-                    <a
+                    <PhoneLink
                       key={phone}
-                      href={`tel:${phone.replace(/[^+\d]/g, '')}`}
+                      phone={phone}
+                      place="other"
                       className="block text-brand-red hover:underline font-medium"
-                    >
-                      {phone}
-                    </a>
+                    />
                   ))}
                 </div>
               </div>

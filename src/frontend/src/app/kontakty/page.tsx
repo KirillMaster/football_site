@@ -3,6 +3,8 @@ import { getSiteSettings } from '@/lib/api';
 import ContactForm from '@/components/ContactForm';
 import { JsonLd } from '@/components/JsonLd';
 import { getLocalBusinessSchema } from '@/lib/schema';
+import PhoneLink from '@/components/PhoneLink';
+import MapLinks from '@/components/MapLinks';
 
 export const metadata: Metadata = {
   title: 'Контакты',
@@ -55,13 +57,12 @@ export default async function KontaktyPage() {
                   <div>
                     <div className="font-semibold text-gray-800">Телефоны</div>
                     {settings.phones.map((phone) => (
-                      <a
+                      <PhoneLink
                         key={phone}
-                        href={`tel:${phone.replace(/[^+\d]/g, '')}`}
+                        phone={phone}
+                        place="contacts"
                         className="block text-brand-red hover:underline text-sm mt-0.5"
-                      >
-                        {phone}
-                      </a>
+                      />
                     ))}
                   </div>
                 </div>
@@ -128,6 +129,7 @@ export default async function KontaktyPage() {
                   </div>
                 )}
               </div>
+              <MapLinks address={settings.address} />
             </div>
 
             {/* Contact Form */}
