@@ -10,6 +10,12 @@ namespace Arsenal.API.IntegrationTests;
 
 public class WebAppFactory : WebApplicationFactory<Program>
 {
+    // Fixed per-factory-instance name: ConfigureWebHost can run more than once for a single
+    // WebApplicationFactory (minimal-hosting apps may build the host twice — once for .Services,
+    // once for the request-serving TestServer). A Guid generated inline inside ConfigureWebHost
+    // would then point .Services and the real HTTP pipeline at two different InMemory databases.
+    private readonly string _dbName = "ArsenalTest_" + Guid.NewGuid();
+
     public WebAppFactory()
     {
         // Set env vars BEFORE host builds — WebApplication.CreateBuilder reads them
@@ -44,7 +50,7 @@ public class WebAppFactory : WebApplicationFactory<Program>
 
             // Register InMemory provider
             services.AddDbContext<ArsenalDbContext>(opts =>
-                opts.UseInMemoryDatabase("ArsenalTest_" + Guid.NewGuid()));
+                opts.UseInMemoryDatabase(_dbName));
 
             // Ensure DB schema is created
             var sp = services.BuildServiceProvider();

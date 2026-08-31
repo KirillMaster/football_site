@@ -1,6 +1,17 @@
 namespace Arsenal.Application.DTOs;
 
-public record CreateContactMessageRequest(string Name, string Phone, string? Email, string Message);
+public record CreateContactMessageRequest(
+    string Name,
+    string Phone,
+    string? Email,
+    string Message,
+    string? UtmSource = null,
+    string? UtmMedium = null,
+    string? UtmCampaign = null,
+    string? UtmContent = null,
+    string? UtmTerm = null,
+    string? YmClientId = null
+);
 
 public record CreateTryoutRequestRequest(
     string ChildName,
@@ -8,7 +19,13 @@ public record CreateTryoutRequestRequest(
     string ParentName,
     string Phone,
     string? Email = null,
-    string? Message = null
+    string? Message = null,
+    string? UtmSource = null,
+    string? UtmMedium = null,
+    string? UtmCampaign = null,
+    string? UtmContent = null,
+    string? UtmTerm = null,
+    string? YmClientId = null
 );
 
 public record SitemapDataDto(

@@ -62,4 +62,39 @@ public class TryoutRequestTests
         tryout.UpdateStatus(TryoutStatus.Scheduled);
         tryout.Status.Should().Be(TryoutStatus.Scheduled);
     }
+
+    [Fact]
+    [Trait("scenario", "US3-AS1")]
+    public void Create_WithUtmAndYmClientId_ShouldPersistAllFields()
+    {
+        var tryout = TryoutRequest.Create("Иван", 8, "Мария Иванова", "+79780000000",
+            utmSource: "yandex", utmMedium: "cpc", utmCampaign: "tryout", utmContent: "banner1",
+            utmTerm: "football", ymClientId: "123456789.0987654321");
+
+        tryout.UtmSource.Should().Be("yandex");
+        tryout.UtmMedium.Should().Be("cpc");
+        tryout.UtmCampaign.Should().Be("tryout");
+        tryout.UtmContent.Should().Be("banner1");
+        tryout.UtmTerm.Should().Be("football");
+        tryout.YmClientId.Should().Be("123456789.0987654321");
+    }
+}
+
+public class ContactMessageTests
+{
+    [Fact]
+    [Trait("scenario", "US3-AS1")]
+    public void Create_WithUtmAndYmClientId_ShouldPersistAllFields()
+    {
+        var message = ContactMessage.Create("Иван", "+79780000000", "Хочу записать ребенка",
+            utmSource: "yandex", utmMedium: "cpc", utmCampaign: "tryout", utmContent: "banner1",
+            utmTerm: "football", ymClientId: "123456789.0987654321");
+
+        message.UtmSource.Should().Be("yandex");
+        message.UtmMedium.Should().Be("cpc");
+        message.UtmCampaign.Should().Be("tryout");
+        message.UtmContent.Should().Be("banner1");
+        message.UtmTerm.Should().Be("football");
+        message.YmClientId.Should().Be("123456789.0987654321");
+    }
 }
