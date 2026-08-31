@@ -13,11 +13,19 @@ public class TryoutRequest : BaseEntity
     public string? Email { get; private set; }
     public string? Message { get; private set; }
     public TryoutStatus Status { get; private set; } = TryoutStatus.New;
+    public string? UtmSource { get; private set; }
+    public string? UtmMedium { get; private set; }
+    public string? UtmCampaign { get; private set; }
+    public string? UtmContent { get; private set; }
+    public string? UtmTerm { get; private set; }
+    public string? YmClientId { get; private set; }
 
     private TryoutRequest() { }
 
     public static TryoutRequest Create(string childName, int childAge,
-        string parentName, string phone, string? email = null, string? message = null)
+        string parentName, string phone, string? email = null, string? message = null,
+        string? utmSource = null, string? utmMedium = null, string? utmCampaign = null,
+        string? utmContent = null, string? utmTerm = null, string? ymClientId = null)
     {
         if (string.IsNullOrWhiteSpace(childName)) throw new ArgumentException("Child name is required");
         if (childAge < 3 || childAge > 18) throw new ArgumentOutOfRangeException(nameof(childAge), "Age must be 3-18");
@@ -31,7 +39,13 @@ public class TryoutRequest : BaseEntity
             ParentName = parentName,
             Phone = phone,
             Email = email,
-            Message = message
+            Message = message,
+            UtmSource = utmSource,
+            UtmMedium = utmMedium,
+            UtmCampaign = utmCampaign,
+            UtmContent = utmContent,
+            UtmTerm = utmTerm,
+            YmClientId = ymClientId
         };
     }
 

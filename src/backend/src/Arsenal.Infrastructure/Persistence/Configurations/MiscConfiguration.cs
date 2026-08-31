@@ -79,6 +79,12 @@ public class ContactMessageConfiguration : IEntityTypeConfiguration<ContactMessa
         builder.Property(c => c.Phone).HasMaxLength(50).IsRequired();
         builder.Property(c => c.Email).HasMaxLength(256);
         builder.Property(c => c.Message).HasMaxLength(2000).IsRequired();
+        builder.Property(c => c.UtmSource).HasMaxLength(200);
+        builder.Property(c => c.UtmMedium).HasMaxLength(200);
+        builder.Property(c => c.UtmCampaign).HasMaxLength(200);
+        builder.Property(c => c.UtmContent).HasMaxLength(200);
+        builder.Property(c => c.UtmTerm).HasMaxLength(200);
+        builder.Property(c => c.YmClientId).HasMaxLength(100);
         builder.ToTable("contact_messages");
     }
 }
@@ -92,6 +98,12 @@ public class TryoutRequestConfiguration : IEntityTypeConfiguration<TryoutRequest
         builder.Property(t => t.ParentName).HasMaxLength(200).IsRequired();
         builder.Property(t => t.Phone).HasMaxLength(50).IsRequired();
         builder.Property(t => t.Email).HasMaxLength(256);
+        builder.Property(t => t.UtmSource).HasMaxLength(200);
+        builder.Property(t => t.UtmMedium).HasMaxLength(200);
+        builder.Property(t => t.UtmCampaign).HasMaxLength(200);
+        builder.Property(t => t.UtmContent).HasMaxLength(200);
+        builder.Property(t => t.UtmTerm).HasMaxLength(200);
+        builder.Property(t => t.YmClientId).HasMaxLength(100);
         builder.ToTable("tryout_requests");
     }
 }

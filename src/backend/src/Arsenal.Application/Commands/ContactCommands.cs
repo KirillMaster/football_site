@@ -20,7 +20,9 @@ public class CreateContactMessageCommandHandler
 
     public async Task<Result<Guid>> HandleAsync(CreateContactMessageRequest request, CancellationToken ct = default)
     {
-        var message = ContactMessage.Create(request.Name, request.Phone, request.Message, request.Email);
+        var message = ContactMessage.Create(request.Name, request.Phone, request.Message, request.Email,
+            request.UtmSource, request.UtmMedium, request.UtmCampaign, request.UtmContent, request.UtmTerm,
+            request.YmClientId);
         _db.ContactMessages.Add(message);
         await _db.SaveChangesAsync(ct);
         _logger.LogInformation("Contact message created: {Id}", message.Id);
@@ -43,7 +45,9 @@ public class CreateTryoutRequestCommandHandler
     public async Task<Result<Guid>> HandleAsync(CreateTryoutRequestRequest request, CancellationToken ct = default)
     {
         var tryout = TryoutRequest.Create(request.ChildName, request.ChildAge,
-            request.ParentName, request.Phone, request.Email, request.Message);
+            request.ParentName, request.Phone, request.Email, request.Message,
+            request.UtmSource, request.UtmMedium, request.UtmCampaign, request.UtmContent, request.UtmTerm,
+            request.YmClientId);
         _db.TryoutRequests.Add(tryout);
         await _db.SaveChangesAsync(ct);
         _logger.LogInformation("Tryout request created: {Id}", tryout.Id);
