@@ -1,3 +1,4 @@
+import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
 
@@ -17,6 +18,9 @@ function fillValid() {
 
 const submitBtn = () => screen.getByRole('button', { name: /Записаться/ });
 
+const submitCalls = () =>
+  vi.mocked(reachGoal).mock.calls.filter((c) => c[0] === 'trial_form_submit');
+
 beforeEach(() => {
   vi.clearAllMocks();
 });
@@ -33,7 +37,7 @@ describe('@US1-AS1', () => {
     fireEvent.click(submitBtn());
 
     await waitFor(() => expect(screen.getByText(/Заявка отправлена/)).toBeInTheDocument());
-    expect(reachGoal).toHaveBeenCalledTimes(1);
+    expect(submitCalls()).toHaveLength(1);
     expect(reachGoal).toHaveBeenCalledWith('trial_form_submit', { leadId: 'LEAD-1' });
   });
 });
@@ -46,7 +50,7 @@ describe('@US1-AS2', () => {
     fireEvent.click(submitBtn());
 
     await waitFor(() => expect(screen.getByText(/Произошла ошибка/)).toBeInTheDocument());
-    expect(reachGoal).not.toHaveBeenCalled();
+    expect(reachGoal).not.toHaveBeenCalledWith('trial_form_submit', expect.anything());
     expect(screen.queryByText(/Заявка отправлена/)).toBeNull();
   });
 
@@ -58,7 +62,7 @@ describe('@US1-AS2', () => {
 
     await waitFor(() => expect(screen.getByText(/Минимальный возраст/)).toBeInTheDocument());
     expect(submitTryoutRequest).not.toHaveBeenCalled();
-    expect(reachGoal).not.toHaveBeenCalled();
+    expect(reachGoal).not.toHaveBeenCalledWith('trial_form_submit', expect.anything());
     expect(screen.queryByText(/Заявка отправлена/)).toBeNull();
   });
 });
@@ -77,9 +81,10 @@ describe('@US1-EC2', () => {
     fireEvent.click(submitBtn());
     await waitFor(() => expect(screen.getByText(/Заявка отправлена/)).toBeInTheDocument());
 
-    expect(reachGoal).toHaveBeenCalledTimes(2);
-    expect(reachGoal).toHaveBeenNthCalledWith(1, 'trial_form_submit', { leadId: 'LEAD-1' });
-    expect(reachGoal).toHaveBeenNthCalledWith(2, 'trial_form_submit', { leadId: 'LEAD-2' });
+    const submits = submitCalls();
+    expect(submits).toHaveLength(2);
+    expect(submits[0]).toEqual(['trial_form_submit', { leadId: 'LEAD-1' }]);
+    expect(submits[1]).toEqual(['trial_form_submit', { leadId: 'LEAD-2' }]);
   });
 });
 
@@ -102,6 +107,19 @@ describe('@US1-EC5', () => {
     expect(submitTryoutRequest).toHaveBeenCalledTimes(1);
     resolveFn('LEAD-1');
     await waitFor(() => expect(screen.getByText(/Заявка отправлена/)).toBeInTheDocument());
-    expect(reachGoal).toHaveBeenCalledTimes(1);
+    expect(submitCalls()).toHaveLength(1);
+  });
+});
+
+describe('@US4-AS3', () => {
+  it('показ формы пробной вызывает reachGoal trial_form_open ровно один раз (без дублей в StrictMode)', async () => {
+    render(
+      <StrictMode>
+        <TryoutForm />
+      </StrictMode>
+    );
+    await waitFor(() => expect(screen.getByLabelText(/Имя ребёнка/)).toBeInTheDocument());
+    const opens = vi.mocked(reachGoal).mock.calls.filter((c) => c[0] === 'trial_form_open');
+    expect(opens).toHaveLength(1);
   });
 });
