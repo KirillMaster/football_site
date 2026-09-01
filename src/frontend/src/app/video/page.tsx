@@ -19,7 +19,7 @@ const mockVideos: VideoItem[] = [
   {
     id: 2,
     title: 'Арсенал Севастополь — видео',
-    src: '/uploads/arsenal_video_2026-09.mp4',
+    src: `${S3_BASE}/arsenal_video_2026-09.mp4`,
     date: '2026-09-01',
   },
   {
