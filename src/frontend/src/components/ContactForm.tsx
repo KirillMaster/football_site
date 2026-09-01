@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
 import { submitContactMessage } from '@/lib/api';
+import { reachGoal } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 const schema = z.object({
@@ -29,15 +30,16 @@ export default function ContactForm() {
 
   const onSubmit = async (data: FormData) => {
     setServerError('');
-    const ok = await submitContactMessage({
+    const leadId = await submitContactMessage({
       name: data.name,
       phone: data.phone,
       email: data.email ?? '',
       message: data.message,
     });
-    if (ok) {
+    if (leadId) {
       setSuccess(true);
       reset();
+      reachGoal('other_lead_submit', { leadId });
     } else {
       setServerError('Ошибка отправки. Пожалуйста, позвоните нам.');
     }

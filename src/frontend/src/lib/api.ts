@@ -416,16 +416,35 @@ export async function getReviews(): Promise<Review[]> {
 
 // ─── Form Submissions ────────────────────────────────────────────────────────
 
-export async function submitContactMessage(data: ContactMessage): Promise<boolean> {
+export async function submitContactMessage(
+  data: ContactMessage,
+  source?: string,
+): Promise<string | null> {
   try {
+    const utm = getStoredUtm();
+    const ymClientId = await getYmClientId();
     const res = await fetch(`${API_URL}/api/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        message: data.message,
+        source,
+        utmSource: utm.utmSource,
+        utmMedium: utm.utmMedium,
+        utmCampaign: utm.utmCampaign,
+        utmContent: utm.utmContent,
+        utmTerm: utm.utmTerm,
+        ymClientId,
+      }),
     });
-    return res.ok;
+    if (!res.ok) return null;
+    const json = await res.json().catch(() => null);
+    return json?.id ?? null;
   } catch {
-    return false;
+    return null;
   }
 }
 

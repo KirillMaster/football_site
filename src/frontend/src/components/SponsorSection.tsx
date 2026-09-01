@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { submitContactMessage } from '@/lib/api';
+import { reachGoal } from '@/lib/analytics';
 
 const QR_URL =
   'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/qr_payment.jpg';
@@ -14,17 +16,19 @@ function SponsorModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     setLoading(true);
     try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const leadId = await submitContactMessage(
+        {
           name: form.name,
           phone: form.phone,
+          email: '',
           message: `Запрос генерального спонсорства.\nОрганизация: ${form.org}\n${form.message}`,
-          source: 'sponsor-modal',
-        }),
-      });
-      setSubmitted(true);
+        },
+        'sponsor-modal',
+      );
+      if (leadId) {
+        setSubmitted(true);
+        reachGoal('sponsor_form_submit', { leadId });
+      }
     } finally {
       setLoading(false);
     }
@@ -183,7 +187,10 @@ export default function SponsorSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => setModal('sponsor')}
+              onClick={() => {
+                reachGoal('sponsor_click');
+                setModal('sponsor');
+              }}
               className="bg-white text-brand-blue font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors text-sm"
             >
               🤝 Стать генеральным спонсором
