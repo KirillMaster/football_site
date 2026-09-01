@@ -56,4 +56,22 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/publish-news.sql
+          # DATABASE_URL is an Npgsql (.NET) key=value;... string, not a libpq URL.
+          # Parse it into PG* env vars for psql.
+          conn="$DATABASE_URL"
+          IFS=';' read -ra parts <<< "$conn"
+          for p in "${parts[@]}"; do
+            key="${p%%=*}"; val="${p#*=}"
+            key_lc=$(echo "$key" | tr '[:upper:]' '[:lower:]' | xargs)
+            val=$(echo "$val" | xargs)
+            case "$key_lc" in
+              host|server) export PGHOST="$val" ;;
+              port) export PGPORT="$val" ;;
+              database|"initial catalog") export PGDATABASE="$val" ;;
+              "user id"|userid|username|uid|user) export PGUSER="$val" ;;
+              password|pwd) export PGPASSWORD="$val" ;;
+              "ssl mode"|sslmode) export PGSSLMODE="$val" ;;
+            esac
+          done
+          echo "Connecting to host=$PGHOST port=${PGPORT:-5432} db=$PGDATABASE user=$PGUSER"
+          psql -v ON_ERROR_STOP=1 -f scripts/publish-news.sql
