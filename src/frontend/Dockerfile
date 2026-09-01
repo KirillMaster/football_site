@@ -11,6 +11,12 @@ RUN npm ci
 COPY . ./
 ARG NEXT_PUBLIC_API_URL=https://fcarsenal92.ru
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# NEXT_PUBLIC_* инлайнятся в клиентский бандл на этапе build — должны быть заданы ДО npm run build,
+# рантайм-env (.env/compose) их уже не меняет для standalone-сборки.
+ARG NEXT_PUBLIC_YM_ID=""
+ENV NEXT_PUBLIC_YM_ID=$NEXT_PUBLIC_YM_ID
+ARG NEXT_PUBLIC_GA_ID=""
+ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
 RUN npm run build
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────
