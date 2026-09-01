@@ -27,14 +27,14 @@ export function reachGoal(goal: string, params?: Record<string, unknown>): Reach
 }
 
 export function getYmClientId(): Promise<string> {
+  const ymId = getYmId();
+  if (!ymId || typeof window === 'undefined' || typeof window.ym !== 'function') {
+    return Promise.resolve('');
+  }
+
   const timeout = new Promise<string>((resolve) => {
     setTimeout(() => resolve(''), GET_CLIENT_ID_TIMEOUT_MS);
   });
-
-  const ymId = getYmId();
-  if (typeof window === 'undefined' || typeof window.ym !== 'function') {
-    return timeout;
-  }
 
   const clientId = new Promise<string>((resolve) => {
     try {

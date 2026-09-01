@@ -19,21 +19,23 @@ describe('@US3-EC4', () => {
     vi.useFakeTimers();
   });
 
-  it('getYmClientId с неготовым window.ym резолвится пустой строкой по таймауту', async () => {
+  it('getYmClientId с неготовым window.ym резолвится пустой строкой немедленно, без таймаута', async () => {
     delete window.ym;
 
-    const promise = getYmClientId();
-    await vi.runAllTimersAsync();
-    await expect(promise).resolves.toBe('');
+    // Без счётчика/window.ym не должно быть задержки на GET_CLIENT_ID_TIMEOUT_MS
+    // (иначе каждая отправка заявки на проде ждёт 1с до fetch).
+    await expect(getYmClientId()).resolves.toBe('');
     vi.useRealTimers();
   });
 
   it('getYmClientId с window.ym, который не вызывает callback, резолвится пустой строкой по таймауту', async () => {
+    vi.stubEnv('NEXT_PUBLIC_YM_ID', '99999999');
     window.ym = vi.fn();
 
     const promise = getYmClientId();
     await vi.runAllTimersAsync();
     await expect(promise).resolves.toBe('');
     vi.useRealTimers();
+    vi.unstubAllEnvs();
   });
 });
