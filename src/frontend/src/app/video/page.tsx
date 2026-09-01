@@ -7,7 +7,21 @@ export const metadata: Metadata = {
 
 const S3_BASE = 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads';
 
-const mockVideos = [
+type VideoItem = {
+  id: number;
+  title: string;
+  date: string;
+  src?: string;
+  rutubeId?: string;
+};
+
+const mockVideos: VideoItem[] = [
+  {
+    id: 2,
+    title: 'Арсенал Севастополь — видео',
+    src: '/uploads/arsenal_video_2026-09.mp4',
+    date: '2026-09-01',
+  },
   {
     id: 1,
     title: 'ДФК Арсенал — тренировки и матчи',
@@ -54,14 +68,25 @@ export default function VideoPage() {
             {mockVideos.map((video) => (
               <div key={video.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="relative aspect-video bg-gray-200">
-                  <iframe
-                    src={`https://rutube.ru/play/embed/${video.rutubeId}/`}
-                    title={video.title}
-                    className="w-full h-full"
-                    allow="clipboard-write; autoplay"
-                    allowFullScreen
-                    loading="lazy"
-                  />
+                  {video.src ? (
+                    <video
+                      controls
+                      preload="metadata"
+                      className="absolute inset-0 w-full h-full object-contain bg-black"
+                    >
+                      <source src={video.src} type="video/mp4" />
+                      Ваш браузер не поддерживает воспроизведение видео.
+                    </video>
+                  ) : (
+                    <iframe
+                      src={`https://rutube.ru/play/embed/${video.rutubeId}/`}
+                      title={video.title}
+                      className="w-full h-full"
+                      allow="clipboard-write; autoplay"
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-gray-800 text-sm">{video.title}</h3>
