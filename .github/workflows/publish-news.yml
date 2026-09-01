@@ -1,0 +1,59 @@
+name: Publish News (one-off)
+
+on:
+  workflow_dispatch:
+    inputs:
+      media_tag:
+        description: "Release tag holding media assets"
+        required: true
+        default: "news-media-tmp"
+
+jobs:
+  publish:
+    name: Upload media to S3 + insert news rows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download media assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p media
+          gh release download "${{ github.event.inputs.media_tag }}" -D media --repo "${{ github.repository }}"
+          echo "Downloaded:"; ls -la media
+
+      - name: Upload media to S3 (public-read)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+          AWS_DEFAULT_REGION: ru-1
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+        run: |
+          for f in media/*; do
+            name=$(basename "$f")
+            echo "Uploading $name ..."
+            aws s3 cp "$f" "s3://$S3_BUCKET/uploads/$name" \
+              --endpoint-url "$S3_ENDPOINT" --acl public-read \
+            || aws s3 cp "$f" "s3://$S3_BUCKET/uploads/$name" \
+              --endpoint-url "$S3_ENDPOINT"
+          done
+
+      - name: Verify public URLs
+        env:
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+        run: |
+          for name in news1_1.jpg news1_6.jpg news2_1.jpg news2_vid1.mp4 news2_vid2.mp4; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$S3_ENDPOINT/$S3_BUCKET/uploads/$name")
+            echo "$name -> HTTP $code"
+          done
+
+      - name: Insert news rows
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f scripts/publish-news.sql
