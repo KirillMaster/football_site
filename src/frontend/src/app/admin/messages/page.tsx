@@ -8,7 +8,16 @@ import { getAdminMessages, getAdminTryouts, markMessageRead, updateTryoutStatus 
 
 type TabType = 'contact' | 'tryout';
 
-interface ContactMsg {
+interface Utm {
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+  ymClientId?: string | null;
+}
+
+interface ContactMsg extends Utm {
   id: string;
   name: string;
   phone: string;
@@ -18,7 +27,7 @@ interface ContactMsg {
   isRead: boolean;
 }
 
-interface Tryout {
+interface Tryout extends Utm {
   id: string;
   childName: string;
   childAge: number;
@@ -28,6 +37,34 @@ interface Tryout {
   message?: string;
   createdAt: string;
   status: string; // Pending, Contacted, Enrolled, Rejected
+}
+
+const UTM_LABELS: Record<keyof Utm, string> = {
+  utmSource: 'Источник',
+  utmMedium: 'Канал',
+  utmCampaign: 'Кампания',
+  utmContent: 'Объявление',
+  utmTerm: 'Ключ. фраза',
+  ymClientId: 'ClientID',
+};
+
+function UtmInfo({ data }: { data: Utm }) {
+  const entries = (Object.keys(UTM_LABELS) as (keyof Utm)[])
+    .map((k) => [k, data[k]] as const)
+    .filter(([, v]) => v);
+  if (entries.length === 0) {
+    return <span className="text-xs text-gray-400">Источник не определён (прямой заход)</span>;
+  }
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {entries.map(([k, v]) => (
+        <span key={k} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 text-[11px] text-brand-blue">
+          <span className="text-gray-400">{UTM_LABELS[k]}:</span>
+          <span className="font-medium">{v}</span>
+        </span>
+      ))}
+    </div>
+  );
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -133,6 +170,7 @@ export default function AdminMessagesPage() {
                         <td className="px-4 py-3">
                           <div className="font-medium text-gray-800">{t.childName}, {t.childAge} лет</div>
                           <div className="text-xs text-gray-500">{t.parentName}</div>
+                          <div className="mt-1.5"><UtmInfo data={t} /></div>
                         </td>
                         <td className="px-4 py-3 text-gray-600 hidden md:table-cell">
                           <a href={`tel:${t.phone.replace(/[^+\d]/g, '')}`} className="hover:text-brand-red">{t.phone}</a>
@@ -192,6 +230,7 @@ export default function AdminMessagesPage() {
                       </div>
                     </div>
                     <p className="mt-3 text-sm text-gray-600 leading-relaxed">{msg.message}</p>
+                    <div className="mt-2 pt-2 border-t border-gray-100"><UtmInfo data={msg} /></div>
                   </div>
                 ))
               )}
