@@ -8,7 +8,7 @@ import { getCourseSchema } from '@/lib/schema';
 export const metadata: Metadata = {
   title: 'Группы и расписание',
   description:
-    'Тренировочные группы футбольного клуба «Арсенал» Севастополь: Малыши (5–7 лет), Юниоры (8–10 лет), Кадеты (11–13 лет), Юноши (14–17 лет). Расписание и цены.',
+    'Тренировочные группы футбольного клуба «Арсенал» Севастополь: Малыши (6–7 лет), Юниоры (8–10 лет), Кадеты (11–13 лет), Юноши (14–17 лет). Расписание и цены.',
 };
 
 export default async function GruppyPage() {
@@ -22,7 +22,7 @@ export default async function GruppyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-black mb-3">Группы</h1>
           <p className="text-blue-300 text-lg">
-            Для детей от 5 до 17 лет — выберите подходящую группу
+            Для детей от 6 до 17 лет — выберите подходящую группу
           </p>
         </div>
       </section>

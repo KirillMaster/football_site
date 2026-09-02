@@ -4,6 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import PhoneLink from '@/components/PhoneLink';
+
+const HEADER_PHONE = '+7-978-813-09-82';
 
 interface SubLink {
   href: string;
@@ -110,6 +113,16 @@ export default function Header() {
 
           {/* CTA + Hamburger */}
           <div className="flex items-center gap-3">
+            <PhoneLink
+              phone={HEADER_PHONE}
+              place="header"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-brand-red text-white hover:bg-red-700 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" />
+              </svg>
+              <span className="sr-only">Позвонить</span>
+            </PhoneLink>
             <Link
               href="/zapisatsya"
               className="hidden sm:inline-flex btn-primary text-sm px-4 py-2"
@@ -169,6 +182,16 @@ export default function Header() {
               )}
             </div>
           ))}
+          <PhoneLink
+            phone={HEADER_PHONE}
+            place="header"
+            className="mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-brand-red text-white text-sm py-2 hover:bg-red-700 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" />
+            </svg>
+            Позвонить
+          </PhoneLink>
           <Link
             href="/zapisatsya"
             className="mt-2 btn-primary text-center text-sm"

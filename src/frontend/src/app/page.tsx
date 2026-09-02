@@ -346,7 +346,7 @@ export default async function HomePage() {
             Запишите ребёнка на пробное занятие
           </h2>
           <p className="text-red-100 text-lg mb-8">
-            Первое занятие — бесплатно. Мы работаем с детьми от 5 до 17 лет.
+            Первое занятие — бесплатно. Мы работаем с детьми от 6 до 17 лет.
           </p>
           <Link href="/zapisatsya" className="inline-flex btn-primary bg-white text-brand-red hover:bg-gray-100 text-base px-10 py-4">
             Записаться бесплатно
