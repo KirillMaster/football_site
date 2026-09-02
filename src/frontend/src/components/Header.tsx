@@ -116,12 +116,13 @@ export default function Header() {
             <PhoneLink
               phone={HEADER_PHONE}
               place="header"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-brand-red text-white hover:bg-red-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-red text-white hover:bg-red-700 transition-colors px-3 h-10 sm:px-4"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" />
               </svg>
-              <span className="sr-only">Позвонить</span>
+              <span className="hidden md:inline text-sm font-semibold whitespace-nowrap">{HEADER_PHONE}</span>
+              <span className="sr-only">Позвонить {HEADER_PHONE}</span>
             </PhoneLink>
             <Link
               href="/zapisatsya"
@@ -190,7 +191,7 @@ export default function Header() {
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" />
             </svg>
-            Позвонить
+            Позвонить {HEADER_PHONE}
           </PhoneLink>
           <Link
             href="/zapisatsya"
