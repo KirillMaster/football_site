@@ -2,13 +2,14 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { adminLogin } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { saveSession, sanitizeReturnTo } from '@/lib/adminAuth';
 
 const schema = z.object({
   email: z.string().email('Некорректный email'),
@@ -17,8 +18,9 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState('');
 
   const {
@@ -31,8 +33,8 @@ export default function AdminLoginPage() {
     setError('');
     const result = await adminLogin(data.email, data.password);
     if (result?.accessToken) {
-      localStorage.setItem('admin_token', result.accessToken);
-      router.push('/admin/dashboard');
+      saveSession(result);
+      router.push(sanitizeReturnTo(searchParams?.get('returnTo')));
     } else {
       setError('Неверный email или пароль');
     }
@@ -106,5 +108,13 @@ export default function AdminLoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminLoginForm />
+    </Suspense>
   );
 }

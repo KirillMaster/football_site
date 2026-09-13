@@ -29,6 +29,7 @@ import {
 
 import { getStoredUtm } from './utm';
 import { getYmClientId } from './analytics';
+import { adminFetch } from './adminAuth';
 
 // Server-side (SSR/RSC): use internal Docker network URL for performance
 // Client-side (browser): use public URL via Nginx
@@ -480,14 +481,11 @@ export async function submitTryoutRequest(data: TryoutRequest): Promise<string |
 
 // ─── Admin Pages API ─────────────────────────────────────────────────────────
 
-function authHeaders(): HeadersInit {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-  return token ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' };
-}
-
 export async function getAdminPages(): Promise<import('@/types').AdminPage[]> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/pages`, { headers: authHeaders() });
+    const res = await adminFetch(`${API_URL}/api/admin/pages`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) return [];
     const raw: Array<{ id: string; slug: string; titleRu: string; contentRu?: string; metaDescriptionRu?: string; isPublished: boolean; sortOrder: number; updatedAt: string }> = await res.json();
     return raw.map((r) => ({
@@ -507,7 +505,9 @@ export async function getAdminPages(): Promise<import('@/types').AdminPage[]> {
 
 export async function getAdminPageBySlug(slug: string): Promise<import('@/types').AdminPage | null> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/pages/${slug}`, { headers: authHeaders() });
+    const res = await adminFetch(`${API_URL}/api/admin/pages/${slug}`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) return null;
     const r = await res.json();
     return {
@@ -530,9 +530,9 @@ export async function updateAdminPage(
   data: { titleRu: string; contentRu: string; metaDescriptionRu: string; isPublished: boolean }
 ): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/pages/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/pages/${id}`, {
       method: 'PUT',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         slug: '',  // will be ignored by backend if page exists
         titleRu: data.titleRu,
@@ -585,7 +585,9 @@ export async function adminLogin(
 
 export async function getAdminCoaches(): Promise<Record<string, unknown>[]> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/coaches`, { headers: authHeaders() });
+    const res = await adminFetch(`${API_URL}/api/admin/coaches`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) return [];
     return await res.json();
   } catch {
@@ -595,9 +597,9 @@ export async function getAdminCoaches(): Promise<Record<string, unknown>[]> {
 
 export async function createAdminCoach(data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/coaches`, {
+    const res = await adminFetch(`${API_URL}/api/admin/coaches`, {
       method: 'POST',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -608,9 +610,9 @@ export async function createAdminCoach(data: Record<string, unknown>): Promise<b
 
 export async function updateAdminCoach(id: string, data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/coaches/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/coaches/${id}`, {
       method: 'PUT',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -621,9 +623,9 @@ export async function updateAdminCoach(id: string, data: Record<string, unknown>
 
 export async function deleteAdminCoach(id: string): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/coaches/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/coaches/${id}`, {
       method: 'DELETE',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
     return res.ok;
   } catch {
@@ -635,8 +637,8 @@ export async function deleteAdminCoach(id: string): Promise<boolean> {
 
 export async function getAdminNews(page = 1, pageSize = 20): Promise<Record<string, unknown>> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/news?page=${page}&pageSize=${pageSize}`, {
-      headers: authHeaders(),
+    const res = await adminFetch(`${API_URL}/api/admin/news?page=${page}&pageSize=${pageSize}`, {
+      headers: { 'Content-Type': 'application/json' },
     });
     if (!res.ok) return { items: [], totalCount: 0 };
     return await res.json();
@@ -647,9 +649,9 @@ export async function getAdminNews(page = 1, pageSize = 20): Promise<Record<stri
 
 export async function createAdminNews(data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/news`, {
+    const res = await adminFetch(`${API_URL}/api/admin/news`, {
       method: 'POST',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -660,9 +662,9 @@ export async function createAdminNews(data: Record<string, unknown>): Promise<bo
 
 export async function updateAdminNews(id: string, data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/news/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/news/${id}`, {
       method: 'PUT',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -673,9 +675,9 @@ export async function updateAdminNews(id: string, data: Record<string, unknown>)
 
 export async function deleteAdminNews(id: string): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/news/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/news/${id}`, {
       method: 'DELETE',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
     return res.ok;
   } catch {
@@ -689,10 +691,9 @@ export async function uploadAdminPhoto(file: File): Promise<{ id: string; url: s
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-    const res = await fetch(`${API_URL}/api/admin/photos/upload`, {
+    // Content-Type для FormData выставляет сам браузер (boundary) — не задаём вручную.
+    const res = await adminFetch(`${API_URL}/api/admin/photos/upload`, {
       method: 'POST',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: formData,
     });
     if (!res.ok) return null;
@@ -705,9 +706,9 @@ export async function uploadAdminPhoto(file: File): Promise<{ id: string; url: s
 
 export async function updateAdminPhoto(id: string, data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/photos/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/photos/${id}`, {
       method: 'PUT',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -718,9 +719,9 @@ export async function updateAdminPhoto(id: string, data: Record<string, unknown>
 
 export async function deleteAdminPhoto(id: string): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/photos/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/photos/${id}`, {
       method: 'DELETE',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
     return res.ok;
   } catch {
@@ -732,7 +733,9 @@ export async function deleteAdminPhoto(id: string): Promise<boolean> {
 
 export async function getAdminGroups(): Promise<Record<string, unknown>[]> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/groups`, { headers: authHeaders() });
+    const res = await adminFetch(`${API_URL}/api/admin/groups`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) return [];
     return await res.json();
   } catch {
@@ -742,9 +745,9 @@ export async function getAdminGroups(): Promise<Record<string, unknown>[]> {
 
 export async function createAdminGroup(data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/groups`, {
+    const res = await adminFetch(`${API_URL}/api/admin/groups`, {
       method: 'POST',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -755,9 +758,9 @@ export async function createAdminGroup(data: Record<string, unknown>): Promise<b
 
 export async function updateAdminGroup(id: string, data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/groups/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/groups/${id}`, {
       method: 'PUT',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -768,9 +771,9 @@ export async function updateAdminGroup(id: string, data: Record<string, unknown>
 
 export async function deleteAdminGroup(id: string): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/groups/${id}`, {
+    const res = await adminFetch(`${API_URL}/api/admin/groups/${id}`, {
       method: 'DELETE',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
     return res.ok;
   } catch {
@@ -782,7 +785,9 @@ export async function deleteAdminGroup(id: string): Promise<boolean> {
 
 export async function getAdminSettings(): Promise<Record<string, unknown> | null> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/site-settings`, { headers: authHeaders() });
+    const res = await adminFetch(`${API_URL}/api/admin/site-settings`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) return null;
     return await res.json();
   } catch {
@@ -792,9 +797,9 @@ export async function getAdminSettings(): Promise<Record<string, unknown> | null
 
 export async function updateAdminSettings(data: Record<string, unknown>): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/site-settings`, {
+    const res = await adminFetch(`${API_URL}/api/admin/site-settings`, {
       method: 'PUT',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return res.ok;
@@ -807,8 +812,8 @@ export async function updateAdminSettings(data: Record<string, unknown>): Promis
 
 export async function getAdminMessages(unreadOnly = false): Promise<Record<string, unknown>[]> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/contact-messages?unreadOnly=${unreadOnly}`, {
-      headers: authHeaders(),
+    const res = await adminFetch(`${API_URL}/api/admin/contact-messages?unreadOnly=${unreadOnly}`, {
+      headers: { 'Content-Type': 'application/json' },
     });
     if (!res.ok) return [];
     return await res.json();
@@ -819,9 +824,9 @@ export async function getAdminMessages(unreadOnly = false): Promise<Record<strin
 
 export async function markMessageRead(id: string): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/contact-messages/${id}/read`, {
+    const res = await adminFetch(`${API_URL}/api/admin/contact-messages/${id}/read`, {
       method: 'PATCH',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
     return res.ok;
   } catch {
@@ -833,7 +838,9 @@ export async function markMessageRead(id: string): Promise<boolean> {
 
 export async function getAdminTryouts(): Promise<Record<string, unknown>[]> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/tryout-requests`, { headers: authHeaders() });
+    const res = await adminFetch(`${API_URL}/api/admin/tryout-requests`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     if (!res.ok) return [];
     return await res.json();
   } catch {
@@ -843,9 +850,9 @@ export async function getAdminTryouts(): Promise<Record<string, unknown>[]> {
 
 export async function updateTryoutStatus(id: string, status: string): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/tryout-requests/${id}/status`, {
+    const res = await adminFetch(`${API_URL}/api/admin/tryout-requests/${id}/status`, {
       method: 'PATCH',
-      headers: authHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
     });
     return res.ok;
@@ -869,7 +876,7 @@ export async function getAdminDashboardStats(): Promise<{
       getAdminTryouts(),
       getAdminCoaches(),
       getAdminNews(1, 1),
-      fetch(`${API_URL}/api/photos`, { headers: authHeaders() })
+      adminFetch(`${API_URL}/api/photos`, { headers: { 'Content-Type': 'application/json' } })
         .then((r) => (r.ok ? r.json() : { totalCount: 0 }))
         .catch(() => ({ totalCount: 0 })),
     ]);
