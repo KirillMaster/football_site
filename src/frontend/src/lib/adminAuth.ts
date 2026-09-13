@@ -1,4 +1,7 @@
-import type { AuthResponse } from './api';
+export interface AdminSessionTokens {
+  accessToken: string;
+  refreshToken: string;
+}
 
 const ACCESS_KEY = 'admin_token';
 const REFRESH_KEY = 'admin_refresh_token';
@@ -12,7 +15,7 @@ function safeStorage(): Storage | null {
   }
 }
 
-export function saveSession(auth: Pick<AuthResponse, 'accessToken' | 'refreshToken'>): void {
+export function saveSession(auth: AdminSessionTokens): void {
   const storage = safeStorage();
   if (!storage) return;
   try {
@@ -83,7 +86,7 @@ async function ensureRefreshed(): Promise<boolean> {
         body: JSON.stringify({ refreshToken }),
       });
       if (res.ok) {
-        const auth: AuthResponse = await res.json();
+        const auth: AdminSessionTokens = await res.json();
         saveSession(auth);
         return true;
       }

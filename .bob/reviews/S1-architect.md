@@ -1,13 +1,32 @@
-# S1 notifications-core — architect review
+# Architect review — S1 admin-session-wrapper
 
-Verdict: **pass**, no changes.
+Verdict: pass (mechanical fix applied in place).
 
-Checked:
-- Arsenal.Application (`IFeedbackNotifier`, `IFeedbackNotificationChannel`, `FeedbackNotifier`, `FeedbackNotification`, `FeedbackNotificationFormatter`) has no reference to Arsenal.Infrastructure or transports — confirmed via `Arsenal.Application.csproj` (no MailKit/HttpClient package refs).
-- `TelegramNotificationChannel` / `EmailNotificationChannel` live in `Arsenal.Infrastructure/Notifications`, implement `IFeedbackNotificationChannel` from Application.
-- DI registration in `Arsenal.Infrastructure/Extensions/ServiceCollectionExtensions.cs` (HttpClient for Telegram, singletons for both channels + notifier).
-- `ContactCommands.cs`: both handlers call `_notifier.Notify(...)` after `await _db.SaveChangesAsync(ct)`.
-- Contracts (`feedback_notifier`, `notification_channel`, `telegram_channel`, `email_channel`) match implementation (fire-and-forget via `Task.Run`, per-channel 10s timeout, skip-unconfigured with warning log, failure logged without propagating).
-- No secrets in code (bot token/SMTP creds read from `IConfiguration`; hardcoded values are non-secret defaults — SMTP host/port, feedback recipient address).
+## Finding
+`src/frontend/src/lib/adminAuth.ts` (the low-level session/token primitive) imported
+`type { AuthResponse }` from `./api`, which itself imports `adminFetch` from `./adminAuth`.
+This is a backwards, cyclic dependency: the lower-level module reached up into the
+higher-level module for a type it does not own.
 
-No mechanical or structural fixes needed.
+## Fix (mechanical)
+- Introduced `AdminSessionTokens` (`{ accessToken, refreshToken }`) in `adminAuth.ts` —
+  the shape `adminAuth` actually needs.
+- `saveSession` and the refresh handler now type against `AdminSessionTokens` instead of
+  `api.ts`'s `AuthResponse`.
+- `api.ts`'s `AuthResponse` now `extends AdminSessionTokens`, imported as a type from
+  `./adminAuth`. Public shape/name unchanged for existing consumers (`admin/login/page.tsx`).
+- `adminAuth.ts` now has zero imports — a pure module, dependency direction restored
+  (`api.ts` → `adminAuth.ts`, never the reverse).
+
+## Verified
+- Components (`AdminLayout.tsx`, `admin/login/page.tsx`) use only `adminAuth`'s public
+  functions (`getAccessToken`, `clearSession`, `saveSession`, `sanitizeReturnTo`) — no
+  reach into internals.
+- Admin-only helpers (`adminGetJson`/`adminMutate`) stay isolated in `api.ts`; public
+  (non-admin) fetch functions are untouched by admin auth concerns — no leakage (A-4).
+- No other cross-module cycles found.
+
+## Gates
+- `npm test -- --run`: 10 files / 39 tests passed.
+- `npm run build`: compiled + typechecked + all routes generated successfully.
+- `npm run lint`: no ESLint warnings or errors.

@@ -29,7 +29,7 @@ import {
 
 import { getStoredUtm } from './utm';
 import { getYmClientId } from './analytics';
-import { adminFetch } from './adminAuth';
+import { adminFetch, type AdminSessionTokens } from './adminAuth';
 
 // Server-side (SSR/RSC): use internal Docker network URL for performance
 // Client-side (browser): use public URL via Nginx
@@ -568,9 +568,7 @@ export async function updateAdminPage(
 
 // ─── Admin Auth ───────────────────────────────────────────────────────────────
 
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
+export interface AuthResponse extends AdminSessionTokens {
   expiresAt: string;
   email: string;
   role: string;
