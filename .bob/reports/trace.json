@@ -1,0 +1,98 @@
+[
+  {
+    "scenario_id": "US1-AS1",
+    "scenario_name": "Контактное сообщение порождает Telegram-уведомление",
+    "test_refs": [
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_Success_DeliversNotificationToConfiguredChannel",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_Success_ChannelCalledExactlyOnce",
+      "Arsenal.Application.Tests.Notifications.FeedbackNotificationFormatterTests.Format_ContactMessage_ContainsTitleFieldsMoscowDateAndUtm"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US1-AS2",
+    "scenario_name": "Заявка на пробную тренировку порождает Telegram-уведомление",
+    "test_refs": [
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Tryout_Success_DeliversNotificationWithChildAndParentFields",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Tryout_BoundaryAge_MinAge3Accepted",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Tryout_BoundaryAge_MaxAge18Accepted",
+      "Arsenal.Application.Tests.Notifications.FeedbackNotificationFormatterTests.Format_TryoutRequest_ContainsChildAndParentFields"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US1-EC1",
+    "scenario_name": "Сконфигурирован только Telegram — email пропускается с предупреждением",
+    "test_refs": [
+      "Arsenal.Application.Tests.Notifications.FeedbackNotifierTests.Notify_ChannelNotConfigured_SkipsSendAndLogsWarning",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_Success_FansOutToAllConfiguredChannels"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US1-EC2",
+    "scenario_name": "Не все поля заявки заполнены",
+    "test_refs": [
+      "Arsenal.Application.Tests.Notifications.FeedbackNotificationFormatterTests.Format_EmptyEmailAndUtm_OmitsThoseLines",
+      "Arsenal.Application.Tests.Notifications.FeedbackNotificationFormatterTests.Format_AllUtmFieldsEmpty_NoUtmSection",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_ValidationError_EmptyName_DoesNotInvokeChannels",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_ValidationError_EmptyPhone_DoesNotInvokeChannels",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_ValidationError_EmptyMessage_DoesNotInvokeChannels"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US1-EC3",
+    "scenario_name": "Поля заявки содержат спецсимволы разметки",
+    "test_refs": [
+      "Arsenal.Application.Tests.Notifications.FeedbackNotificationFormatterTests.Format_SpecialMarkupCharacters_ArePreservedVerbatim"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US2-AS1",
+    "scenario_name": "Успешная заявка дублируется письмом на почту клуба",
+    "test_refs": [
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_Success_BothChannelsCalledExactlyOnce",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_Success_FansOutToAllConfiguredChannels"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US2-EC1",
+    "scenario_name": "Сконфигурирован только email — Telegram пропускается с предупреждением",
+    "test_refs": [
+      "Arsenal.Application.Tests.Notifications.FeedbackNotifierTests.Notify_ChannelNotConfigured_SkipsSendAndLogsWarning",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_Success_FansOutToAllConfiguredChannels"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US3-AS1",
+    "scenario_name": "Оба канала сконфигурированы, но внешние сервисы недоступны",
+    "test_refs": [
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_AllChannelsThrow_StillPersistsAndReturns200",
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_ChannelThrows_ChannelInvokedButDidNotPreventPersistence",
+      "Arsenal.Application.Tests.Notifications.FeedbackNotifierTests.Notify_ChannelThrows_DoesNotEscapeAndLogsError"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US3-AS2",
+    "scenario_name": "Ни один канал не сконфигурирован",
+    "test_refs": [
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Tryout_NoChannelsConfigured_StillPersistsAndNeverSends",
+      "Arsenal.Application.Tests.Notifications.FeedbackNotifierTests.Notify_NoChannelsConfigured_LogsWarningForEachAndSendsNothing"
+    ],
+    "status": "covered"
+  },
+  {
+    "scenario_id": "US3-EC4",
+    "scenario_name": "Внешний сервис канала отвечает медленно (таймаут)",
+    "test_refs": [
+      "Arsenal.API.IntegrationTests.NotificationEndpointTests.POST_Contact_TimeoutCancellation_RespectsCancellationToken",
+      "Arsenal.Application.Tests.Notifications.FeedbackNotifierTests.Notify_ChannelExceedsTimeout_IsCancelledAndLoggedAsError"
+    ],
+    "status": "covered"
+  }
+]

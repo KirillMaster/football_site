@@ -1,6 +1,8 @@
 using Amazon.S3;
 using Arsenal.Application.Interfaces;
+using Arsenal.Application.Notifications;
 using Arsenal.Infrastructure.Identity;
+using Arsenal.Infrastructure.Notifications;
 using Arsenal.Infrastructure.Persistence;
 using Arsenal.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +47,13 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IStorageService, S3StorageService>();
+
+        // Feedback notifications (Telegram + Email)
+        services.AddHttpClient<TelegramNotificationChannel>();
+        services.AddSingleton<IFeedbackNotificationChannel>(sp =>
+            sp.GetRequiredService<TelegramNotificationChannel>());
+        services.AddSingleton<IFeedbackNotificationChannel, EmailNotificationChannel>();
+        services.AddSingleton<IFeedbackNotifier, FeedbackNotifier>();
 
         return services;
     }

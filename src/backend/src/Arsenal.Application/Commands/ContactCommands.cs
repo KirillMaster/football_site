@@ -1,6 +1,7 @@
 using Arsenal.Application.Common;
 using Arsenal.Application.DTOs;
 using Arsenal.Application.Interfaces;
+using Arsenal.Application.Notifications;
 using Arsenal.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -9,12 +10,15 @@ namespace Arsenal.Application.Commands;
 public class CreateContactMessageCommandHandler
 {
     private readonly IArsenalDbContext _db;
+    private readonly IFeedbackNotifier _notifier;
     private readonly ILogger<CreateContactMessageCommandHandler> _logger;
 
     public CreateContactMessageCommandHandler(IArsenalDbContext db,
+        IFeedbackNotifier notifier,
         ILogger<CreateContactMessageCommandHandler> logger)
     {
         _db = db;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -26,6 +30,7 @@ public class CreateContactMessageCommandHandler
         _db.ContactMessages.Add(message);
         await _db.SaveChangesAsync(ct);
         _logger.LogInformation("Contact message created: {Id}", message.Id);
+        _notifier.Notify(FeedbackNotification.FromContactMessage(message));
         return Result<Guid>.Success(message.Id);
     }
 }
@@ -33,12 +38,15 @@ public class CreateContactMessageCommandHandler
 public class CreateTryoutRequestCommandHandler
 {
     private readonly IArsenalDbContext _db;
+    private readonly IFeedbackNotifier _notifier;
     private readonly ILogger<CreateTryoutRequestCommandHandler> _logger;
 
     public CreateTryoutRequestCommandHandler(IArsenalDbContext db,
+        IFeedbackNotifier notifier,
         ILogger<CreateTryoutRequestCommandHandler> logger)
     {
         _db = db;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -51,6 +59,7 @@ public class CreateTryoutRequestCommandHandler
         _db.TryoutRequests.Add(tryout);
         await _db.SaveChangesAsync(ct);
         _logger.LogInformation("Tryout request created: {Id}", tryout.Id);
+        _notifier.Notify(FeedbackNotification.FromTryoutRequest(tryout));
         return Result<Guid>.Success(tryout.Id);
     }
 }
