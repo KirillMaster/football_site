@@ -28,16 +28,13 @@ public class EmailNotificationChannel : IFeedbackNotificationChannel
 
     public async Task SendAsync(FeedbackNotification notification, CancellationToken cancellationToken)
     {
-        var host = _configuration["SMTP_HOST"];
-        host = string.IsNullOrWhiteSpace(host) ? DefaultSmtpHost : host;
+        var host = ConfigOrDefault("SMTP_HOST", DefaultSmtpHost);
+        var to = ConfigOrDefault("FEEDBACK_EMAIL_TO", DefaultFeedbackEmailTo);
 
         var port = DefaultSmtpPort;
         var portRaw = _configuration["SMTP_PORT"];
         if (!string.IsNullOrWhiteSpace(portRaw) && int.TryParse(portRaw, out var parsedPort))
             port = parsedPort;
-
-        var to = _configuration["FEEDBACK_EMAIL_TO"];
-        to = string.IsNullOrWhiteSpace(to) ? DefaultFeedbackEmailTo : to;
 
         var message = new MimeMessage();
         message.From.Add(MailboxAddress.Parse(SmtpUser));
@@ -56,5 +53,11 @@ public class EmailNotificationChannel : IFeedbackNotificationChannel
         {
             await client.DisconnectAsync(true, cancellationToken);
         }
+    }
+
+    private string ConfigOrDefault(string key, string defaultValue)
+    {
+        var value = _configuration[key];
+        return string.IsNullOrWhiteSpace(value) ? defaultValue : value;
     }
 }
