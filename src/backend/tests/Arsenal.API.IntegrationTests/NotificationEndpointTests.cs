@@ -304,26 +304,13 @@ public class NotificationEndpointTests
         var blockingChannel = new SlowFakeNotificationChannel("Slow", TimeSpan.FromSeconds(20));
         await using var factory = new NotificationsWebAppFactory(new IFeedbackNotificationChannel[] { blockingChannel });
         using var client = factory.CreateClient();
+        client.Timeout = TimeSpan.FromSeconds(10);
 
-        var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
         var payload = new { name = "Иван", phone = "+79780000000", message = "Текст" };
+        var response = await client.PostAsJsonAsync("/api/contact", payload);
 
-        try
-        {
-            var request = new HttpRequestMessage(HttpMethod.Post, "/api/contact")
-            {
-                Content = JsonContent.Create(payload)
-            };
-            // Отправляем с timeout 10 секунд
-            using var timeoutClient = new HttpClient();
-            timeoutClient.Timeout = TimeSpan.FromSeconds(10);
-            var response = await timeoutClient.PostAsJsonAsync("http://localhost/api/contact", payload);
-            // Если канал блокирует >10s, то ответ может быть timeout
-        }
-        catch (TaskCanceledException)
-        {
-            // Acceptable: timeout occurred as expected
-        }
+        response.StatusCode.Should().Be(HttpStatusCode.OK,
+            "fire-and-forget notification must not delay the HTTP response even when a channel blocks for 20s");
     }
 
     private static async Task<FeedbackNotification> WaitForNotificationAsync(FakeNotificationChannel channel)
