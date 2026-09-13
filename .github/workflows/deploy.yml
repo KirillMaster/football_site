@@ -172,6 +172,13 @@ jobs:
               "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
               "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" \
               "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" \
+              "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+              "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" \
+              "SMTP_HOST=${{ secrets.SMTP_HOST }}" \
+              "SMTP_PORT=${{ secrets.SMTP_PORT }}" \
+              "SMTP_USER=${{ secrets.SMTP_USER }}" \
+              "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" \
+              "FEEDBACK_EMAIL_TO=${{ secrets.FEEDBACK_EMAIL_TO }}" \
               "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" \
               "NEXT_PUBLIC_YM_ID=${{ secrets.NEXT_PUBLIC_YM_ID }}" \
               "FRONTEND_URL=https://fcarsenal92.ru" > .env
