@@ -1,0 +1,109 @@
+feature: "Дублирование входящей обратной связи в Telegram и на email"
+contracts:
+  - id: "feedback_notifier"
+    name: "IFeedbackNotifier (Arsenal.Application) — единая точка fire-and-forget отправки после SaveChangesAsync"
+    kind: "interface"
+    entity_refs:
+      - "feedback_notification"
+    request:
+      - name: "notification"
+        type: "object"
+        required: true
+        description: "FeedbackNotification (см. data-model.yaml#feedback_notification)."
+    response_cases:
+      - outcome: "accepted"
+        fields:
+          - name: "returnedImmediately"
+            type: "boolean"
+            required: true
+            description: "Возврат немедленный, доставка в фоне; вызывающий handler не ждёт."
+  - id: "notification_channel"
+    name: "IFeedbackNotificationChannel — один канал доставки, вызывается композитом независимо с таймаутом 10с"
+    kind: "interface"
+    entity_refs:
+      - "feedback_notification"
+      - "notification_channel_config"
+    request:
+      - name: "notification"
+        type: "object"
+        required: true
+        description: "FeedbackNotification для форматирования и отправки."
+      - name: "cancellationToken"
+        type: "object"
+        required: true
+        description: "Токен с таймаутом 10с."
+    response_cases:
+      - outcome: "sent"
+        fields:
+          - name: "delivered"
+            type: "boolean"
+            required: true
+            description: "Сообщение принято транспортом (Telegram API ok=true / SMTP accepted)."
+      - outcome: "skipped_unconfigured"
+        fields:
+          - name: "warningLogged"
+            type: "boolean"
+            required: true
+            description: "Обязательные env-переменные канала не заданы: канал пропущен, warning в лог (FR-005)."
+      - outcome: "failed"
+        fields:
+          - name: "errorLogged"
+            type: "boolean"
+            required: true
+            description: "Ошибка транспорта/таймаут залогирована; исключение не покидает канал, приём заявки не затронут (FR-004)."
+  - id: "telegram_channel"
+    name: "TelegramNotificationChannel (Arsenal.Infrastructure) — Bot API sendMessage, plain text без parse_mode (EC-3)"
+    kind: "implementation"
+    implements_ref: "notification_channel"
+    entity_refs:
+      - "feedback_notification"
+    request:
+      - name: "chat_id"
+        type: "string"
+        required: true
+        description: "Из env TELEGRAM_CHAT_ID."
+      - name: "text"
+        type: "string"
+        required: true
+        description: "Отформатированный plain-text текст уведомления (FR-003)."
+    response_cases:
+      - outcome: "sent"
+        fields:
+          - name: "ok"
+            type: "boolean"
+            required: true
+            description: "Bot API вернул ok=true."
+      - outcome: "failed"
+        fields:
+          - name: "errorLogged"
+            type: "boolean"
+            required: true
+            description: "HTTP ≠ 2xx, ok=false или таймаут — логируется."
+  - id: "email_channel"
+    name: "EmailNotificationChannel (Arsenal.Infrastructure, MailKit) — SMTP_HOST:SMTP_PORT (default smtp.mail.ru:465 SslOnConnect) → FEEDBACK_EMAIL_TO"
+    kind: "implementation"
+    implements_ref: "notification_channel"
+    entity_refs:
+      - "feedback_notification"
+    request:
+      - name: "subject"
+        type: "string"
+        required: true
+        description: "Тип заявки + сайт, например «[fcarsenal92.ru] Заявка на пробную тренировку»."
+      - name: "body"
+        type: "string"
+        required: true
+        description: "Текст уведомления (FR-003), plain text."
+    response_cases:
+      - outcome: "sent"
+        fields:
+          - name: "accepted"
+            type: "boolean"
+            required: true
+            description: "SMTP-сервер принял письмо."
+      - outcome: "failed"
+        fields:
+          - name: "errorLogged"
+            type: "boolean"
+            required: true
+            description: "Ошибка соединения/аутентификации/таймаут — логируется."

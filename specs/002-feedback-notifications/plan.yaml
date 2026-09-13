@@ -1,0 +1,34 @@
+feature: "Дублирование входящей обратной связи в Telegram и на email"
+branch: "002-feedback-notifications"
+summary: "Backend-only: единый IFeedbackNotifier в Arsenal.Application, вызываемый из handlers создания заявок после SaveChangesAsync; композитная реализация в Arsenal.Infrastructure с каналами Telegram (Bot API sendMessage через HttpClient) и Email (SMTP smtp.mail.ru:465 SSL). Fire-and-forget с таймаутом 10с и логированием; конфигурация целиком через переменные окружения."
+
+technical_context:
+  language_version: "C# / .NET 9"
+  primary_dependencies:
+    - "ASP.NET Core (существующий Arsenal.API)"
+    - "EF Core + PostgreSQL (существующие)"
+    - "System.Net.Http.HttpClient (Telegram Bot API)"
+    - "MailKit (SMTP SSL 465)"
+  storage: "PostgreSQL (существующие таблицы ContactMessage/TryoutRequest; новых таблиц нет)"
+  testing: "xUnit: Arsenal.Application.Tests (unit, моки каналов), Arsenal.API.IntegrationTests (WebApplicationFactory, перехват транспортов)"
+  target_platform: "Linux server (Docker, docker-compose на VPS)"
+  project_type: "web_application"
+  performance_goals: "Ответ посетителю не замедляется уведомлениями (fire-and-forget); доставка уведомления ≤ 1 мин"
+  constraints: "Таймаут 10с на канал; сбой/отсутствие конфигурации канала не влияет на приём заявки; секреты только в env/GitHub Secrets; VPS RAM ~1GB — без новых фоновых сервисов/очередей"
+  scale_scope: "Единицы-десятки заявок в день, один получатель на канал"
+
+constitution_check:
+  - principle_id: "P1"
+    status: "not_applicable"
+    justification: "Конституция проекта не ратифицирована (шаблон-заглушка); реальных принципов для проверки нет."
+
+project_structure:
+  layout: "web_application"
+  description: "Существующая DDD-структура backend: интерфейс и вызов в Application-слое, реализации каналов и DI-регистрация в Infrastructure/API; тесты в существующих тестовых проектах. Frontend не затрагивается."
+  directories:
+    - "src/backend/src/Arsenal.Application/"
+    - "src/backend/src/Arsenal.Infrastructure/"
+    - "src/backend/src/Arsenal.API/"
+    - "src/backend/tests/Arsenal.Application.Tests/"
+    - "src/backend/tests/Arsenal.API.IntegrationTests/"
+    - "config/ (docker-compose, deploy workflow)"

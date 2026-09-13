@@ -1,0 +1,53 @@
+feature: "Дублирование входящей обратной связи в Telegram и на email"
+entities:
+  - id: "feedback_notification"
+    name: "FeedbackNotification"
+    description: "Транспортно-нейтральное представление входящей заявки для уведомления. Не хранится в БД — строится из сохранённой сущности заявки."
+    fields:
+      - name: "kind"
+        type: "enum"
+        required: true
+        description: "Тип заявки."
+        enum_values:
+          - "contact_message"
+          - "tryout_request"
+      - name: "title"
+        type: "string"
+        required: true
+        description: "Человекочитаемый заголовок («Новое сообщение с сайта», «Заявка на пробную тренировку»)."
+      - name: "createdAtMoscow"
+        type: "string"
+        required: true
+        description: "Дата/время создания заявки в Europe/Moscow, формат dd.MM.yyyy HH:mm."
+      - name: "fields"
+        type: "object"
+        required: true
+        description: "Упорядоченный набор пар «метка → значение» только для непустых полей заявки (имя, телефон, email, сообщение, имя ребёнка, возраст и т.д.)."
+      - name: "utm"
+        type: "object"
+        required: false
+        description: "Непустые UTM-метки и ymClientId, если есть."
+    relationships: []
+  - id: "notification_channel_config"
+    name: "NotificationChannelConfig"
+    description: "Конфигурация канала доставки из переменных окружения; канал активен только при полном наборе обязательных параметров."
+    fields:
+      - name: "channel"
+        type: "enum"
+        required: true
+        description: "Канал доставки."
+        enum_values:
+          - "telegram"
+          - "email"
+      - name: "configured"
+        type: "boolean"
+        required: true
+        description: "Все обязательные параметры канала заданы (Telegram: token+chatId; Email: smtpUser+smtpPassword)."
+      - name: "timeoutSeconds"
+        type: "number"
+        required: true
+        description: "Таймаут отправки, по умолчанию 10."
+    relationships:
+      - field: "channel"
+        target_entity_ref: "feedback_notification"
+        cardinality: "many"

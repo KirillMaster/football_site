@@ -1,0 +1,310 @@
+feature: "Дублирование входящей обратной связи в Telegram и на email"
+tasks:
+  - id: "T001"
+    title: "Добавить пакет MailKit в Arsenal.Infrastructure"
+    description: "Подключить NuGet-пакет MailKit к проекту Arsenal.Infrastructure для SMTP-отправки через smtp.mail.ru:465 (SslOnConnect)."
+    context: "Штатный System.Net.Mail.SmtpClient устарел и плохо работает с implicit SSL 465; решение R1 из research.md."
+    story_ref: "US2"
+    requirement_refs: ["FR-002"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: []
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Добавить пакет"
+        detail: "dotnet add src/backend/src/Arsenal.Infrastructure/Arsenal.Infrastructure.csproj package MailKit"
+      - order: 2
+        action: "Проверить сборку"
+        detail: "dotnet build src/backend — без ошибок"
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Infrastructure/Arsenal.Infrastructure.csproj"
+        note: "Закрепить актуальную стабильную версию MailKit."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "MailKit присутствует в csproj, dotnet build проходит."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["чистый checkout"]
+        when: "dotnet build src/backend"
+        then: ["сборка успешна, MailKit восстанавливается"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T002"
+    title: "Модель FeedbackNotification и форматирование текста уведомления"
+    description: "Создать в Arsenal.Application модель FeedbackNotification (kind, title, createdAtMoscow, fields, utm) и форматтер, собирающий plain-text текст: тип заявки, непустые поля, дата/время Europe/Moscow, UTM."
+    context: "Единое транспортно-нейтральное представление заявки, которое используют оба канала (FR-003)."
+    story_ref: "US1"
+    requirement_refs: ["FR-003"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["feedback_notification"]
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "Создать модель"
+        detail: "src/backend/src/Arsenal.Application/Notifications/FeedbackNotification.cs — record с Kind (enum ContactMessage/TryoutRequest), Title, CreatedAtMoscow, упорядоченными парами Fields, опциональным Utm"
+      - order: 2
+        action: "Создать форматтер"
+        detail: "FeedbackNotificationFormatter.Format(notification) → string: заголовок, затем «Метка: значение» построчно только для непустых полей, дата dd.MM.yyyy HH:mm (TimeZoneInfo 'Europe/Moscow' с fallback 'Russian Standard Time' для Windows), затем UTM-блок при наличии"
+      - order: 3
+        action: "Добавить фабрики"
+        detail: "Методы FromContactMessage(entity)/FromTryoutRequest(entity), включающие только непустые поля"
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Application/Commands/ContactCommands.cs"
+        note: "Поля сущностей ContactMessage/TryoutRequest (включая UTM/ymClientId) смотреть в Arsenal.Domain."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Текст содержит тип заявки, все непустые поля, время Europe/Moscow; пустые поля не выводятся."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["заявка с частично заполненными полями и UTM"]
+        when: "Format()"
+        then: ["непустые поля присутствуют", "пустые отсутствуют", "время в Europe/Moscow"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T003"
+    title: "IFeedbackNotifier, IFeedbackNotificationChannel и композитный notifier"
+    description: "Интерфейсы в Arsenal.Application; композитная реализация FeedbackNotifier: fire-and-forget (Task.Run), для каждого канала CancellationTokenSource 10с, try/catch с логированием; несконфигурированный канал — warning и пропуск."
+    context: "Единая расширяемая точка интеграции (FR-008); сбой или отсутствие конфигурации не влияет на приём заявки (US3)."
+    story_ref: "US3"
+    requirement_refs: ["FR-004", "FR-005", "FR-006", "FR-008"]
+    depends_on: ["T002"]
+    parallelizable: false
+    entity_refs: ["feedback_notification", "notification_channel_config"]
+    contract_refs: ["feedback_notifier", "notification_channel"]
+    steps:
+      - order: 1
+        action: "Создать интерфейсы"
+        detail: "Arsenal.Application/Notifications/: IFeedbackNotifier.Notify(FeedbackNotification), IFeedbackNotificationChannel { string Name; bool IsConfigured; Task SendAsync(FeedbackNotification, CancellationToken) }"
+      - order: 2
+        action: "Реализовать композит"
+        detail: "FeedbackNotifier: Notify() запускает Task.Run; внутри для каждого канала: если !IsConfigured → LogWarning и continue; иначе SendAsync с CTS(10s) в try/catch → LogError при сбое"
+      - order: 3
+        action: "Зарегистрировать в DI"
+        detail: "Arsenal.API/Program.cs (или существующий метод регистрации Infrastructure): AddSingleton<IFeedbackNotifier, FeedbackNotifier> + каналы"
+    technical_notes:
+      - path: "src/backend/src/Arsenal.API/Program.cs"
+        note: "Следовать существующему стилю DI-регистраций."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Notify() возвращается немедленно; исключение канала не выходит наружу; несконфигурированный канал даёт warning."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["канал-мок, бросающий исключение"]
+        when: "Notify()"
+        then: ["вызов не бросает", "ошибка залогирована"]
+        verification: ["automated"]
+        level: "unit"
+      - id: "TS-2"
+        given: ["канал с IsConfigured=false"]
+        when: "Notify()"
+        then: ["SendAsync не вызван", "warning в логе"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T004"
+    title: "Вызов notifier из handlers создания заявок"
+    description: "В CreateContactMessageCommandHandler и CreateTryoutRequestCommandHandler после успешного SaveChangesAsync построить FeedbackNotification и вызвать IFeedbackNotifier.Notify()."
+    context: "Уведомление отправляется только после фактического сохранения заявки (FR-001/FR-002), не задерживая ответ (FR-006)."
+    story_ref: "US1"
+    requirement_refs: ["FR-001", "FR-002", "FR-006", "FR-008"]
+    depends_on: ["T003"]
+    parallelizable: false
+    entity_refs: ["feedback_notification"]
+    contract_refs: ["feedback_notifier"]
+    steps:
+      - order: 1
+        action: "Внедрить зависимость"
+        detail: "Добавить IFeedbackNotifier в конструкторы обоих handlers в src/backend/src/Arsenal.Application/Commands/ContactCommands.cs"
+      - order: 2
+        action: "Вызвать после сохранения"
+        detail: "После SaveChangesAsync: _notifier.Notify(FeedbackNotification.FromContactMessage(entity) / FromTryoutRequest(entity)); результат handler не меняется"
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Application/Commands/ContactCommands.cs"
+        note: "Handlers на строках ~9 и ~33; не менять контракт ответа API."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Оба handler вызывают Notify() ровно один раз после сохранения; ответ API не изменился."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["мок IFeedbackNotifier"]
+        when: "handler выполняет команду"
+        then: ["Notify вызван с корректным Kind после SaveChangesAsync"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T005"
+    title: "TelegramNotificationChannel"
+    description: "Канал Telegram в Arsenal.Infrastructure: POST sendMessage через IHttpClientFactory, chat_id и токен из env TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID, plain text без parse_mode."
+    context: "Основной канал уведомлений (US1); plain text исключает ошибки экранирования разметки (EC-3)."
+    story_ref: "US1"
+    requirement_refs: ["FR-001", "FR-007"]
+    depends_on: ["T003"]
+    parallelizable: true
+    entity_refs: ["feedback_notification", "notification_channel_config"]
+    contract_refs: ["telegram_channel"]
+    steps:
+      - order: 1
+        action: "Реализовать канал"
+        detail: "src/backend/src/Arsenal.Infrastructure/Notifications/TelegramNotificationChannel.cs: IsConfigured = оба env непустые; SendAsync → POST https://api.telegram.org/bot{token}/sendMessage с JSON {chat_id, text}; не-2xx или ok=false → исключение"
+      - order: 2
+        action: "Зарегистрировать HttpClient"
+        detail: "services.AddHttpClient<TelegramNotificationChannel>() + регистрация как IFeedbackNotificationChannel"
+      - order: 3
+        action: "Исключить токен из логов"
+        detail: "В сообщениях лога не выводить URL с токеном — только имя канала и статус"
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Infrastructure/"
+        note: "Токен только из env; в git не попадает (FR-007)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "При заданных env сообщение уходит в Bot API; токен не встречается в логах и коде."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["мок HttpMessageHandler, возвращающий ok=true"]
+        when: "SendAsync()"
+        then: ["запрос на корректный URL с chat_id и текстом"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T006"
+    title: "EmailNotificationChannel (MailKit)"
+    description: "Канал email в Arsenal.Infrastructure: MailKit SmtpClient, SMTP_HOST/SMTP_PORT (default smtp.mail.ru:465, SslOnConnect), auth SMTP_USER/SMTP_PASSWORD, получатель FEEDBACK_EMAIL_TO (default ars2011sev@mail.ru)."
+    context: "Второй канал (US2); работает независимо от Telegram."
+    story_ref: "US2"
+    requirement_refs: ["FR-002", "FR-007"]
+    depends_on: ["T001", "T003"]
+    parallelizable: true
+    entity_refs: ["feedback_notification", "notification_channel_config"]
+    contract_refs: ["email_channel"]
+    steps:
+      - order: 1
+        action: "Реализовать канал"
+        detail: "src/backend/src/Arsenal.Infrastructure/Notifications/EmailNotificationChannel.cs: IsConfigured = SMTP_USER и SMTP_PASSWORD непустые; SendAsync собирает MimeMessage (From=SMTP_USER, To=FEEDBACK_EMAIL_TO, Subject='[fcarsenal92.ru] '+title, TextBody=текст) и шлёт через SmtpClient с SslOnConnect"
+      - order: 2
+        action: "Зарегистрировать в DI"
+        detail: "как IFeedbackNotificationChannel рядом с Telegram-каналом"
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Infrastructure/Notifications/"
+        note: "Пароль приложения mail.ru появится позже — до этого IsConfigured=false и канал пропускается (A-2)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "При полном SMTP-конфиге письмо отправляется; без него канал пропускается с warning."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["SMTP_USER/SMTP_PASSWORD не заданы"]
+        when: "композит вызывает канал"
+        then: ["IsConfigured=false", "SendAsync не вызван"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T007"
+    title: "Unit-тесты форматирования и устойчивости"
+    description: "xUnit-тесты в Arsenal.Application.Tests: форматтер (FR-003, пустые поля EC-2, спецсимволы EC-3), композит (сбой канала не бросает FR-004, skip+warning FR-005, вызов после сохранения)."
+    context: "Автоматическое подтверждение acceptance-критериев US1/US3 без внешних сервисов."
+    story_ref: "US3"
+    requirement_refs: ["FR-003", "FR-004", "FR-005", "FR-006"]
+    depends_on: ["T004", "T005", "T006"]
+    parallelizable: false
+    entity_refs: ["feedback_notification"]
+    contract_refs: ["feedback_notifier", "notification_channel"]
+    steps:
+      - order: 1
+        action: "Тесты форматтера"
+        detail: "src/backend/tests/Arsenal.Application.Tests/Notifications/FeedbackNotificationFormatterTests.cs: непустые/пустые поля, Europe/Moscow, UTM, текст с * _ [ ] < > остаётся как есть"
+      - order: 2
+        action: "Тесты композита"
+        detail: "FeedbackNotifierTests.cs: канал бросает → нет исключения + LogError; IsConfigured=false → LogWarning + SendAsync не вызван; таймаут отменяет отправку"
+      - order: 3
+        action: "Тесты handlers"
+        detail: "Notify вызывается после SaveChangesAsync с корректным Kind (моки)"
+    technical_notes:
+      - path: "src/backend/tests/Arsenal.Application.Tests/"
+        note: "Если тестового проекта нет — создать xUnit-проект и добавить в solution."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "dotnet test src/backend зелёный; сценарии TS-1/TS-2/TS-4/TS-5 спеки покрыты."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["набор unit-тестов"]
+        when: "dotnet test src/backend"
+        then: ["все тесты проходят"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T008"
+    title: "Integration-тесты POST /api/contact и /api/tryout"
+    description: "WebApplicationFactory-тесты: заявка сохраняется и возвращает успех при (а) настроенных каналах с перехваченными транспортами, (б) сбое обоих каналов, (в) полностью пустой конфигурации."
+    context: "Сквозное подтверждение US3: приём заявки не зависит от судьбы уведомлений."
+    story_ref: "US3"
+    requirement_refs: ["FR-001", "FR-002", "FR-004", "FR-005", "FR-006"]
+    depends_on: ["T007"]
+    parallelizable: false
+    entity_refs: ["feedback_notification"]
+    contract_refs: ["feedback_notifier"]
+    steps:
+      - order: 1
+        action: "Создать/дополнить integration-проект"
+        detail: "src/backend/tests/Arsenal.API.IntegrationTests/: WebApplicationFactory с подменой каналов на фейки (in-memory запись отправок) и тестовой БД"
+      - order: 2
+        action: "Написать сценарии"
+        detail: "POST /api/contact и /api/tryout: 2xx + запись в БД; фейк-каналы получили уведомление с корректным текстом; вариант с бросающими фейками — ответ всё равно 2xx"
+    technical_notes:
+      - path: "src/backend/tests/Arsenal.API.IntegrationTests/"
+        note: "Реальные Telegram/SMTP в тестах не вызывать."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Integration-тесты зелёные; сбой каналов не меняет код ответа API."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["каналы-фейки бросают исключения"]
+        when: "POST /api/contact"
+        then: ["ответ 2xx", "заявка в БД"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T009"
+    title: "Прокинуть env в docker-compose и deploy workflow"
+    description: "Добавить TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, FEEDBACK_EMAIL_TO в environment сервиса dotnet-api в docker-compose.yml (подстановка ${VAR}) и в GitHub Actions deploy (запись в /opt/football_site/.env из GitHub Secrets)."
+    context: "Секреты живут только в env/GitHub Secrets (FR-007); значения на сервер кладутся вне git."
+    story_ref: "US1"
+    requirement_refs: ["FR-007"]
+    depends_on: ["T005", "T006"]
+    parallelizable: false
+    entity_refs: ["notification_channel_config"]
+    contract_refs: []
+    steps:
+      - order: 1
+        action: "docker-compose.yml"
+        detail: "В environment dotnet-api добавить семь переменных как ${TELEGRAM_BOT_TOKEN} и т.д. (пустые по умолчанию допустимы — каналы деградируют)"
+      - order: 2
+        action: "Deploy workflow"
+        detail: ".github/workflows/*deploy*: по образцу ADMIN_EMAIL/ADMIN_PASSWORD прокинуть новые переменные из GitHub Secrets в серверный .env"
+      - order: 3
+        action: "Серверный .env"
+        detail: "Добавить TELEGRAM_BOT_TOKEN (уже известен) в /opt/football_site/.env по SSH; TELEGRAM_CHAT_ID/SMTP_* — после получения от владельца"
+    technical_notes:
+      - path: "docker-compose.yml"
+        note: "Значения переменных в git не коммитить — только имена."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "docker compose config показывает переменные у dotnet-api; workflow пишет их в серверный .env; секретов в git нет."
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["env задан в .env на сервере"]
+        when: "docker compose up -d dotnet-api"
+        then: ["контейнер видит переменные (docker exec ... printenv)"]
+        verification: ["manual"]
+        level: "e2e"

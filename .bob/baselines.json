@@ -1,0 +1,6 @@
+{
+  "complexity": 15,
+  "duplication": 6.16,
+  "captured_at_head": "ffcb476",
+  "scope": "src/ (excl node_modules, bin, obj, .next)"
+}
