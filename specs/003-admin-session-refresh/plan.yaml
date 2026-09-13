@@ -1,0 +1,31 @@
+feature: "Надёжная сессия админки (обновление токена и корректный выход)"
+branch: "003-admin-session-refresh"
+summary: "Frontend-only: сохранение пары access+refresh токенов при логине, единая обёртка admin-запросов в src/frontend/src/lib/api.ts с single-flight refresh при 401 и повтором запроса, очистка сессии + редирект на /admin/login с returnTo при неудаче refresh, возврат на исходный путь после входа. Backend не меняется."
+
+technical_context:
+  language_version: "TypeScript 5 / Next.js 15 (App Router), React 18, client components"
+  primary_dependencies:
+    - "next 15 (useRouter из next/navigation)"
+    - "fetch API (нативный)"
+    - "jest + ts-jest (unit-тесты фронтенда, существующая конфигурация src/frontend)"
+  storage: "localStorage браузера: ключи admin_token (access) и admin_refresh_token (refresh)"
+  testing: "jest (unit на adminFetch-обёртку: 401→refresh→retry, refresh-fail→clear+redirect, single-flight, network-error)"
+  target_platform: "Браузер (админка сайта), деплой в существующем Docker-образе nextjs"
+  project_type: "web_application"
+  performance_goals: "Продление сессии добавляет один запрос POST /api/admin/auth/refresh на факт истечения (раз в ~15 минут), не на каждый запрос"
+  constraints: "Backend (Arsenal.API AuthController: POST /api/admin/auth/login, POST /api/admin/auth/refresh) не меняется; хранение в localStorage как сейчас; публичная часть сайта не затрагивается"
+  scale_scope: "1-2 администратора; ~30 admin-функций в api.ts переводятся на общую обёртку"
+
+constitution_check:
+  - principle_id: "P1"
+    status: "not_applicable"
+    justification: "constitution.yaml проекта — незаполненный шаблон (плейсхолдеры), реальных принципов не зарегистрировано"
+
+project_structure:
+  layout: "web_application"
+  description: "Изменения только во фронтенде Next.js: центральная обёртка admin-запросов в lib (adminAuth.ts + правки api.ts), обновление логина и layout админки; unit-тесты рядом в __tests__ по существующей конвенции src/frontend"
+  directories:
+    - "src/frontend/src/lib/ (adminAuth.ts — токены, refresh, adminFetch; api.ts — admin-функции поверх adminFetch)"
+    - "src/frontend/src/app/admin/login/ (сохранение пары токенов, возврат на returnTo)"
+    - "src/frontend/src/components/ (AdminLayout.tsx — guard и выход через adminAuth)"
+    - "src/frontend/src/lib/__tests__/ (unit-тесты обёртки)"

@@ -1,0 +1,27 @@
+feature: "Надёжная сессия админки (обновление токена и корректный выход)"
+entities:
+  - id: "admin_session"
+    name: "AdminSession"
+    description: "Пара ключей сессии администратора в localStorage браузера; создаётся при логине, обновляется при refresh, удаляется при выходе или невалидном refresh."
+    fields:
+      - name: "accessToken"
+        type: "string"
+        required: true
+        description: "Короткоживущий JWT (15 минут), ключ localStorage admin_token; подставляется в Authorization: Bearer каждого admin-запроса."
+      - name: "refreshToken"
+        type: "string"
+        required: true
+        description: "Ключ продления (7 дней), ключ localStorage admin_refresh_token; используется только POST /api/admin/auth/refresh."
+    relationships: []
+  - id: "return_path"
+    name: "ReturnPath"
+    description: "Исходный путь раздела админки, передаётся в /admin/login?returnTo=... при принудительном разлогине; после успешного входа используется для возврата."
+    fields:
+      - name: "path"
+        type: "string"
+        required: true
+        description: "Путь внутри админки; валиден только при префиксе /admin (EC-3), иначе заменяется на /admin."
+    relationships:
+      - field: "path"
+        target_entity_ref: "admin_session"
+        cardinality: "one"

@@ -1,0 +1,118 @@
+feature: "Надёжная сессия админки (обновление токена и корректный выход)"
+contracts:
+  - id: "admin_fetch"
+    name: "adminFetch (src/frontend/src/lib/adminAuth.ts) — единая обёртка всех admin-запросов с авторизацией и авто-продлением"
+    kind: "interface"
+    entity_refs:
+      - "admin_session"
+    request:
+      - name: "path"
+        type: "string"
+        required: true
+        description: "Относительный путь API (например /api/admin/coaches)."
+      - name: "init"
+        type: "object"
+        required: false
+        description: "RequestInit (method, body, headers); Authorization подставляется обёрткой."
+    response_cases:
+      - outcome: "ok"
+        fields:
+          - name: "response"
+            type: "object"
+            required: true
+            description: "Response с res.ok=true — либо с первой попытки, либо после одного refresh+retry (FR-002)."
+      - outcome: "refreshed_and_retried"
+        fields:
+          - name: "refreshCount"
+            type: "number"
+            required: true
+            description: "Ровно один refresh на любое число конкурентных 401 (single-flight, FR-003); повторный 401 после refresh не порождает второй refresh (EC-1)."
+      - outcome: "session_terminated"
+        fields:
+          - name: "redirected"
+            type: "boolean"
+            required: true
+            description: "Refresh отклонён (401/403/400): оба токена удалены, выполнен location.assign('/admin/login?returnTo=<путь>') (FR-004)."
+      - outcome: "transient_error"
+        fields:
+          - name: "sessionKept"
+            type: "boolean"
+            required: true
+            description: "Сетевая ошибка/5xx при refresh: токены сохранены, редиректа нет, исходный запрос завершается ошибкой (FR-008)."
+  - id: "session_store"
+    name: "Хранилище сессии (saveSession / clearSession / getAccessToken / getRefreshToken)"
+    kind: "interface"
+    entity_refs:
+      - "admin_session"
+    request:
+      - name: "auth"
+        type: "object"
+        required: false
+        description: "AuthResponse бэкенда {accessToken, refreshToken, expiresAt, email, role} — для saveSession."
+    response_cases:
+      - outcome: "saved"
+        fields:
+          - name: "bothTokensStored"
+            type: "boolean"
+            required: true
+            description: "admin_token и admin_refresh_token записаны в localStorage (FR-001)."
+      - outcome: "cleared"
+        fields:
+          - name: "bothTokensRemoved"
+            type: "boolean"
+            required: true
+            description: "Оба ключа удалены (выход FR-006 или невалидный refresh FR-004)."
+  - id: "refresh_flow"
+    name: "Refresh-поток adminFetch — POST /api/admin/auth/refresh (существующий бэкенд, FR-009)"
+    kind: "implementation"
+    implements_ref: "admin_fetch"
+    entity_refs:
+      - "admin_session"
+    request:
+      - name: "refreshToken"
+        type: "string"
+        required: true
+        description: "Текущий admin_refresh_token из localStorage."
+    response_cases:
+      - outcome: "renewed"
+        fields:
+          - name: "newPairStored"
+            type: "boolean"
+            required: true
+            description: "200: новая пара accessToken/refreshToken сохранена через saveSession; ожидающие запросы повторяются с новым Bearer."
+      - outcome: "rejected"
+        fields:
+          - name: "sessionCleared"
+            type: "boolean"
+            required: true
+            description: "401/403/400: clearSession + редирект на логин с returnTo."
+      - outcome: "network_error"
+        fields:
+          - name: "sessionKept"
+            type: "boolean"
+            required: true
+            description: "fetch reject / 5xx: сессия не трогается (FR-008)."
+  - id: "login_return"
+    name: "Форма входа /admin/login — сохранение пары токенов и возврат на returnTo"
+    kind: "interface"
+    entity_refs:
+      - "admin_session"
+      - "return_path"
+    request:
+      - name: "returnTo"
+        type: "string"
+        required: false
+        description: "Query-параметр: путь возврата; принимается только с префиксом /admin (EC-3)."
+    response_cases:
+      - outcome: "logged_in"
+        fields:
+          - name: "redirectTarget"
+            type: "string"
+            required: true
+            description: "После saveSession — router.push(валидный returnTo или /admin) (FR-005)."
+      - outcome: "invalid_credentials"
+        fields:
+          - name: "errorShown"
+            type: "boolean"
+            required: true
+            description: "Существующее поведение формы: сообщение об ошибке, токены не пишутся."

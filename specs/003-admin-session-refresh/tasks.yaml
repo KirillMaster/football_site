@@ -1,0 +1,163 @@
+feature: "Надёжная сессия админки (обновление токена и корректный выход)"
+tasks:
+  - id: "T001"
+    title: "Создать модуль сессии adminAuth.ts (хранилище токенов + adminFetch с single-flight refresh)"
+    description: "Новый модуль src/frontend/src/lib/adminAuth.ts: saveSession/clearSession/getAccessToken/getRefreshToken (localStorage: admin_token, admin_refresh_token) и обёртка adminFetch(path, init) — Bearer из хранилища, при 401 single-flight POST /api/admin/auth/refresh и один повтор; refresh 401/403/400 → clearSession + location.assign('/admin/login?returnTo=<pathname>'); сетевая ошибка/5xx refresh → сессия сохраняется, исходная ошибка возвращается."
+    context: "Корень бага «0 тренеров»: 401 глотается каждой admin-функцией, refresh-токен не используется. Централизованная обёртка чинит все запросы разом."
+    story_ref: "US1"
+    requirement_refs: ["FR-001", "FR-002", "FR-003", "FR-004", "FR-008"]
+    depends_on: []
+    parallelizable: false
+    entity_refs: ["admin_session", "return_path"]
+    contract_refs: ["admin_fetch", "session_store", "refresh_flow"]
+    steps:
+      - order: 1
+        action: "Реализовать хранилище сессии"
+        detail: "src/frontend/src/lib/adminAuth.ts: ключи localStorage 'admin_token' и 'admin_refresh_token'; saveSession(auth: AuthResponse) пишет оба, clearSession() удаляет оба; все обращения к localStorage через try/catch (SSR-safe: typeof window check)."
+      - order: 2
+        action: "Реализовать adminFetch с retry"
+        detail: "adminFetch(path, init?): fetch с Authorization: Bearer <access>; res.status===401 → await ensureRefreshed() → при успехе один повтор с новым токеном; повторный 401 после refresh → terminateSession() без второго refresh (EC-1)."
+      - order: 3
+        action: "Реализовать single-flight refresh"
+        detail: "Модульная let refreshPromise: Promise<boolean>|null; ensureRefreshed() переиспользует существующий промис; POST /api/admin/auth/refresh c JSON {refreshToken}; 200 → saveSession(новая пара) → true; 401/403/400 → terminateSession() → false; fetch reject/5xx → false БЕЗ очистки (FR-008); finally: refreshPromise=null."
+      - order: 4
+        action: "Реализовать terminateSession"
+        detail: "clearSession() + window.location.assign('/admin/login?returnTo='+encodeURIComponent(window.location.pathname)); guard от повторного вызова."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "adminLogin() (строка ~567) возвращает AuthResponse {accessToken, refreshToken, expiresAt, email, role} — тип переиспользовать, не дублировать."
+      - path: "src/frontend/src/lib/adminAuth.ts"
+        note: "Новый файл; без React-зависимостей (используется и вне компонентов)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "adminFetch при 401 выполняет ровно один refresh и один повтор; при валидном refresh возвращает успешный Response"
+        done: false
+      - id: "AC-2"
+        description: "Конкурентные 401 порождают один POST /refresh; неудачный refresh (401/403/400) очищает оба ключа и редиректит с returnTo; сетевая ошибка refresh сессию не трогает"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["localStorage содержит просроченный access и валидный refresh (моки fetch)"]
+        when: "adminFetch получает 401, refresh отвечает 200 с новой парой"
+        then: ["выполнен один POST /api/admin/auth/refresh", "исходный запрос повторён с новым Bearer и вернул данные", "новая пара в localStorage"]
+        verification: ["automated"]
+        level: "unit"
+      - id: "TS-2"
+        given: ["три параллельных adminFetch, все получают 401"]
+        when: "все стартуют одновременно"
+        then: ["fetch-мок зафиксировал ровно один вызов /refresh", "все три запроса завершились успешно"]
+        verification: ["automated"]
+        level: "unit"
+  - id: "T002"
+    title: "Unit-тесты adminAuth (vitest)"
+    description: "Тесты src/frontend/src/lib/__tests__/adminAuth.test.ts на все ветки обёртки: 401→refresh→retry, single-flight, refresh-fail→clear+redirect c returnTo, повторный 401 без цикла, сетевая ошибка refresh без разлогина, save/clear session."
+    context: "Требование пользователя: unit-тесты на обёртку; vitest уже настроен в src/frontend (npm test = vitest run)."
+    story_ref: "US1"
+    requirement_refs: ["FR-002", "FR-003", "FR-004", "FR-007", "FR-008"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["admin_session"]
+    contract_refs: ["admin_fetch", "refresh_flow"]
+    steps:
+      - order: 1
+        action: "Написать тесты веток adminFetch"
+        detail: "vi.stubGlobal('fetch', мок); window.location.assign мокается (vi.spyOn/Object.defineProperty); сценарии TS-1..TS-4 задачи T001 и данной + EC-1, EC-2."
+      - order: 2
+        action: "Прогнать npm test"
+        detail: "cd src/frontend && npm test — все тесты зелёные, существующие не сломаны."
+    technical_notes:
+      - path: "src/frontend/vitest.config.ts"
+        note: "Конфигурация существует; окружение jsdom — localStorage доступен."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "npm test зелёный; покрыты ветки: успешный refresh, single-flight, отклонённый refresh, повторный 401, сетевая ошибка"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["refresh отвечает 401"]
+        when: "adminFetch получает 401"
+        then: ["оба ключа удалены из localStorage", "location.assign вызван с /admin/login?returnTo=<путь>"]
+        verification: ["automated"]
+        level: "unit"
+      - id: "TS-2"
+        given: ["refresh падает сетевой ошибкой (fetch reject)"]
+        when: "adminFetch получает 401"
+        then: ["токены остались в localStorage", "редиректа нет", "исходный вызов вернул ошибку"]
+        verification: ["automated"]
+        level: "unit"
+  - id: "T003"
+    title: "Перевести admin-функции api.ts на adminFetch"
+    description: "Заменить в src/frontend/src/lib/api.ts все admin-вызовы (getAdminPages, getAdminCoaches, createAdminCoach, updateAdminPage, upload и остальные ~30, включая чтение admin_token на строке ~692) с fetch+authHeaders() на adminFetch из adminAuth.ts; authHeaders() удалить или свести к делегату."
+    context: "Пока функции ходят мимо обёртки, 401 по-прежнему глотается — FR-007 не выполняется."
+    story_ref: "US1"
+    requirement_refs: ["FR-002", "FR-007", "FR-009"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["admin_session"]
+    contract_refs: ["admin_fetch"]
+    steps:
+      - order: 1
+        action: "Заменить все использования authHeaders()/localStorage admin_token"
+        detail: "grep 'authHeaders\\|admin_token' по api.ts; каждый fetch admin-эндпоинта → adminFetch(path, init); для FormData-upload не задавать Content-Type вручную."
+      - order: 2
+        action: "Проверить сборку и типы"
+        detail: "cd src/frontend && npm run build && npm run lint — без ошибок."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "authHeaders() на строке ~483; публичные (не-admin) функции не трогать (A-4)."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "В api.ts не осталось прямых чтений admin_token/authHeaders вне adminAuth.ts; build и lint зелёные"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["сборка фронтенда"]
+        when: "npm run build && npm run lint"
+        then: ["exit 0"]
+        verification: ["automated"]
+        level: "integration"
+  - id: "T004"
+    title: "Логин: сохранить пару токенов и вернуть на returnTo; выход и guard через adminAuth"
+    description: "login/page.tsx: после adminLogin() вызывать saveSession(result) (вместо setItem только access) и router.push(валидный returnTo из useSearchParams — только префикс /admin, иначе /admin). AdminLayout.tsx: handleLogout → clearSession() + push('/admin/login'); guard в useEffect → getAccessToken()."
+    context: "Сейчас refreshToken выбрасывается на строке login/page.tsx:34, а выход удаляет только один ключ."
+    story_ref: "US2"
+    requirement_refs: ["FR-001", "FR-005", "FR-006"]
+    depends_on: ["T001"]
+    parallelizable: true
+    entity_refs: ["admin_session", "return_path"]
+    contract_refs: ["login_return", "session_store"]
+    steps:
+      - order: 1
+        action: "Обновить страницу логина"
+        detail: "src/frontend/src/app/admin/login/page.tsx: saveSession(result); const rt=useSearchParams().get('returnTo'); router.push(rt && rt.startsWith('/admin') ? rt : '/admin'); useSearchParams требует Suspense-boundary в Next 15 — обернуть при необходимости."
+      - order: 2
+        action: "Обновить AdminLayout"
+        detail: "src/frontend/src/components/AdminLayout.tsx: handleLogout → clearSession(); guard useEffect → if (!getAccessToken()) router.replace('/admin/login')."
+      - order: 3
+        action: "Добавить unit-тест валидации returnTo"
+        detail: "Тест функции валидации пути (вынести sanitizeReturnTo в adminAuth.ts): '/admin/news' → '/admin/news'; 'https://evil.example' и '/pricing' → '/admin' (EC-3)."
+    technical_notes:
+      - path: "src/frontend/src/app/admin/login/page.tsx"
+        note: "Строка ~34: localStorage.setItem('admin_token', result.accessToken) — заменить на saveSession."
+      - path: "src/frontend/src/components/AdminLayout.tsx"
+        note: "handleLogout уже существует — переиспользовать кнопку «Выйти», менять только реализацию."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "После логина в localStorage оба ключа; с ?returnTo=/admin/news вход ведёт в /admin/news; внешний/не-admin returnTo заменяется на /admin"
+        done: false
+      - id: "AC-2"
+        description: "«Выйти» удаляет оба ключа и ведёт на /admin/login"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["sanitizeReturnTo реализована"]
+        when: "вызов с '/admin/news', '/pricing', 'https://evil.example'"
+        then: ["'/admin/news'", "'/admin'", "'/admin'"]
+        verification: ["automated"]
+        level: "unit"
+      - id: "TS-2"
+        given: ["пользователь залогинен (моки)"]
+        when: "clearSession()"
+        then: ["admin_token и admin_refresh_token отсутствуют в localStorage"]
+        verification: ["automated"]
+        level: "unit"
