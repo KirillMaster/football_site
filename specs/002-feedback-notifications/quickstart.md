@@ -22,7 +22,7 @@ curl -X POST http://localhost:5000/api/contact -H "Content-Type: application/jso
 Ожидаемо: HTTP 200 сразу (fire-and-forget), в Telegram-чате в течение минуты сообщение с типом заявки, полями, временем (Europe/Moscow).
 
 ## Сценарий 3 — живой email (нужен пароль приложения mail.ru)
-Задать `SMTP_USER=ars2011sev@mail.ru`, `SMTP_PASSWORD=<app password>`; повторить POST из сценария 2. Ожидаемо: письмо на ars2011sev@mail.ru.
+Задать `SMTP_USER=ars2011sev@mail.ru`, `SMTP_PASSWORD=<app password>`, `FEEDBACK_EMAIL_TO=krystyk@list.ru`; повторить POST из сценария 2. Ожидаемо: письмо на krystyk@list.ru.
 
 ## Сценарий 4 — деградация (US3)
 Запустить API без TELEGRAM_*/SMTP_* → POST заявки возвращает 200, в логах warning о пропуске каждого канала, ошибок нет.

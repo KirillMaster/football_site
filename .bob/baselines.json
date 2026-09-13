@@ -1,6 +1,6 @@
 {
   "complexity": 61,
-  "duplication": 6.16,
-  "captured_at_head": "ffcb476",
-  "scope": "src/ (excl node_modules, bin, obj, .next)"
+  "duplication": 5.39,
+  "captured_at_head": "389e671",
+  "scope": "конфиг-команды bob-pipeline ('.', вкл. инструментарий .claude/.specify)"
 }

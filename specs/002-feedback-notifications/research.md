@@ -21,7 +21,7 @@
 - **Alternatives**: Telegram.Bot NuGet (лишняя зависимость ради одного метода); MarkdownV2 (хрупкое экранирование).
 
 ## R5. Конфигурация
-- **Decision**: env: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SMTP_HOST` (default smtp.mail.ru), `SMTP_PORT` (default 465), `SMTP_USER`, `SMTP_PASSWORD`, `FEEDBACK_EMAIL_TO` (default ars2011sev@mail.ru). Канал считается сконфигурированным при наличии обязательных значений (Telegram: token+chat_id; Email: user+password). Прокинуть через docker-compose (`${VAR}`) и GitHub Actions deploy (append в .env на сервере) как сделано для ADMIN_*.
+- **Decision**: env: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SMTP_HOST` (default smtp.mail.ru), `SMTP_PORT` (default 465), `SMTP_USER`, `SMTP_PASSWORD`, `FEEDBACK_EMAIL_TO` (default в коде ars2011sev@mail.ru; на проде задаётся krystyk@list.ru — решение владельца 13.09.2026). Канал считается сконфигурированным при наличии обязательных значений (Telegram: token+chat_id; Email: user+password). Прокинуть через docker-compose (`${VAR}`) и GitHub Actions deploy (append в .env на сервере) как сделано для ADMIN_*.
 - **Rationale**: Повторяет существующий механизм секретов проекта (FR-007).
 - **Alternatives**: appsettings.json (секреты в git — запрещено).
 
