@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { getAccessToken, clearSession } from '@/lib/adminAuth';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Обзор', icon: '📊' },
@@ -27,12 +28,12 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('admin_token');
+    const token = getAccessToken();
     if (!token) router.replace('/admin/login');
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('admin_token');
+    clearSession();
     router.push('/admin/login');
   };
 

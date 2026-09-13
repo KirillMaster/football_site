@@ -1,44 +1,25 @@
-run_id: "002-feedback-notifications-20260913"
-feature: "002-feedback-notifications"
+run_id: 003-admin-session-refresh-20260913
 mode: night
-current_slice: S2
-current_role: done
-run_status: completed
-
-input_checksums:
-  ".bob/features/qa-procedures.md": "b15b65ec69f30e72b29e70bdbc492e7f75740193926ed0ba176a904988d12695"
-  ".bob/features/slices.yaml": "e319d0eb741f7ec13550f307e87233a2cfe8516f45fee824aba80b7857397c09"
-  ".bob/features/us1-telegram.feature": "f88cf3f8a39aa53dae26e6684c801ebba7a349b58bc5b573c47037565b7dceb9"
-  ".bob/features/us2-email.feature": "59594b99e28016a01ffc9b8884893ad5bf05af491918c8a90ee41c849a175803"
-  ".bob/features/us3-resilience.feature": "c7ee4dc3583d8372352c542159d214b727659b9ddfacac2edcf0cbfeefa3e3d4"
-  "specs/002-feedback-notifications/spec.yaml": "dc7f1617043d783a014d578bf828ee5e80a51d115d91ce0f01c906f8cb44be86"
-  "specs/002-feedback-notifications/tasks.yaml": "2a6cea3b0e7b9f6537cdbf2f788e64e8dc0820a846aa38911965898e34ad959f"
-
-baselines:
-  complexity: 15
-  duplication: 6.16
-
-deviations:
-  - "gherkin_approval: auto-approved (автономный режим по запросу пользователя), все 10 сценариев помечены auto-approved-night"
-  - "hardener: mutation отключён в конфиге — только эвристическое усиление тестов"
-  - "user-change 13.09: получатель email-уведомлений — krystyk@list.ru (env FEEDBACK_EMAIL_TO в S2); spec.yaml не правим mid-run во избежание stale-approval, актуализировать после merge"
-  - "S2: конфиг-слайс (YAML-only, 14 строк в docker-compose.yml и deploy.yml) — роли cleaner/architect/hardener/qa неприменимы, пропущены оркестратором; верификация: ревью диффа (только плейсхолдеры \\${VAR}/secrets.*, реальных значений нет), гейт coder tests-green passed, 96/96 тестов на ветке и на merged head"
-  - "baseline-recapture (EC-7): complexity baseline 15 был снят по скоупу src/, а конфиг-команда lizard сканирует '.'; на базовом коммите той же командой max CCN=61 (.claude/helpers/statusline.cjs — инструментарий, не код фичи). Baseline complexity обновлён 15→61; код слайса max CCN=6"
-
+input_mode: integration
+feature: 003-admin-session-refresh
+base: 81f805a
+current_slice: S1
+current_role: architect
 slices:
-  - id: S1
-    title: "notifications-core"
+  S1:
+    title: admin-session-wrapper
+    tasks: [T001, T002, T003, T004]
     depends_on: []
-    scenario_refs: [US1-AS1, US1-AS2, US1-EC1, US1-EC2, US1-EC3, US2-AS1, US2-EC1, US3-AS1, US3-AS2, US3-EC4]
-    status: merged
+    status: in-progress
     return_count: 0
-    worktree_path: null
-    skipped_roles: []
-  - id: S2
-    title: "env-plumbing"
-    depends_on: [S1]
-    scenario_refs: []
-    status: merged
-    return_count: 0
-    worktree_path: null
-    skipped_roles: [cleaner, architect, hardener, qa]
+input_checksums:
+  spec.yaml: 461851994da2b635d9c7a1bd88811810e7c220a8b6b250d7dd6215364b4f5d57
+  tasks.yaml: 8f9b270b582bf5fcede8709b95f2964360e336c1f144c2b478aa5fa37170f256
+  us1-session-auto-refresh.feature: 693bab21933605b148551731042e567173fbdab64b8dda1795b1b8b3d5a04124
+  us2-session-expiry-redirect.feature: 56e96cbcbfe48b582689c4c14066524bd48dc741439000c9435381fff3ea8944
+  qa-procedures.md: 88ea77435731ced761e9ff89fdfb1c68459476dbb5c1fc182b2182d6409aa6d6
+  slices.yaml: 925dea580fc86690de0a718a5cb1057be6fbf0fab12861e4ebcbbe447b637561
+approval: auto-approved-night
+deviations:
+  - "duplication baseline 5.39 снят другим scope; пере-замерен на базе 81f805a идентичной командой jscpd = 5.58, гейт cleaner считался против него"
+  - "night mode: 14 Gherkin-сценариев auto-approved-night без ручного ревью"

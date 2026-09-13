@@ -29,6 +29,7 @@ import {
 
 import { getStoredUtm } from './utm';
 import { getYmClientId } from './analytics';
+import { adminFetch, type AdminSessionTokens } from './adminAuth';
 
 // Server-side (SSR/RSC): use internal Docker network URL for performance
 // Client-side (browser): use public URL via Nginx
@@ -478,75 +479,30 @@ export async function submitTryoutRequest(data: TryoutRequest): Promise<string |
   }
 }
 
-// ─── Admin Pages API ─────────────────────────────────────────────────────────
+// ─── Admin fetch helpers ─────────────────────────────────────────────────────
 
-function authHeaders(): HeadersInit {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-  return token ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' };
-}
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
 
-export async function getAdminPages(): Promise<import('@/types').AdminPage[]> {
+async function adminGetJson<T>(path: string, fallback: T): Promise<T> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/pages`, { headers: authHeaders() });
-    if (!res.ok) return [];
-    const raw: Array<{ id: string; slug: string; titleRu: string; contentRu?: string; metaDescriptionRu?: string; isPublished: boolean; sortOrder: number; updatedAt: string }> = await res.json();
-    return raw.map((r) => ({
-      id: r.id,
-      slug: r.slug,
-      titleRu: r.titleRu,
-      contentRu: r.contentRu ?? '',
-      metaDescriptionRu: r.metaDescriptionRu ?? '',
-      isPublished: r.isPublished,
-      sortOrder: r.sortOrder,
-      updatedAt: r.updatedAt,
-    }));
+    const res = await adminFetch(`${API_URL}${path}`, { headers: JSON_HEADERS });
+    if (!res.ok) return fallback;
+    return await res.json();
   } catch {
-    return [];
+    return fallback;
   }
 }
 
-export async function getAdminPageBySlug(slug: string): Promise<import('@/types').AdminPage | null> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/pages/${slug}`, { headers: authHeaders() });
-    if (!res.ok) return null;
-    const r = await res.json();
-    return {
-      id: r.id,
-      slug: r.slug,
-      titleRu: r.titleRu,
-      contentRu: r.contentRu ?? '',
-      metaDescriptionRu: r.metaDescriptionRu ?? '',
-      isPublished: r.isPublished,
-      sortOrder: r.sortOrder,
-      updatedAt: r.updatedAt,
-    };
-  } catch {
-    return null;
-  }
-}
-
-export async function updateAdminPage(
-  id: string,
-  data: { titleRu: string; contentRu: string; metaDescriptionRu: string; isPublished: boolean }
+async function adminMutate(
+  path: string,
+  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  body?: unknown
 ): Promise<boolean> {
   try {
-    const res = await fetch(`${API_URL}/api/admin/pages/${id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        slug: '',  // will be ignored by backend if page exists
-        titleRu: data.titleRu,
-        titleEn: '',
-        contentRu: data.contentRu,
-        contentEn: '',
-        metaTitleRu: data.titleRu,
-        metaDescriptionRu: data.metaDescriptionRu,
-        metaTitleEn: '',
-        metaDescriptionEn: '',
-        isPublished: data.isPublished,
-        sortOrder: 0,
-        ogImage: null,
-      }),
+    const res = await adminFetch(`${API_URL}${path}`, {
+      method,
+      headers: JSON_HEADERS,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
     return res.ok;
   } catch {
@@ -554,11 +510,65 @@ export async function updateAdminPage(
   }
 }
 
+// ─── Admin Pages API ─────────────────────────────────────────────────────────
+
+interface RawAdminPageDto {
+  id: string;
+  slug: string;
+  titleRu: string;
+  contentRu?: string;
+  metaDescriptionRu?: string;
+  isPublished: boolean;
+  sortOrder: number;
+  updatedAt: string;
+}
+
+function mapAdminPage(r: RawAdminPageDto): import('@/types').AdminPage {
+  return {
+    id: r.id,
+    slug: r.slug,
+    titleRu: r.titleRu,
+    contentRu: r.contentRu ?? '',
+    metaDescriptionRu: r.metaDescriptionRu ?? '',
+    isPublished: r.isPublished,
+    sortOrder: r.sortOrder,
+    updatedAt: r.updatedAt,
+  };
+}
+
+export async function getAdminPages(): Promise<import('@/types').AdminPage[]> {
+  const raw = await adminGetJson<RawAdminPageDto[]>('/api/admin/pages', []);
+  return raw.map(mapAdminPage);
+}
+
+export async function getAdminPageBySlug(slug: string): Promise<import('@/types').AdminPage | null> {
+  const raw = await adminGetJson<RawAdminPageDto | null>(`/api/admin/pages/${slug}`, null);
+  return raw ? mapAdminPage(raw) : null;
+}
+
+export async function updateAdminPage(
+  id: string,
+  data: { titleRu: string; contentRu: string; metaDescriptionRu: string; isPublished: boolean }
+): Promise<boolean> {
+  return adminMutate(`/api/admin/pages/${id}`, 'PUT', {
+    slug: '',  // will be ignored by backend if page exists
+    titleRu: data.titleRu,
+    titleEn: '',
+    contentRu: data.contentRu,
+    contentEn: '',
+    metaTitleRu: data.titleRu,
+    metaDescriptionRu: data.metaDescriptionRu,
+    metaTitleEn: '',
+    metaDescriptionEn: '',
+    isPublished: data.isPublished,
+    sortOrder: 0,
+    ogImage: null,
+  });
+}
+
 // ─── Admin Auth ───────────────────────────────────────────────────────────────
 
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
+export interface AuthResponse extends AdminSessionTokens {
   expiresAt: string;
   email: string;
   role: string;
@@ -584,103 +594,37 @@ export async function adminLogin(
 // ─── Admin Coaches ──────────────────────────────────────────────────────────
 
 export async function getAdminCoaches(): Promise<Record<string, unknown>[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/coaches`, { headers: authHeaders() });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
+  return adminGetJson('/api/admin/coaches', []);
 }
 
 export async function createAdminCoach(data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/coaches`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate('/api/admin/coaches', 'POST', data);
 }
 
 export async function updateAdminCoach(id: string, data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/coaches/${id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/coaches/${id}`, 'PUT', data);
 }
 
 export async function deleteAdminCoach(id: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/coaches/${id}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/coaches/${id}`, 'DELETE');
 }
 
 // ─── Admin News ─────────────────────────────────────────────────────────────
 
 export async function getAdminNews(page = 1, pageSize = 20): Promise<Record<string, unknown>> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/news?page=${page}&pageSize=${pageSize}`, {
-      headers: authHeaders(),
-    });
-    if (!res.ok) return { items: [], totalCount: 0 };
-    return await res.json();
-  } catch {
-    return { items: [], totalCount: 0 };
-  }
+  return adminGetJson(`/api/admin/news?page=${page}&pageSize=${pageSize}`, { items: [], totalCount: 0 });
 }
 
 export async function createAdminNews(data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/news`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate('/api/admin/news', 'POST', data);
 }
 
 export async function updateAdminNews(id: string, data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/news/${id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/news/${id}`, 'PUT', data);
 }
 
 export async function deleteAdminNews(id: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/news/${id}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/news/${id}`, 'DELETE');
 }
 
 // ─── Admin Photos ───────────────────────────────────────────────────────────
@@ -689,10 +633,9 @@ export async function uploadAdminPhoto(file: File): Promise<{ id: string; url: s
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-    const res = await fetch(`${API_URL}/api/admin/photos/upload`, {
+    // Content-Type для FormData выставляет сам браузер (boundary) — не задаём вручную.
+    const res = await adminFetch(`${API_URL}/api/admin/photos/upload`, {
       method: 'POST',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: formData,
     });
     if (!res.ok) return null;
@@ -704,154 +647,59 @@ export async function uploadAdminPhoto(file: File): Promise<{ id: string; url: s
 }
 
 export async function updateAdminPhoto(id: string, data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/photos/${id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/photos/${id}`, 'PUT', data);
 }
 
 export async function deleteAdminPhoto(id: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/photos/${id}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/photos/${id}`, 'DELETE');
 }
 
 // ─── Admin Groups ───────────────────────────────────────────────────────────
 
 export async function getAdminGroups(): Promise<Record<string, unknown>[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/groups`, { headers: authHeaders() });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
+  return adminGetJson('/api/admin/groups', []);
 }
 
 export async function createAdminGroup(data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/groups`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate('/api/admin/groups', 'POST', data);
 }
 
 export async function updateAdminGroup(id: string, data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/groups/${id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/groups/${id}`, 'PUT', data);
 }
 
 export async function deleteAdminGroup(id: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/groups/${id}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/groups/${id}`, 'DELETE');
 }
 
 // ─── Admin Site Settings ────────────────────────────────────────────────────
 
 export async function getAdminSettings(): Promise<Record<string, unknown> | null> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/site-settings`, { headers: authHeaders() });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return adminGetJson('/api/admin/site-settings', null);
 }
 
 export async function updateAdminSettings(data: Record<string, unknown>): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/site-settings`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(data),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate('/api/admin/site-settings', 'PUT', data);
 }
 
 // ─── Admin Contact Messages ─────────────────────────────────────────────────
 
 export async function getAdminMessages(unreadOnly = false): Promise<Record<string, unknown>[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/contact-messages?unreadOnly=${unreadOnly}`, {
-      headers: authHeaders(),
-    });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
+  return adminGetJson(`/api/admin/contact-messages?unreadOnly=${unreadOnly}`, []);
 }
 
 export async function markMessageRead(id: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/contact-messages/${id}/read`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/contact-messages/${id}/read`, 'PATCH');
 }
 
 // ─── Admin Tryout Requests ──────────────────────────────────────────────────
 
 export async function getAdminTryouts(): Promise<Record<string, unknown>[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/tryout-requests`, { headers: authHeaders() });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
+  return adminGetJson('/api/admin/tryout-requests', []);
 }
 
 export async function updateTryoutStatus(id: string, status: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/api/admin/tryout-requests/${id}/status`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ status }),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
+  return adminMutate(`/api/admin/tryout-requests/${id}/status`, 'PATCH', { status });
 }
 
 // ─── Admin Dashboard Stats ──────────────────────────────────────────────────
@@ -869,9 +717,7 @@ export async function getAdminDashboardStats(): Promise<{
       getAdminTryouts(),
       getAdminCoaches(),
       getAdminNews(1, 1),
-      fetch(`${API_URL}/api/photos`, { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : { totalCount: 0 }))
-        .catch(() => ({ totalCount: 0 })),
+      adminGetJson('/api/photos', { totalCount: 0 }),
     ]);
 
     return {

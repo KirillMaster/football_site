@@ -1,68 +1,105 @@
-# QA-процедуры — 002-feedback-notifications
+# QA-процедуры — фича 003: Надёжная сессия админки
 
-Без реальных Telegram/SMTP: транспорты подменяются моками/фейками (перехват `HttpMessageHandler` для Telegram, фейк `IFeedbackNotificationChannel`/фейковый SMTP-транспорт для email). Реальные внешние сервисы в тестах не вызываются.
+Все проверки — unit-тесты (vitest) над `src/frontend/src/lib/adminAuth.ts` (и его
+потребителями) плюс сборка/линт. E2E против прод-окружения — вне рамок, не входит
+в эти процедуры.
 
-Базовая проверка перед каждым сценарием:
+Общие предпосылки для запуска:
 ```
-dotnet build src/backend
-dotnet test src/backend
+cd src/frontend
 ```
+`fetch` мокается через `vi.stubGlobal('fetch', vi.fn(...))`;
+`window.location.assign` — через `vi.spyOn`/`Object.defineProperty`;
+`localStorage` — реальный (jsdom), очищается в `beforeEach`.
 
-## @US1-AS1 — Контактное сообщение → Telegram
-1. Поднять `WebApplicationFactory` с ENV: `TELEGRAM_BOT_TOKEN=test-token`, `TELEGRAM_CHAT_ID=123`, email-переменные пустые.
-2. Подменить `HttpMessageHandler` Telegram-клиента на перехватчик, возвращающий `{"ok": true}`.
-3. `POST /api/contact` с валидным телом (имя, телефон, сообщение, UTM-метки).
-4. Проверить: ответ 2xx; заявка сохранена в тестовой БД; перехватчик получил ровно 1 запрос на `https://api.telegram.org/bot{token}/sendMessage`; JSON-тело запроса содержит `chat_id="123"` и `text`, включающий тип заявки, все переданные поля, дату/время в формате `dd.MM.yyyy HH:mm` и UTM-метки.
-5. Ожидаемый результат: PASS при выполнении всех условий.
+---
 
-## @US1-AS2 — Заявка на пробную тренировку → Telegram
-1. Как в @US1-AS1, но `POST /api/tryout` с полями: имя ребёнка, возраст, имя родителя, телефон.
-2. Проверить текст сообщения содержит имя ребёнка, возраст, родителя, телефон (без пустых меток для незаполненных).
+## US1 — Прозрачное продление сессии
 
-## @US1-EC1 — Только Telegram сконфигурирован
-1. ENV: Telegram задан, `SMTP_USER`/`SMTP_PASSWORD` пусты.
-2. `POST /api/contact`.
-3. Проверить: 1 Telegram-запрос ушёл; SMTP-транспорт не вызван (счётчик вызовов = 0); в логах (перехват `ILogger` через `TestLoggerProvider` либо `ITestOutputHelper`) есть запись уровня Warning с упоминанием email-канала как несконфигурированного.
+### @US1-AS-1 / @US1-TS-1 — один refresh + один повтор
+1. В `localStorage` задать `admin_token` = просроченный/произвольный, `admin_refresh_token` = валидный.
+2. Смокать `fetch`: 1-й вызов (исходный запрос) → `Response(401)`; 2-й вызов (`POST /api/admin/auth/refresh`) → `Response(200, {accessToken, refreshToken, ...})`; 3-й вызов (повтор исходного запроса) → `Response(200, <данные>)`.
+3. Вызвать `adminFetch('/api/admin/...')`.
+4. Проверить: `fetch` вызван ровно 3 раза; 2-й вызов — на `/api/admin/auth/refresh`; результат `adminFetch` — успешный `Response` с данными из 3-го вызова.
+5. Проверить `localStorage`: `admin_token`/`admin_refresh_token` заменены на новые значения из ответа refresh.
+Ожидаемый результат: тест зелёный, счётчик `fetch` = 3, ровно один вызов `/refresh`.
 
-## @US1-EC2 — Не все поля заполнены
-1. Unit-тест `FeedbackNotificationFormatterTests`: вызвать `Format()` на `FeedbackNotification` без email и без UTM.
-2. Проверить: строка с меткой email отсутствует в результирующем тексте; строка UTM-блока отсутствует; текст не содержит двух подряд пустых строк/артефактов форматирования.
+### @US1-AS-2 / @US1-TS-2 — single-flight при параллельных запросах
+1. Смокать `fetch` так, чтобы любой запрос к произвольному admin-эндпоинту первым вызовом отвечал 401, а `/refresh` — 200 (задержка, напр. `setTimeout`/`Promise` внутри мока, чтобы гонка была реальной).
+2. Вызвать `Promise.all([adminFetch(a), adminFetch(b), adminFetch(c)])` без ожидания между вызовами.
+3. Проверить: `fetch` зафиксировал ровно один вызов на `/api/admin/auth/refresh` (фильтр по URL в моке).
+4. Проверить: все три промиса резолвятся успешным `Response`.
+Ожидаемый результат: `refresh`-вызовов = 1, все 3 запроса успешны.
 
-## @US1-EC3 — Спецсимволы в полях
-1. Unit-тест форматтера: поле "сообщение" = `*bold* _ital_ [text](url) <script>alert(1)</script> & "quotes"`.
-2. Интеграционный шаг: перехватить исходящий Telegram-запрос и сверить, что JSON `text` содержит эту строку побайтово как есть (без экранирования Markdown/HTML, без вырезания тегов).
-3. Проверить, что запрос на `sendMessage` не содержит поля `parse_mode`.
+### @US1-EC-1 — защита от бесконечного цикла (повторный 401 после refresh)
+1. Настроить `localStorage`: оба ключа заданы.
+2. Смокать `fetch`: исходный запрос → 401; `/refresh` → 200 (новая пара); повтор исходного запроса → снова 401.
+3. Вызвать `adminFetch(...)`.
+4. Проверить: `fetch` вызван ровно 3 раза (не более — второй refresh не запускается).
+5. Проверить: `localStorage.getItem('admin_token')` и `admin_refresh_token` → `null`.
+6. Проверить: `location.assign` вызван ровно один раз с `/admin/login?returnTo=...`.
+Ожидаемый результат: ровно 3 fetch-вызова, сессия очищена, один редирект.
 
-## @US2-AS1 — Заявка дублируется письмом
-1. ENV: `SMTP_HOST`, `SMTP_PORT` (или значения по умолчанию smtp.mail.ru:465), `SMTP_USER`, `SMTP_PASSWORD`, `FEEDBACK_EMAIL_TO` заданы тестовыми значениями; Telegram пуст.
-2. Подменить SMTP-клиент MailKit на фейк, записывающий отправленные `MimeMessage` в память (без реального соединения).
-3. `POST /api/tryout` с валидным телом.
-4. Проверить: ответ 2xx; заявка в БД; фейк получил ровно 1 сообщение; `Subject` начинается с `[fcarsenal92.ru]` и содержит тип заявки; `TextBody` содержит все заполненные поля.
+### @US1-EC-2 — сетевая ошибка refresh не разрушает сессию
+1. `localStorage`: оба ключа заданы (валидные значения).
+2. Смокать `fetch`: исходный запрос → 401; `/refresh` → `Promise.reject(new Error('network'))` (или `Response(503)`).
+3. Вызвать `adminFetch(...)` и поймать результат/ошибку.
+4. Проверить: `localStorage.getItem('admin_token')` и `admin_refresh_token` — прежние значения, НЕ `null`.
+5. Проверить: `location.assign` НЕ вызван.
+6. Проверить: `adminFetch` вернул отклонённый промис/ошибку (исходный запрос завершился неудачей, но сессия не тронута).
+Ожидаемый результат: ключи в `localStorage` не изменились, редиректа нет.
 
-## @US2-EC1 — Только email сконфигурирован
-1. ENV: SMTP задан, Telegram пуст.
-2. `POST /api/contact`.
-3. Проверить: письмо отправлено (1 запись у фейка); Telegram HTTP-перехватчик получил 0 запросов; лог содержит Warning о пропуске Telegram-канала.
+### @US1-EC-4 — общее хранилище между вкладками (unit-эмуляция)
+1. Вызвать `saveSession({accessToken: 'A1', refreshToken: 'R1', ...})`.
+2. Прочитать напрямую `localStorage.getItem('admin_token')` === `'A1'`, `admin_refresh_token` === `'R1'` (эмуляция «другой вкладки», читающей то же хранилище).
+3. Вызвать `saveSession({accessToken: 'A2', refreshToken: 'R2', ...})` (эмуляция продления в другой вкладке).
+4. Проверить, что `getAccessToken()`/`getRefreshToken()` (или прямое чтение `localStorage`) возвращают уже `'A2'`/`'R2'`.
+Ожидаемый результат: чтение хранилища после `saveSession` всегда отражает последнюю сохранённую пару — общий источник правды.
 
-## @US3-AS1 — Сбой обоих каналов
-1. ENV: оба канала сконфигурированы.
-2. Подменить оба канала на фейки, у которых `SendAsync` бросает `InvalidOperationException`.
-3. `POST /api/contact` и отдельно `POST /api/tryout`.
-4. Проверить: оба запроса вернули 2xx; обе заявки в БД; в логах 2 записи уровня Error (по одной на канал) с упоминанием имени канала; исключение не долетело до HTTP-конвейера (нет 5xx, нет необработанного исключения в тестовом выводе).
+---
 
-## @US3-AS2 — Ни один канал не сконфигурирован
-1. ENV: все переменные Telegram/SMTP пусты.
-2. `POST /api/contact`.
-3. Проверить: ответ 2xx; заявка в БД; в логах 2 записи Warning (Telegram и email пропущены); ни один транспорт не вызван.
+## US2 — Честное завершение сессии
 
-## @US3-EC4 — Таймаут канала
-1. Unit-тест композита `FeedbackNotifierTests`: канал-мок с `SendAsync`, ожидающим `Task.Delay(Timeout.Infinite, cancellationToken)`.
-2. Вызвать `Notify()` с использованием композита, где таймаут канала настроен на короткое тестовое значение (или проверяется через `CancellationTokenSource(TimeSpan.FromSeconds(10))` с ускоренным виртуальным временем/явным укорачиванием таймаута в тестовой конфигурации).
-3. Проверить: по истечении таймаута `SendAsync` отменяется (получает `OperationCanceledException` или завершается по токену); ошибка/отмена залогирована; вызывающий код (`Notify`) не блокируется дольше таймаута и не пробрасывает исключение наружу.
+### @US2-AS-3 / @US2-TS-3 — отклонённый refresh → очистка + returnTo
+1. `localStorage`: `admin_token` — произвольное значение, `admin_refresh_token` — произвольное значение.
+2. Смокать `fetch`: исходный запрос → 401; `/refresh` → `Response(401)` (также прогнать варианты 403 и 400 — параметризованный тест).
+3. Смокать `window.location.assign` (шпион, без реальной навигации) и текущий `window.location.pathname` (например, `/admin/news`).
+4. Вызвать `adminFetch('/api/admin/news')`.
+5. Проверить: `localStorage.getItem('admin_token')` и `admin_refresh_token` → `null`.
+6. Проверить: `location.assign` вызван с `'/admin/login?returnTo=%2Fadmin%2Fnews'` (или эквивалентным закодированным путём).
+Ожидаемый результат: сессия очищена, редирект содержит корректный `returnTo`.
 
-## Сквозная проверка сборки/тестов (для каждого слайса)
-```
-dotnet build src/backend
-dotnet test src/backend
-```
-Ожидаемый результат: build без ошибок, все тесты (unit + integration) зелёные, включая покрытие TS-1..TS-5 из spec.yaml.
+### @US2-AS-4 / @US2-TS-4 — возврат на returnTo после входа
+1. В тесте страницы логина (`login/page.tsx`) сымитировать `useSearchParams().get('returnTo')` = `/admin/news`.
+2. Смокать `adminLogin()` → успешный ответ с парой токенов.
+3. Вызвать обработчик отправки формы логина.
+4. Проверить: `router.push` (или эквивалент навигации) вызван с `/admin/news`.
+5. Проверить: `saveSession` вызван/оба ключа в `localStorage` заполнены.
+Ожидаемый результат: навигация на `/admin/news`, сессия сохранена.
+
+### @US2-AS-5 — выход очищает обе сессии
+1. `localStorage`: оба ключа заданы валидными значениями.
+2. В тесте `AdminLayout` вызвать `handleLogout` (клик по кнопке «Выйти» либо прямой вызов обработчика).
+3. Проверить: `localStorage.getItem('admin_token')` и `admin_refresh_token` → `null`.
+4. Проверить: навигация/редирект на `/admin/login`.
+5. Отдельно проверить guard: рендер защищённой admin-страницы при отсутствующем `admin_token` (`getAccessToken()` → `null`) → `router.replace('/admin/login')` вызывается (эмуляция «кнопки назад» — компонент не рендерит данные, а сразу уходит в редирект).
+Ожидаемый результат: оба ключа удалены, редирект на логин; при отсутствии токена защищённая страница не показывает данные.
+
+### @US2-EC-3 — подделанный returnTo заменяется на /admin
+1. Вызвать функцию валидации (`sanitizeReturnTo` либо эквивалент) с входами: `'https://evil.example'`, `'/pricing'`.
+2. Проверить: оба вызова возвращают `'/admin'`.
+Ожидаемый результат: оба некорректных пути нормализуются в `/admin`.
+
+### @US2-EC-3b — корректный returnTo внутри /admin принимается
+1. Вызвать `sanitizeReturnTo('/admin/news')`.
+2. Проверить: результат === `'/admin/news'`.
+Ожидаемый результат: путь внутри `/admin` возвращается без изменений.
+
+---
+
+## Сквозные проверки (не привязаны к одному сценарию, обязательны для слайса)
+
+1. `cd src/frontend && npm test` — все тесты `adminAuth.test.ts` (и обновлённые тесты `login/page`, `AdminLayout`, если есть) зелёные, ни один существующий тест не сломан.
+2. `cd src/frontend && npm run build` — exit 0, без TypeScript-ошибок.
+3. `cd src/frontend && npm run lint` — exit 0.
+4. Статическая проверка (grep): в `src/frontend/src/lib/api.ts` не осталось прямых обращений к `localStorage`/`admin_token` вне `adminAuth.ts` (`grep -n "authHeaders\|admin_token" src/frontend/src/lib/api.ts` — единственные совпадения либо отсутствуют, либо находятся внутри делегирующего вызова к `adminAuth`).
