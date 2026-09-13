@@ -2,7 +2,8 @@ run_id: "002-feedback-notifications-20260913"
 feature: "002-feedback-notifications"
 mode: night
 current_slice: S2
-current_role: coder
+current_role: done
+run_status: completed
 
 input_checksums:
   ".bob/features/qa-procedures.md": "b15b65ec69f30e72b29e70bdbc492e7f75740193926ed0ba176a904988d12695"
@@ -21,6 +22,7 @@ deviations:
   - "gherkin_approval: auto-approved (автономный режим по запросу пользователя), все 10 сценариев помечены auto-approved-night"
   - "hardener: mutation отключён в конфиге — только эвристическое усиление тестов"
   - "user-change 13.09: получатель email-уведомлений — krystyk@list.ru (env FEEDBACK_EMAIL_TO в S2); spec.yaml не правим mid-run во избежание stale-approval, актуализировать после merge"
+  - "S2: конфиг-слайс (YAML-only, 14 строк в docker-compose.yml и deploy.yml) — роли cleaner/architect/hardener/qa неприменимы, пропущены оркестратором; верификация: ревью диффа (только плейсхолдеры \\${VAR}/secrets.*, реальных значений нет), гейт coder tests-green passed, 96/96 тестов на ветке и на merged head"
   - "baseline-recapture (EC-7): complexity baseline 15 был снят по скоупу src/, а конфиг-команда lizard сканирует '.'; на базовом коммите той же командой max CCN=61 (.claude/helpers/statusline.cjs — инструментарий, не код фичи). Baseline complexity обновлён 15→61; код слайса max CCN=6"
 
 slices:
@@ -36,7 +38,7 @@ slices:
     title: "env-plumbing"
     depends_on: [S1]
     scenario_refs: []
-    status: pending
+    status: merged
     return_count: 0
     worktree_path: null
-    skipped_roles: []
+    skipped_roles: [cleaner, architect, hardener, qa]
