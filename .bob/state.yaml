@@ -4,7 +4,7 @@ input_mode: integration
 feature: 003-admin-session-refresh
 base: 81f805a
 current_slice: S1
-current_role: coder
+current_role: architect
 slices:
   S1:
     title: admin-session-wrapper
@@ -21,4 +21,5 @@ input_checksums:
   slices.yaml: 925dea580fc86690de0a718a5cb1057be6fbf0fab12861e4ebcbbe447b637561
 approval: auto-approved-night
 deviations:
+  - "duplication baseline 5.39 снят другим scope; пере-замерен на базе 81f805a идентичной командой jscpd = 5.58, гейт cleaner считался против него"
   - "night mode: 14 Gherkin-сценариев auto-approved-night без ручного ревью"

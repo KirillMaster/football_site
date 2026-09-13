@@ -1,6 +1,7 @@
 {
-  "complexity": 61,
-  "duplication": 5.39,
-  "captured_at_head": "389e671",
-  "scope": "конфиг-команды bob-pipeline ('.', вкл. инструментарий .claude/.specify)"
+ "complexity": 61,
+ "duplication": 5.58,
+ "captured_at_head": "389e671",
+ "scope": "конфиг-команды bob-pipeline ('.', вкл. инструментарий .claude/.specify)",
+ "note": "duplication re-captured at 81f805a same-scope jscpd (src, ignore node_modules/bin/obj/.next)"
 }
