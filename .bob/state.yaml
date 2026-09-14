@@ -1,8 +1,8 @@
 run_id: "004-admin-news-rich-editor-20260914"
 feature: "004-admin-news-rich-editor"
 mode: day
-current_slice: "slice-editor-nodes"
-current_role: "qa"
+current_slice: "slice-cover"
+current_role: "merge"
 input_checksums:
   ".bob/features/004-admin-news-rich-editor/gherkin.md": "095443006f85847948804172dcff2b3f97fb594e6953e33dc41d55548665a8a3"
   ".bob/features/004-admin-news-rich-editor/qa-procedures.md": "2bcca88677ba6c01325a6b3eb53991050abb0fa52e54390918ae76dd0057fe13"
@@ -26,4 +26,12 @@ slices:
     status: merged
     return_count: 0
     worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-editor-nodes"
+    skipped_roles: []
+  - id: slice-cover
+    title: "Обложка новости (сервер + форма)"
+    depends_on: [slice-media-endpoint, slice-editor-nodes]
+    scenario_refs: ["US1 @AS-1 @FR-001 @FR-002", "US1 @AS-2 @FR-004", "US1 @AS-3 @FR-003"]
+    status: merged
+    return_count: 0
+    worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-cover"
     skipped_roles: []
