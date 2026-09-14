@@ -57,4 +57,57 @@ public class NewsCoverImageEndpointTests : IClassFixture<WebAppFactory>
         var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
         saved.CoverImage.Should().BeNullOrEmpty();
     }
+
+    [Fact]
+    [Trait("scenario", "US1-AS-1")]
+    [Trait("boundary", "length-boundary")]
+    public async Task Create_CoverImage_Exactly500Chars_Saved()
+    {
+        var controller = MakeController(_factory, out var db);
+        var slug = "cover-500-" + Guid.NewGuid().ToString("N")[..8];
+        var baseUrl = "https://cdn.example.com/";
+        var coverUrl = baseUrl + new string('x', 500 - baseUrl.Length);
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null, coverUrl);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<CreatedAtActionResult>();
+        var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        saved.CoverImage.Should().Be(coverUrl);
+        saved.CoverImage.Length.Should().Be(500);
+    }
+
+    [Fact]
+    [Trait("scenario", "US1-AS-1")]
+    [Trait("boundary", "empty-string")]
+    public async Task Create_CoverImage_EmptyString_Saved()
+    {
+        var controller = MakeController(_factory, out var db);
+        var slug = "cover-empty-" + Guid.NewGuid().ToString("N")[..8];
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null, "");
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<CreatedAtActionResult>();
+        var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        saved.CoverImage.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    [Trait("scenario", "US1-AS-1")]
+    public async Task Create_WithCoverImage_GetNewsReturnsSameUrl()
+    {
+        var controller = MakeController(_factory, out var db);
+        var slug = "get-cover-test-" + Guid.NewGuid().ToString("N")[..8];
+        var coverUrl = "https://cdn.example.com/verified-cover.jpg";
+        var cmd = new CreateNewsCommand(slug, "Заголовок с обложкой", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null, coverUrl);
+
+        await controller.Create(cmd, CancellationToken.None);
+
+        var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        saved.CoverImage.Should().Be(coverUrl);
+    }
 }

@@ -116,4 +116,135 @@ describe('US1 @AS-3 @FR-003', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ coverImage: null }));
   });
+
+  it('повторная замена обложки: второй файл заменяет первый', async () => {
+    vi.mocked(uploadAdminNewsMedia)
+      .mockResolvedValueOnce({
+        status: 'uploaded',
+        url: 'https://cdn.example.com/first-cover.jpg',
+        key: 'k1',
+        mediaType: 'image',
+      })
+      .mockResolvedValueOnce({
+        status: 'uploaded',
+        url: 'https://cdn.example.com/second-cover.jpg',
+        key: 'k2',
+        mediaType: 'image',
+      });
+
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.change(screen.getByLabelText('Файл обложки'), {
+      target: { files: [coverFile('first.jpg')] },
+    });
+
+    await waitFor(() =>
+      expect(screen.getByAltText('Обложка новости')).toHaveAttribute(
+        'src',
+        'https://cdn.example.com/first-cover.jpg'
+      )
+    );
+
+    fireEvent.change(screen.getByLabelText('Файл обложки'), {
+      target: { files: [coverFile('second.jpg')] },
+    });
+
+    await waitFor(() =>
+      expect(screen.getByAltText('Обложка новости')).toHaveAttribute(
+        'src',
+        'https://cdn.example.com/second-cover.jpg'
+      )
+    );
+  });
+
+  it('отказ загрузки (error) не затирает уже выбранную обложку', async () => {
+    vi.mocked(uploadAdminNewsMedia).mockResolvedValue({
+      status: 'error',
+      url: '',
+      key: '',
+      mediaType: 'image',
+    });
+
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{ titleRu: 'Есть обложка', coverImage: 'https://cdn.example.com/old-cover.jpg' }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText('Файл обложки'), {
+      target: { files: [coverFile('bad.jpg')] },
+    });
+
+    await waitFor(() => expect(uploadAdminNewsMedia).toHaveBeenCalled());
+
+    expect(screen.getByAltText('Обложка новости')).toHaveAttribute(
+      'src',
+      'https://cdn.example.com/old-cover.jpg'
+    );
+  });
+
+  it('отказ загрузки (network_error) не затирает уже выбранную обложку', async () => {
+    vi.mocked(uploadAdminNewsMedia).mockResolvedValue({
+      status: 'network_error',
+      url: '',
+      key: '',
+      mediaType: 'image',
+    });
+
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{ titleRu: 'Есть обложка', coverImage: 'https://cdn.example.com/old-cover.jpg' }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText('Файл обложки'), {
+      target: { files: [coverFile('bad.jpg')] },
+    });
+
+    await waitFor(() => expect(uploadAdminNewsMedia).toHaveBeenCalled());
+
+    expect(screen.getByAltText('Обложка новости')).toHaveAttribute(
+      'src',
+      'https://cdn.example.com/old-cover.jpg'
+    );
+  });
+
+  it('отказ загрузки (unauthorized) не затирает уже выбранную обложку', async () => {
+    vi.mocked(uploadAdminNewsMedia).mockResolvedValue({
+      status: 'unauthorized',
+      url: '',
+      key: '',
+      mediaType: 'image',
+    });
+
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{ titleRu: 'Есть обложка', coverImage: 'https://cdn.example.com/old-cover.jpg' }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText('Файл обложки'), {
+      target: { files: [coverFile('forbidden.jpg')] },
+    });
+
+    await waitFor(() => expect(uploadAdminNewsMedia).toHaveBeenCalled());
+
+    expect(screen.getByAltText('Обложка новости')).toHaveAttribute(
+      'src',
+      'https://cdn.example.com/old-cover.jpg'
+    );
+  });
 });
