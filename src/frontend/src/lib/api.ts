@@ -619,12 +619,39 @@ export async function getAdminNewsById(id: string): Promise<Record<string, unkno
   return adminGetJson(`/api/admin/news/${id}`, null);
 }
 
-export async function createAdminNews(data: Record<string, unknown>): Promise<boolean> {
-  return adminMutate('/api/admin/news', 'POST', data);
+// US3 @AS-9 @FR-012 / @EC-4: create/update новости должны различать успех и
+// отказ сервера (недопустимый формат адреса, занятый адрес, ошибка валидации),
+// поэтому используется discriminated union вместо boolean — как в
+// uploadAdminNewsMedia — чтобы сообщение сервера дошло до формы.
+export type AdminNewsSaveResult =
+  | { status: 'ok' }
+  | { status: 'error'; message: string };
+
+async function adminMutateNews(path: string, method: 'POST' | 'PUT', body: unknown): Promise<AdminNewsSaveResult> {
+  try {
+    const res = await adminFetch(`${API_URL}${path}`, {
+      method,
+      headers: JSON_HEADERS,
+      body: JSON.stringify(body),
+    });
+    if (res.ok) return { status: 'ok' };
+
+    const errorBody = await res.json().catch(() => null);
+    return {
+      status: 'error',
+      message: errorBody?.message ?? 'Не удалось сохранить новость',
+    };
+  } catch {
+    return { status: 'error', message: 'Нет соединения с сервером' };
+  }
 }
 
-export async function updateAdminNews(id: string, data: Record<string, unknown>): Promise<boolean> {
-  return adminMutate(`/api/admin/news/${id}`, 'PUT', data);
+export async function createAdminNews(data: Record<string, unknown>): Promise<AdminNewsSaveResult> {
+  return adminMutateNews('/api/admin/news', 'POST', data);
+}
+
+export async function updateAdminNews(id: string, data: Record<string, unknown>): Promise<AdminNewsSaveResult> {
+  return adminMutateNews(`/api/admin/news/${id}`, 'PUT', data);
 }
 
 export async function deleteAdminNews(id: string): Promise<boolean> {

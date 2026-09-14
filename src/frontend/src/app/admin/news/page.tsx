@@ -16,26 +16,6 @@ import { NewsEditor, type AdminNewsDto } from './NewsEditor';
 
 type Mode = 'list' | 'edit' | 'new';
 
-const TRANSLIT: Record<string, string> = {
-  а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'e', ж: 'zh', з: 'z',
-  и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r',
-  с: 's', т: 't', у: 'u', ф: 'f', х: 'h', ц: 'ts', ч: 'ch', ш: 'sh',
-  щ: 'sch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu', я: 'ya',
-};
-
-function slugify(title: string): string {
-  const base = title
-    .toLowerCase()
-    .split('')
-    .map((ch) => TRANSLIT[ch] ?? ch)
-    .join('')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 180);
-  const suffix = Date.now().toString(36);
-  return base ? `${base}-${suffix}` : `news-${suffix}`;
-}
-
 export default function AdminNewsPage() {
   const [news, setNews] = useState<AdminNewsDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,9 +31,8 @@ export default function AdminNewsPage() {
   const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data: any = await getAdminNews();
-      const raw = data?.items ?? data ?? [];
+      const data: unknown = await getAdminNews();
+      const raw = (data as { items?: unknown } | null)?.items ?? data ?? [];
       const items = (Array.isArray(raw) ? raw : []) as AdminNewsDto[];
       setNews(items);
       setError(null);
@@ -73,58 +52,55 @@ export default function AdminNewsPage() {
     excerptRu: string;
     contentRu: string;
     coverImage: string | null;
+    slug: string;
+    tags: string[];
+    metaTitle: string;
+    metaDescription: string;
+    isPublished: boolean;
   }) => {
     setSaving(true);
-    let ok: boolean;
 
-    if (editing) {
-      // UpdateNewsCommand требует полный набор полей; неотредактированные
-      // берём из загруженной новости, чтобы не затереть теги/публикацию.
-      // coverImage — из редактора (T008), чтобы «Заменить»/«Удалить» сохранялись.
-      ok = await updateAdminNews(editing.id, {
-        titleRu: data.titleRu,
-        titleEn: editing.titleEn ?? '',
-        excerptRu: data.excerptRu,
-        excerptEn: editing.excerptEn ?? '',
-        contentRu: data.contentRu,
-        contentEn: editing.contentEn ?? '',
-        metaTitle: editing.metaTitle || data.titleRu.slice(0, 160),
-        metaDescription: editing.metaDescription || data.excerptRu.slice(0, 300),
-        tags: editing.tags ?? [],
-        isPublished: editing.isPublished ?? true,
-        coverImage: data.coverImage,
-      });
-    } else {
-      // CreateNewsCommand на бэкенде требует полный набор non-nullable полей,
-      // slug — только [a-z0-9-]
-      ok = await createAdminNews({
-        slug: slugify(data.titleRu),
-        titleRu: data.titleRu,
-        titleEn: '',
-        excerptRu: data.excerptRu,
-        excerptEn: '',
-        contentRu: data.contentRu,
-        contentEn: '',
-        metaTitle: data.titleRu.slice(0, 160),
-        metaDescription: data.excerptRu.slice(0, 300),
-        tags: [],
-        isPublished: true,
-        publishedAt: null,
-        coverImage: data.coverImage,
-      });
-    }
+    // T010: редактор владеет полным состоянием формы — отправляем его целиком,
+    // без подмешивания устаревших полей из `editing` (иначе можно затереть
+    // несохранённые правки другого поля, @AS-11).
+    const result = editing
+      ? await updateAdminNews(editing.id, {
+          titleRu: data.titleRu,
+          titleEn: editing.titleEn ?? '',
+          excerptRu: data.excerptRu,
+          excerptEn: editing.excerptEn ?? '',
+          contentRu: data.contentRu,
+          contentEn: editing.contentEn ?? '',
+          metaTitle: data.metaTitle,
+          metaDescription: data.metaDescription,
+          tags: data.tags,
+          isPublished: data.isPublished,
+          coverImage: data.coverImage,
+        })
+      : await createAdminNews({
+          slug: data.slug,
+          titleRu: data.titleRu,
+          titleEn: '',
+          excerptRu: data.excerptRu,
+          excerptEn: '',
+          contentRu: data.contentRu,
+          contentEn: '',
+          metaTitle: data.metaTitle,
+          metaDescription: data.metaDescription,
+          tags: data.tags,
+          isPublished: data.isPublished,
+          publishedAt: null,
+          coverImage: data.coverImage,
+        });
 
     setSaving(false);
 
-    if (ok) {
+    if (result.status === 'ok') {
       setMode('list');
       setEditing(null);
       await fetchNews();
     } else {
-      showToast(
-        editing ? 'Ошибка при обновлении новости' : 'Ошибка при создании новости',
-        true
-      );
+      showToast(result.message, true);
     }
   };
 

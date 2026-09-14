@@ -1,7 +1,7 @@
 run_id: "004-admin-news-rich-editor-20260914"
 feature: "004-admin-news-rich-editor"
 mode: day
-current_slice: "slice-cover"
+current_slice: "slice-publishing"
 current_role: "merge"
 input_checksums:
   ".bob/features/004-admin-news-rich-editor/gherkin.md": "095443006f85847948804172dcff2b3f97fb594e6953e33dc41d55548665a8a3"
@@ -34,4 +34,12 @@ slices:
     status: merged
     return_count: 0
     worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-cover"
+    skipped_roles: []
+  - id: slice-publishing
+    title: "Поля публикации и SEO"
+    depends_on: [slice-cover]
+    scenario_refs: ["US3 @AS-8 @FR-011", "US3 @AS-9 @FR-012", "US3 @AS-10 @FR-014", "US3 @AS-11 @FR-015", "US3 @EC-4 @FR-012", "US3 @EC-5", "US3 @FR-013"]
+    status: merged
+    return_count: 0
+    worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-publishing"
     skipped_roles: []
