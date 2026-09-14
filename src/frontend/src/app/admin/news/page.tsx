@@ -12,6 +12,7 @@ import {
   updateAdminNews,
   deleteAdminNews,
   uploadAdminNewsMedia,
+  type NewsMediaUploadResult,
 } from '@/lib/api';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -59,6 +60,16 @@ interface AdminNewsDto {
 // Имя файла без расширения — стартовое значение alt-подписи (T007, @AS-5).
 function filenameToAlt(name: string): string {
   return name.replace(/\.[^./\\]+$/, '');
+}
+
+// Русский текст ошибки для нежелательного исхода загрузки (EC-1/EC-2/EC-3).
+// Общий для галереи и видео — оба сценария отличаются только тем, что делают
+// с успешным результатом.
+function describeUploadFailure(result: NewsMediaUploadResult, fileName: string): string {
+  if (result.status === 'unauthorized') return 'Сессия истекла — войдите заново';
+  if (result.status === 'network_error') return `${fileName}: нет соединения с сервером`;
+  if (result.status === 'rejected') return `${fileName}: ${result.message}`;
+  return '';
 }
 
 function NewsEditor({
@@ -109,12 +120,8 @@ function NewsEditor({
       const result = await uploadAdminNewsMedia(files[i]);
       if (result.status === 'uploaded') {
         uploaded.push({ src: result.url, alt: filenameToAlt(files[i].name) });
-      } else if (result.status === 'unauthorized') {
-        failures.push('Сессия истекла — войдите заново');
-      } else if (result.status === 'network_error') {
-        failures.push(`${files[i].name}: нет соединения с сервером`);
       } else {
-        failures.push(`${files[i].name}: ${result.message}`);
+        failures.push(describeUploadFailure(result, files[i].name));
       }
     }
 
@@ -156,12 +163,8 @@ function NewsEditor({
 
     if (result.status === 'uploaded') {
       editor.chain().focus().insertContent({ type: 'newsVideo', attrs: { src: result.url } }).run();
-    } else if (result.status === 'unauthorized') {
-      setUploadError('Сессия истекла — войдите заново');
-    } else if (result.status === 'network_error') {
-      setUploadError(`${videoFile.name}: нет соединения с сервером`);
     } else {
-      setUploadError(`${videoFile.name}: ${result.message}`);
+      setUploadError(describeUploadFailure(result, videoFile.name));
     }
   };
 
