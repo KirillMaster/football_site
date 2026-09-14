@@ -38,6 +38,16 @@ function describeUploadFailure(result: NewsMediaUploadResult, fileName: string):
   return '';
 }
 
+// Баннер ошибки загрузки — общий для блоков «Обложка» и «Содержание».
+function UploadErrorBanner({ message }: { message: string | null }) {
+  if (!message) return null;
+  return (
+    <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+      {message}
+    </div>
+  );
+}
+
 export function NewsEditor({
   article,
   onSave,
@@ -172,11 +182,7 @@ export function NewsEditor({
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Обложка</label>
-        {uploadError && (
-          <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
-            {uploadError}
-          </div>
-        )}
+        <UploadErrorBanner message={uploadError} />
         <input
           ref={coverInputRef}
           type="file"
@@ -244,11 +250,7 @@ export function NewsEditor({
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Содержание</label>
-        {uploadError && (
-          <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
-            {uploadError}
-          </div>
-        )}
+        <UploadErrorBanner message={uploadError} />
         <div className="border border-gray-300 rounded-lg overflow-hidden">
           <div className="bg-gray-50 px-3 py-2 border-b border-gray-300 flex gap-2 flex-wrap">
             <button
