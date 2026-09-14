@@ -287,7 +287,7 @@ describe('@US2 @EC-1 @EC-2 @SC-005', () => {
 
     // Функция вернёт undefined для key, но это не ошибка
     expect(result.status).toBe('uploaded');
-    expect((result as any).key).toBeUndefined();
+    expect((result as Record<string, unknown>).key).toBeUndefined();
   });
 
   it('auth-ошибка (401) не проверяет message в ответе', async () => {
