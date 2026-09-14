@@ -92,6 +92,141 @@ public class NewsMediaEndpointTests : IClassFixture<WebAppFactory>
 
         var bad = result.Should().BeOfType<BadRequestObjectResult>().Subject;
         bad.Value.Should().NotBeNull();
+        var responseStr = bad.Value!.ToString() ?? "";
+        responseStr.Should().Contain("Недопустимый тип файла");
+        responseStr.Should().Contain("JPEG");
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-018")]
+    public async Task UploadNewsMedia_At20MBExactBoundary_Returns200()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("large.jpg", "image/jpeg", 20 * 1024 * 1024);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-018")]
+    public async Task UploadNewsMedia_Exceeds20MBLimit_ReturnsBadRequest()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("toolarge.jpg", "image/jpeg", 20 * 1024 * 1024 + 1);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        var bad = result.Should().BeOfType<BadRequestObjectResult>().Subject;
+        bad.Value.Should().NotBeNull();
+        var responseStr = bad.Value!.ToString() ?? "";
+        responseStr.Should().Contain("20 МБ");
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-017")]
+    public async Task UploadNewsMedia_WithPng_ReturnsMediaTypeImage()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("image.png", "image/png", 2048);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        var ok = result.Should().BeOfType<OkObjectResult>().Subject;
+        ok.Value!.GetType().GetProperty("mediaType")!.GetValue(ok.Value).Should().Be("image");
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-017")]
+    public async Task UploadNewsMedia_WithWebp_ReturnsMediaTypeImage()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("image.webp", "image/webp", 2048);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        var ok = result.Should().BeOfType<OkObjectResult>().Subject;
+        ok.Value!.GetType().GetProperty("mediaType")!.GetValue(ok.Value).Should().Be("image");
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-017")]
+    public async Task UploadNewsMedia_WithJpeg_ReturnsMediaTypeImage()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("photo.jpg", "image/jpeg", 2048);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        var ok = result.Should().BeOfType<OkObjectResult>().Subject;
+        ok.Value!.GetType().GetProperty("mediaType")!.GetValue(ok.Value).Should().Be("image");
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-018")]
+    public async Task UploadNewsMedia_WithEmptyFile_ReturnsBadRequest()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("empty.jpg", "image/jpeg", 0);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        var bad = result.Should().BeOfType<BadRequestObjectResult>().Subject;
+        bad.Value.Should().NotBeNull();
+        var responseStr = bad.Value!.ToString() ?? "";
+        responseStr.Should().Contain("Файл не выбран");
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-FR-016")]
+    public async Task UploadNewsMedia_ReturnsUrlAndKeyNonEmpty()
+    {
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file = MakeFile("photo.jpg", "image/jpeg", 2048);
+
+        var result = await controller.Upload(file, CancellationToken.None);
+
+        var ok = result.Should().BeOfType<OkObjectResult>().Subject;
+        ok.Value.Should().NotBeNull();
+        var urlProp = ok.Value!.GetType().GetProperty("url");
+        var keyProp = ok.Value!.GetType().GetProperty("key");
+
+        urlProp.Should().NotBeNull();
+        keyProp.Should().NotBeNull();
+
+        var url = urlProp!.GetValue(ok.Value);
+        var key = keyProp!.GetValue(ok.Value);
+
+        url.Should().NotBeNull();
+        key.Should().NotBeNull();
+        url!.ToString().Should().NotBeNullOrEmpty();
+        key!.ToString().Should().NotBeNullOrEmpty();
+    }
+
+    [Fact]
+    [Trait("scenario", "US4-AS-12")]
+    public async Task UploadNewsMedia_DoesNotAffectGallery_Checked()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ArsenalDbContext>();
+
+        var before = db.Photos.Count();
+
+        var controller = new NewsMediaController(new FakeStorageService());
+        var file1 = MakeFile("news1.jpg", "image/jpeg", 1024);
+        var result1 = await controller.Upload(file1, CancellationToken.None);
+        result1.Should().BeOfType<OkObjectResult>();
+
+        var after1 = db.Photos.Count();
+        after1.Should().Be(before, "Первая загрузка не должна менять count");
+
+        var file2 = MakeFile("news2.png", "image/png", 2048);
+        var result2 = await controller.Upload(file2, CancellationToken.None);
+        result2.Should().BeOfType<OkObjectResult>();
+
+        var after2 = db.Photos.Count();
+        after2.Should().Be(before, "Вторая загрузка тоже не должна менять count");
     }
 }
 
