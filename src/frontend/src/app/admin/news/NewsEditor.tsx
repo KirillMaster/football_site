@@ -2,9 +2,13 @@
 
 import { useState, useRef } from 'react';
 import { uploadAdminNewsMedia, type NewsMediaUploadResult } from '@/lib/api';
+import { isValidSlug, slugify } from '@/lib/slug';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { NewsGallery, NewsImage, NewsVideo } from '@/components/admin/editor/newsNodes';
+
+const META_TITLE_LIMIT = 160;
+const META_DESCRIPTION_LIMIT = 300;
 
 export interface AdminNewsDto {
   id: string;
@@ -60,10 +64,16 @@ export function NewsEditor({
     excerptRu: string;
     contentRu: string;
     coverImage: string | null;
+    slug: string;
+    tags: string[];
+    metaTitle: string;
+    metaDescription: string;
+    isPublished: boolean;
   }) => void;
   onCancel: () => void;
   saving: boolean;
 }) {
+  const isEditing = Boolean(article?.id);
   const [title, setTitle] = useState(article?.titleRu ?? '');
   const [excerpt, setExcerpt] = useState(article?.excerptRu ?? '');
   const [coverImage, setCoverImage] = useState<string | null>(article?.coverImage ?? null);
@@ -75,17 +85,69 @@ export function NewsEditor({
   const videoInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
+  // T009: адрес (slug) — автозаполнение из заголовка при создании (@AS-8), ручное
+  // редактирование и валидация формата (@AS-9). После создания адрес неизменяем
+  // (в UpdateNewsCommand поля slug нет), поэтому при редактировании поле только для чтения.
+  const [slug, setSlug] = useState(article?.slug ?? (isEditing ? '' : slugify(article?.titleRu ?? '')));
+  const [slugEdited, setSlugEdited] = useState(isEditing);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const [tags, setTags] = useState<string[]>(article?.tags ?? []);
+  const [tagInput, setTagInput] = useState('');
+
+  const [metaTitle, setMetaTitle] = useState(article?.metaTitle ?? '');
+  const [metaDescription, setMetaDescription] = useState(article?.metaDescription ?? '');
+  const [isPublished, setIsPublished] = useState(article?.isPublished ?? false);
+
   const editor = useEditor({
     extensions: [StarterKit, NewsImage, NewsGallery, NewsVideo],
     content: article?.contentRu ?? '<p>Начните писать...</p>',
   });
 
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    if (!isEditing && !slugEdited) {
+      setSlug(slugify(value));
+    }
+  };
+
+  const handleSlugChange = (value: string) => {
+    setSlug(value);
+    setSlugEdited(true);
+  };
+
+  const addTag = () => {
+    const value = tagInput.trim();
+    if (value && !tags.includes(value)) {
+      setTags([...tags, value]);
+    }
+    setTagInput('');
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(tags.filter((t) => t !== tag));
+  };
+
+  const slugInvalid = !isEditing && !isValidSlug(slug);
+  const metaTitleOverLimit = metaTitle.length > META_TITLE_LIMIT;
+  const metaDescriptionOverLimit = metaDescription.length > META_DESCRIPTION_LIMIT;
+
   const handleSave = () => {
+    if (slugInvalid) {
+      setSaveError('Адрес новости может содержать только строчные латинские буквы, цифры и дефисы');
+      return;
+    }
+    setSaveError(null);
     onSave({
       titleRu: title,
       excerptRu: excerpt,
       contentRu: editor?.getHTML() ?? '',
       coverImage,
+      slug,
+      tags,
+      metaTitle,
+      metaDescription,
+      isPublished,
     });
   };
 
@@ -235,18 +297,115 @@ export function NewsEditor({
           id="news-title"
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => handleTitleChange(e.target.value)}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Краткое описание</label>
+        <label htmlFor="news-slug" className="block text-sm font-medium text-gray-700 mb-1">Адрес (slug)</label>
+        <input
+          id="news-slug"
+          type="text"
+          value={slug}
+          disabled={isEditing}
+          onChange={(e) => handleSlugChange(e.target.value)}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red disabled:bg-gray-100 disabled:text-gray-500"
+        />
+        {slugInvalid && (
+          <p className="mt-1 text-xs text-red-600">
+            Адрес может содержать только строчные латинские буквы, цифры и дефисы
+          </p>
+        )}
+      </div>
+      <UploadErrorBanner message={saveError} />
+      <div>
+        <label htmlFor="news-excerpt" className="block text-sm font-medium text-gray-700 mb-1">Краткое описание</label>
         <textarea
+          id="news-excerpt"
           rows={2}
           value={excerpt}
           onChange={(e) => setExcerpt(e.target.value)}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red resize-none"
         />
+      </div>
+      <div>
+        <label htmlFor="news-tags" className="block text-sm font-medium text-gray-700 mb-1">Теги</label>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 border border-gray-300 rounded-full"
+            >
+              {tag}
+              <button
+                type="button"
+                aria-label={`Удалить тег ${tag}`}
+                onClick={() => removeTag(tag)}
+                className="text-gray-500 hover:text-red-600"
+              >
+                &times;
+              </button>
+            </span>
+          ))}
+        </div>
+        <input
+          id="news-tags"
+          type="text"
+          value={tagInput}
+          placeholder="Добавить тег и нажать Enter"
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              addTag();
+            }
+          }}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
+        />
+      </div>
+      <div>
+        <label htmlFor="news-meta-title" className="block text-sm font-medium text-gray-700 mb-1">
+          SEO-заголовок (meta title)
+        </label>
+        <input
+          id="news-meta-title"
+          type="text"
+          value={metaTitle}
+          onChange={(e) => setMetaTitle(e.target.value)}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
+        />
+        <p className={`mt-1 text-xs ${metaTitleOverLimit ? 'text-red-600' : 'text-gray-500'}`}>
+          {metaTitle.length}/{META_TITLE_LIMIT}
+          {metaTitleOverLimit ? ' — превышен лимит длины' : ''}
+        </p>
+      </div>
+      <div>
+        <label htmlFor="news-meta-description" className="block text-sm font-medium text-gray-700 mb-1">
+          SEO-описание (meta description)
+        </label>
+        <textarea
+          id="news-meta-description"
+          rows={2}
+          value={metaDescription}
+          onChange={(e) => setMetaDescription(e.target.value)}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red resize-none"
+        />
+        <p className={`mt-1 text-xs ${metaDescriptionOverLimit ? 'text-red-600' : 'text-gray-500'}`}>
+          {metaDescription.length}/{META_DESCRIPTION_LIMIT}
+          {metaDescriptionOverLimit ? ' — превышен лимит длины' : ''}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="news-is-published"
+          type="checkbox"
+          checked={isPublished}
+          onChange={(e) => setIsPublished(e.target.checked)}
+          className="h-4 w-4 rounded border-gray-300 text-brand-red focus:ring-brand-red"
+        />
+        <label htmlFor="news-is-published" className="text-sm font-medium text-gray-700">
+          Опубликовано
+        </label>
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Содержание</label>
@@ -318,7 +477,7 @@ export function NewsEditor({
       <div className="flex gap-3">
         <button
           onClick={handleSave}
-          disabled={saving || !title.trim()}
+          disabled={saving || !title.trim() || slugInvalid}
           className="btn-primary text-sm px-6 py-2 disabled:opacity-50"
         >
           {saving ? 'Сохранение...' : 'Сохранить'}

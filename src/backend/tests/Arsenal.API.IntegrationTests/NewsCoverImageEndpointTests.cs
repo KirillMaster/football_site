@@ -3,6 +3,7 @@ using Arsenal.Application.Queries;
 using Arsenal.Application.Validators;
 using Arsenal.Infrastructure.Persistence;
 using FluentAssertions;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,9 @@ public class NewsCoverImageEndpointTests : IClassFixture<WebAppFactory>
         var scope = factory.Services.CreateScope();
         db = scope.ServiceProvider.GetRequiredService<ArsenalDbContext>();
         var queryHandler = scope.ServiceProvider.GetRequiredService<GetNewsQueryHandler>();
-        return new AdminNewsController(queryHandler, db);
+        var createValidator = scope.ServiceProvider.GetRequiredService<IValidator<CreateNewsCommand>>();
+        var updateValidator = scope.ServiceProvider.GetRequiredService<IValidator<UpdateNewsCommand>>();
+        return new AdminNewsController(queryHandler, db, createValidator, updateValidator);
     }
 
     [Fact]
