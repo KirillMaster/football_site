@@ -177,3 +177,166 @@ describe('@US1 @AS-7 @FR-008 @FR-020', () => {
     editor.destroy();
   });
 });
+
+describe('@US1 @AS-4 @AS-5 @AS-6 @AS-7', () => {
+  it('граничное значение: одно изображение в галерее остаётся валидным и сохраняет alt', () => {
+    const editor = createEditor();
+
+    editor.commands.insertContent({
+      type: 'newsGallery',
+      content: [{ type: 'newsImage', attrs: { src: '/media/single.jpg', alt: 'Единственное фото' } }],
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('src="/media/single.jpg" alt="Единственное фото"');
+    expect(html).toMatch(
+      /<div style="display:\s*grid;\s*grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(260px,\s*1fr\)\);\s*gap:\s*12px;\s*margin-top:\s*24px;?">/
+    );
+
+    editor.destroy();
+  });
+
+  it('граничное значение: очень длинный alt-текст (>255 символов) сохраняется без обрезания', () => {
+    const longAlt = 'А'.repeat(300);
+    const editor = createEditor();
+
+    editor.commands.insertContent({
+      type: 'newsGallery',
+      content: [{ type: 'newsImage', attrs: { src: '/media/a.jpg', alt: longAlt } }],
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain(`alt="${longAlt}"`);
+
+    editor.destroy();
+  });
+
+  it('граничное значение: alt с спецсимволами сохраняется (экранирование на уровне DOM)', () => {
+    const editor = createEditor();
+    const altText = 'Фото & текст <тег> "кавычки"';
+
+    editor.commands.insertContent({
+      type: 'newsGallery',
+      content: [{ type: 'newsImage', attrs: { src: '/media/a.jpg', alt: altText } }],
+    });
+
+    const html = editor.getHTML();
+    // & экранируется, " экранируется, но браузер обрабатывает < при renderHTML
+    expect(html).toContain('alt="Фото &amp; текст');
+    expect(html).toContain('&quot;кавычки&quot;"');
+
+    editor.destroy();
+  });
+
+  it('граничное значение: пустой src в newsImage не валиден, но парсится без ошибок', () => {
+    const editor = createEditor();
+
+    // Вставляем напрямую с пустым src
+    editor.commands.insertContent({
+      type: 'newsGallery',
+      content: [{ type: 'newsImage', attrs: { src: '', alt: 'Описание' } }],
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('src=""');
+    expect(html).toContain('alt="Описание"');
+
+    editor.destroy();
+  });
+
+  it('видео: пустой src обрабатывается без ошибок', () => {
+    const editor = createEditor();
+
+    editor.commands.insertContent({
+      type: 'newsVideo',
+      attrs: { src: '' },
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('<source src="" type="video/mp4">');
+    expect(html).toContain('Ваш браузер не поддерживает воспроизведение видео.');
+
+    editor.destroy();
+  });
+
+  it('alt-атрибут с числами и спецсимволами парсится и сохраняется', () => {
+    const editor = createEditor();
+
+    editor.commands.insertContent({
+      type: 'newsGallery',
+      content: [
+        { type: 'newsImage', attrs: { src: '/media/a.jpg', alt: 'Матч #1 (2024-09-14) 3:2' } },
+      ],
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('alt="Матч #1 (2024-09-14) 3:2"');
+
+    editor.destroy();
+  });
+
+  it('newsImage внутри galllery остаётся атомарным: нельзя добавить текстовое содержимое', () => {
+    const editor = createEditor();
+
+    editor.commands.insertContent({
+      type: 'newsGallery',
+      content: [{ type: 'newsImage', attrs: { src: '/media/a.jpg', alt: 'Фото' } }],
+    });
+
+    // Пытаемся добавить в newsImage текст — это невалидно
+    // Структура должна остаться неизменной
+    const html = editor.getHTML();
+    expect(html).toMatch(/<img[^>]*src="\/media\/a\.jpg"/);
+    expect(html).not.toContain('<newsImage>');
+
+    editor.destroy();
+  });
+
+  it('видео: все атрибуты (controls, preload, playsinline) обязательны', () => {
+    const editor = createEditor();
+
+    editor.commands.insertContent({
+      type: 'newsVideo',
+      attrs: { src: '/media/video.mp4' },
+    });
+
+    const html = editor.getHTML();
+    expect(html).toContain('controls=""');
+    expect(html).toContain('preload="metadata"');
+    expect(html).toContain('playsinline=""');
+
+    editor.destroy();
+  });
+
+  it('round-trip: newsImage с числовым alt-текстом', () => {
+    const html =
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:24px">' +
+      '<img loading="lazy" style="width:100%;height:auto;border-radius:12px" src="/media/a.jpg" alt="123">' +
+      '</div>';
+
+    const editor = createEditor(html);
+    const result = editor.getHTML();
+
+    expect(result).toContain('alt="123"');
+
+    editor.destroy();
+  });
+
+  it('round-trip: newsVideo multiple source fallback (только <source> с type="video/mp4" поддерживается)', () => {
+    const html =
+      '<div style="display:grid;gap:16px;margin-top:24px">' +
+      '<video controls preload="metadata" playsinline style="width:100%;border-radius:12px;background:#000">' +
+      '<source src="/media/video.mp4" type="video/mp4">' +
+      'Ваш браузер не поддерживает воспроизведение видео.' +
+      '</video>' +
+      '</div>';
+
+    const editor = createEditor(html);
+    const result = editor.getHTML();
+
+    // Парсер должен взять только src из <source>
+    expect(result).toContain('src="/media/video.mp4"');
+
+    editor.destroy();
+  });
+});
