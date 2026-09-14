@@ -66,3 +66,7 @@ scripts/ssl-init.sh
 # Local credentials — NEVER commit
 vps_creds.txt
 secrets.txt
+
+# bob-pipeline runtime
+.bob/
+.worktrees/

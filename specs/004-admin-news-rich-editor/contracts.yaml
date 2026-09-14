@@ -1,0 +1,239 @@
+feature: "Полноценный редактор новостей в админке"
+contracts:
+  - id: "news_media_upload"
+    name: "POST /api/admin/news/media — загрузка изображения или видео для новости (роль admin), без создания записи в публичной фотогалерее"
+    kind: "interface"
+    entity_refs:
+      - "news_media_asset"
+      - "upload_outcome"
+    request:
+      - name: "file"
+        type: "string"
+        required: true
+        description: "Загружаемый файл (multipart/form-data, поле file): изображение JPEG/PNG/WebP или видео MP4, не более 20 МБ."
+    response_cases:
+      - outcome: "uploaded"
+        fields:
+          - name: "url"
+            type: "string"
+            required: true
+            description: "Публичная ссылка на сохранённый файл."
+          - name: "key"
+            type: "string"
+            required: true
+            description: "Ключ объекта в хранилище."
+          - name: "mediaType"
+            type: "enum"
+            required: true
+            description: "Категория файла, выведенная из content-type."
+            enum_values:
+              - "image"
+              - "video"
+      - outcome: "rejected_too_large"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Русскоязычное сообщение о превышении лимита 20 МБ (FR-018)."
+      - outcome: "rejected_unsupported_type"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Русскоязычное сообщение о недопустимом типе файла (EC-3, FR-018)."
+      - outcome: "unauthorized"
+        fields:
+          - name: "requiresLogin"
+            type: "boolean"
+            required: true
+            description: "Сессия администратора отсутствует или истекла — требуется повторный вход (EC-5)."
+
+  - id: "create_news"
+    name: "POST /api/news — создание новости со всеми публикационными атрибутами, включая обложку"
+    kind: "interface"
+    entity_refs:
+      - "news_draft"
+    request:
+      - name: "slug"
+        type: "string"
+        required: true
+        description: "Адрес новости, формат ^[a-z0-9-]+$, до 200 символов."
+      - name: "titleRu"
+        type: "string"
+        required: true
+        description: "Заголовок на русском, до 500 символов."
+      - name: "excerptRu"
+        type: "string"
+        required: false
+        description: "Краткое описание."
+      - name: "contentRu"
+        type: "string"
+        required: true
+        description: "HTML содержимого, сериализованный редактором."
+      - name: "coverImage"
+        type: "string"
+        required: false
+        description: "Публичная ссылка на обложку; новое поле команды создания (FR-002)."
+      - name: "tags"
+        type: "array"
+        required: true
+        description: "Список тегов, может быть пустым."
+      - name: "metaTitle"
+        type: "string"
+        required: false
+        description: "SEO-заголовок, до 160 символов."
+      - name: "metaDescription"
+        type: "string"
+        required: false
+        description: "SEO-описание, до 300 символов."
+      - name: "isPublished"
+        type: "boolean"
+        required: true
+        description: "Статус публикации."
+    response_cases:
+      - outcome: "created"
+        fields:
+          - name: "id"
+            type: "string"
+            required: true
+            description: "Идентификатор созданной новости."
+          - name: "slug"
+            type: "string"
+            required: true
+            description: "Итоговый адрес новости."
+          - name: "coverImage"
+            type: "string"
+            required: false
+            description: "Сохранённая обложка — совпадает с переданной (FR-002)."
+      - outcome: "invalid_slug"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Адрес не соответствует допустимому формату (FR-012)."
+      - outcome: "slug_conflict"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Адрес уже занят другой новостью (EC-4)."
+      - outcome: "validation_failed"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Не заполнено обязательное поле (пустой текст или заголовок) либо превышен лимит SEO-полей (EC-6, FR-013)."
+
+  - id: "update_news"
+    name: "PUT /api/news/{id} — полное обновление новости состоянием формы, сохраняющее обложку, теги и статус"
+    kind: "interface"
+    entity_refs:
+      - "news_draft"
+    request:
+      - name: "titleRu"
+        type: "string"
+        required: true
+        description: "Заголовок на русском."
+      - name: "excerptRu"
+        type: "string"
+        required: false
+        description: "Краткое описание."
+      - name: "contentRu"
+        type: "string"
+        required: true
+        description: "HTML содержимого, сериализованный редактором."
+      - name: "coverImage"
+        type: "string"
+        required: false
+        description: "Обложка: прежняя ссылка при отсутствии изменений, новая при замене, пустое значение при удалении (FR-003, FR-004)."
+      - name: "tags"
+        type: "array"
+        required: true
+        description: "Полный актуальный список тегов формы (FR-015)."
+      - name: "metaTitle"
+        type: "string"
+        required: false
+        description: "SEO-заголовок."
+      - name: "metaDescription"
+        type: "string"
+        required: false
+        description: "SEO-описание."
+      - name: "isPublished"
+        type: "boolean"
+        required: true
+        description: "Актуальный статус публикации формы (FR-015)."
+    response_cases:
+      - outcome: "updated"
+        fields:
+          - name: "persisted"
+            type: "boolean"
+            required: true
+            description: "Все переданные поля сохранены; непереданных изменений нет."
+      - outcome: "not_found"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Новость с указанным идентификатором не существует."
+      - outcome: "validation_failed"
+        fields:
+          - name: "message"
+            type: "string"
+            required: true
+            description: "Нарушены ограничения полей (пустой текст/заголовок, превышение лимитов SEO)."
+
+  - id: "content_serialization"
+    name: "Сериализация содержимого редактора — round-trip HTML для изображений, галерей и видео"
+    kind: "interface"
+    entity_refs:
+      - "content_node"
+    request:
+      - name: "nodes"
+        type: "array"
+        required: true
+        description: "Элементы содержимого редактора (см. data-model.yaml#content_node)."
+    response_cases:
+      - outcome: "serialized"
+        fields:
+          - name: "html"
+            type: "string"
+            required: true
+            description: "HTML, самодостаточный для рендера на публичной странице: сетка галереи, размеры и скругления изображений, плеер с элементами управления (FR-009)."
+          - name: "altPreserved"
+            type: "boolean"
+            required: true
+            description: "Описания изображений присутствуют в разметке (FR-006)."
+      - outcome: "parsed_back"
+        fields:
+          - name: "nodesRestored"
+            type: "number"
+            required: true
+            description: "Число восстановленных элементов совпадает с исходным — включая содержимое, созданное программно (FR-008, FR-020)."
+      - outcome: "unknown_markup"
+        fields:
+          - name: "preservedAsIs"
+            type: "boolean"
+            required: true
+            description: "Нераспознанная разметка не отбрасывается молча при повторном сохранении."
+
+  - id: "photo_gallery_upload"
+    name: "POST /api/admin/photos/upload — существующая загрузка снимков фотогалереи, поведение не меняется"
+    kind: "interface"
+    entity_refs:
+      - "news_media_asset"
+    request:
+      - name: "file"
+        type: "string"
+        required: true
+        description: "Изображение для публичной фотогалереи (multipart/form-data, поле file)."
+    response_cases:
+      - outcome: "uploaded_to_gallery"
+        fields:
+          - name: "url"
+            type: "string"
+            required: true
+            description: "Публичная ссылка на снимок."
+          - name: "appearsInPublicGallery"
+            type: "boolean"
+            required: true
+            description: "Снимок по-прежнему появляется в публичной фотогалерее (FR-019)."

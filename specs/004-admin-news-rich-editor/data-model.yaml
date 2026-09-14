@@ -1,0 +1,148 @@
+feature: "Полноценный редактор новостей в админке"
+entities:
+  - id: "news_draft"
+    name: "NewsDraft"
+    description: "Состояние формы редактора новости в админке — полный набор полей, отправляемый на сохранение целиком (создание или обновление). Сопоставляется с сущностью News в БД."
+    fields:
+      - name: "id"
+        type: "string"
+        required: false
+        description: "Идентификатор существующей новости; отсутствует при создании."
+      - name: "slug"
+        type: "string"
+        required: true
+        description: "Адрес новости, только строчные латинские буквы, цифры и дефисы; автогенерация из заголовка с возможностью ручной правки."
+      - name: "titleRu"
+        type: "string"
+        required: true
+        description: "Заголовок новости на русском, до 500 символов."
+      - name: "excerptRu"
+        type: "string"
+        required: false
+        description: "Краткое описание для карточки в списке новостей."
+      - name: "contentRu"
+        type: "string"
+        required: true
+        description: "HTML содержимого новости, сериализованный редактором: абзацы, заголовки, списки, ноды изображения/галереи/видео."
+      - name: "coverImage"
+        type: "string"
+        required: false
+        description: "Публичная ссылка на обложку новости; пустое значение означает отсутствие обложки."
+      - name: "tags"
+        type: "array"
+        required: true
+        description: "Список тегов новости; может быть пустым."
+      - name: "metaTitle"
+        type: "string"
+        required: false
+        description: "SEO-заголовок, до 160 символов."
+      - name: "metaDescription"
+        type: "string"
+        required: false
+        description: "SEO-описание, до 300 символов."
+      - name: "isPublished"
+        type: "boolean"
+        required: true
+        description: "Статус публикации: опубликованная новость видна в публичном списке."
+    relationships:
+      - field: "contentRu"
+        target_entity_ref: "content_node"
+        cardinality: "many"
+      - field: "coverImage"
+        target_entity_ref: "news_media_asset"
+        cardinality: "one"
+
+  - id: "content_node"
+    name: "ContentNode"
+    description: "Элемент содержимого новости, который редактор обязан сериализовать в HTML и распознать обратно без потерь. Не хранится отдельно — существует внутри HTML поля contentRu."
+    fields:
+      - name: "kind"
+        type: "enum"
+        required: true
+        description: "Тип элемента содержимого."
+        enum_values:
+          - "paragraph"
+          - "heading"
+          - "list"
+          - "image"
+          - "gallery"
+          - "video"
+      - name: "src"
+        type: "string"
+        required: false
+        description: "Публичная ссылка на медиафайл; обязательна для image и video."
+      - name: "alt"
+        type: "string"
+        required: false
+        description: "Русскоязычное описание изображения для SEO и доступности; применимо к image."
+      - name: "items"
+        type: "array"
+        required: false
+        description: "Вложенные изображения галереи в порядке их вставки; применимо к gallery."
+      - name: "mimeType"
+        type: "string"
+        required: false
+        description: "Тип содержимого видеофайла (video/mp4); применимо к video."
+    relationships:
+      - field: "src"
+        target_entity_ref: "news_media_asset"
+        cardinality: "one"
+
+  - id: "news_media_asset"
+    name: "NewsMediaAsset"
+    description: "Файл (изображение или видео), загруженный администратором для новости во внешнее хранилище. Доступен по публичной ссылке и не попадает в публичную фотогалерею сайта."
+    fields:
+      - name: "url"
+        type: "string"
+        required: true
+        description: "Публичная ссылка на файл в хранилище — то, что подставляется в обложку или ноду содержимого."
+      - name: "storageKey"
+        type: "string"
+        required: true
+        description: "Ключ объекта в хранилище."
+      - name: "mediaType"
+        type: "enum"
+        required: true
+        description: "Категория файла, выведенная из его типа содержимого."
+        enum_values:
+          - "image"
+          - "video"
+      - name: "contentType"
+        type: "string"
+        required: true
+        description: "Тип содержимого файла (image/jpeg, image/png, image/webp, video/mp4)."
+      - name: "sizeBytes"
+        type: "number"
+        required: true
+        description: "Размер файла в байтах; не более установленного лимита 20 МБ."
+      - name: "originalFileName"
+        type: "string"
+        required: true
+        description: "Исходное имя файла; используется как заготовка описания изображения."
+    relationships: []
+
+  - id: "upload_outcome"
+    name: "UploadOutcome"
+    description: "Результат попытки загрузки одного файла в рамках мульти-выбора: успех либо отказ с причиной, показываемой администратору."
+    fields:
+      - name: "fileName"
+        type: "string"
+        required: true
+        description: "Имя файла, к которому относится результат."
+      - name: "status"
+        type: "enum"
+        required: true
+        description: "Итог загрузки файла."
+        enum_values:
+          - "uploaded"
+          - "rejected_too_large"
+          - "rejected_unsupported_type"
+          - "failed_network"
+      - name: "message"
+        type: "string"
+        required: false
+        description: "Русскоязычное сообщение для администратора при отказе."
+    relationships:
+      - field: "fileName"
+        target_entity_ref: "news_media_asset"
+        cardinality: "one"

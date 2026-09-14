@@ -1,0 +1,549 @@
+feature: "Полноценный редактор новостей в админке"
+tasks:
+  - id: "T001"
+    title: "Эндпоинт загрузки медиа новостей"
+    description: "Добавить POST /api/admin/news/media — загрузку изображения или видео в S3 без создания записи Photo в публичной фотогалерее."
+    context: "Сейчас единственная загрузка файлов в админке кладёт каждый файл в публичную фотогалерею и не принимает видео — иллюстрации новостей засоряли бы галерею сайта."
+    story_ref: "US4"
+    requirement_refs: ["FR-016", "FR-017", "FR-018"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["news_media_asset", "upload_outcome"]
+    contract_refs: ["news_media_upload"]
+    steps:
+      - order: 1
+        action: "Создать контроллер NewsMediaController"
+        detail: "src/backend/src/Arsenal.API/Controllers/NewsMediaController.cs, атрибуты [ApiController] [Route(\"api/admin/news\")] [Authorize(Roles = \"admin\")], конструктор принимает IStorageService (как в PhotosController)."
+      - order: 2
+        action: "Реализовать действие Upload"
+        detail: "[HttpPost(\"media\")] Task<IActionResult> Upload(IFormFile file): допустимые ContentType — image/jpeg, image/png, image/webp, video/mp4; лимит 20 * 1024 * 1024 байт; при нарушении вернуть BadRequest с русскоязычным message."
+      - order: 3
+        action: "Сохранить файл и вернуть результат"
+        detail: "Вызвать _storage.UploadAsync(stream, file.FileName, file.ContentType) как в PhotosController, вернуть Ok(new { url, key, mediaType }), где mediaType — \"video\" для video/*, иначе \"image\". Записи Photo и MediaFile не создавать."
+      - order: 4
+        action: "Зарегистрировать лимит запроса"
+        detail: "Проставить [RequestSizeLimit] по образцу PhotosController.Upload, чтобы крупный файл отклонялся так же."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.API/Controllers/PhotosController.cs"
+        note: "Образец: маршрут admin-раздела, авторизация по роли, проверка размера, вызов IStorageService."
+      - path: "src/backend/src/Arsenal.Infrastructure/Services/S3StorageService.cs"
+        note: "UploadAsync формирует ключ {yyyy/MM}/{guid}_{fileName} и публичный URL; ничего менять не нужно."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Изображение до 20 МБ загружается и в ответе приходит публичная ссылка"
+        done: false
+      - id: "AC-2"
+        description: "Файл video/mp4 принимается и в ответе mediaType равен video"
+        done: false
+      - id: "AC-3"
+        description: "Файл неподдерживаемого типа и файл свыше лимита отклоняются с русскоязычным сообщением"
+        done: false
+      - id: "AC-4"
+        description: "Запрос без сессии администратора отклоняется"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["авторизованный администратор", "изображение JPEG размером 1 МБ"]
+        when: "выполняется POST /api/admin/news/media"
+        then: ["ответ 200", "в теле есть url и mediaType = image"]
+        verification: ["automated"]
+        level: "integration"
+      - id: "TS-2"
+        given: ["авторизованный администратор", "файл с типом application/pdf"]
+        when: "выполняется POST /api/admin/news/media"
+        then: ["ответ 400", "сообщение на русском о недопустимом типе"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T002"
+    title: "Загрузка медиа новостей не попадает в публичную фотогалерею"
+    description: "Подтвердить тестом, что после загрузки через POST /api/admin/news/media число снимков публичной фотогалереи не меняется, а загрузка через раздел фотогалереи работает как прежде."
+    context: "Главный риск новой загрузки — незаметно повторить поведение старого эндпоинта и наполнить публичную галерею служебными картинками из новостей."
+    story_ref: "US4"
+    requirement_refs: ["FR-016", "FR-019"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["news_media_asset"]
+    contract_refs: ["news_media_upload", "photo_gallery_upload"]
+    steps:
+      - order: 1
+        action: "Добавить интеграционный тест чистоты галереи"
+        detail: "src/backend/tests/Arsenal.API.IntegrationTests: считать снимки публичной галереи до и после POST /api/admin/news/media, ожидать равенство."
+      - order: 2
+        action: "Добавить регрессионный тест старого эндпоинта"
+        detail: "POST /api/admin/photos/upload по-прежнему создаёт запись, видимую в публичной галерее."
+    technical_notes:
+      - path: "src/backend/tests/Arsenal.API.IntegrationTests"
+        note: "Существующий тестовый проект с фабрикой приложения — новые тесты добавлять туда же."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Число снимков публичной фотогалереи не меняется после загрузки медиа новости"
+        done: false
+      - id: "AC-2"
+        description: "Загрузка через раздел фотогалереи по-прежнему добавляет снимок в публичную галерею"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["известное число снимков публичной фотогалереи"]
+        when: "изображение загружается через эндпоинт медиа новостей"
+        then: ["число снимков публичной фотогалереи не изменилось"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T003"
+    title: "Приём обложки при создании новости"
+    description: "Добавить необязательное поле CoverImage в CreateNewsCommand, валидатор и обработчик создания новости."
+    context: "Сейчас обложку можно задать только вторым шагом, редактируя уже созданную новость — при создании она молча теряется."
+    story_ref: "US1"
+    requirement_refs: ["FR-002"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["news_draft"]
+    contract_refs: ["create_news"]
+    steps:
+      - order: 1
+        action: "Расширить команду создания"
+        detail: "Добавить string? CoverImage в CreateNewsCommand (там же, где Slug/TitleRu/Tags)."
+      - order: 2
+        action: "Прокинуть обложку в домен"
+        detail: "В обработчике создания после News.Create(...) вызвать news.SetCoverImage(command.CoverImage), если значение непустое; доменный метод уже существует."
+      - order: 3
+        action: "Добавить правило валидации"
+        detail: "src/backend/src/Arsenal.Application/Validators/NewsValidator.cs: для CreateNewsCommand.CoverImage — MaximumLength(500) при непустом значении, по образцу UpdateNewsCommand.CoverImage."
+      - order: 4
+        action: "Передать поле из контроллера"
+        detail: "src/backend/src/Arsenal.API/Controllers/NewsController.cs, действие Create: прокинуть req.CoverImage в команду."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Domain/Entities/News.cs"
+        note: "SetCoverImage(string? url) уже есть; News.Create обложку не принимает — менять сигнатуру не требуется."
+      - path: "src/backend/src/Arsenal.Application/Validators/NewsValidator.cs"
+        note: "UpdateNewsCommand уже содержит CoverImage — держать правила симметричными."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Новость, созданная с обложкой, возвращает её при последующем чтении"
+        done: false
+      - id: "AC-2"
+        description: "Создание без обложки по-прежнему проходит успешно"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["корректные поля новости", "ссылка на обложку"]
+        when: "выполняется создание новости"
+        then: ["сохранённая новость содержит переданную обложку"]
+        verification: ["automated"]
+        level: "integration"
+      - id: "TS-2"
+        given: ["корректные поля новости без обложки"]
+        when: "выполняется создание новости"
+        then: ["новость создана", "обложка пуста"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T004"
+    title: "Ноды редактора: изображение, галерея, видео"
+    description: "Реализовать три кастомные tiptap-ноды с симметричными parseHTML/renderHTML, воспроизводящими разметку эталонных новостей."
+    context: "Редактор сейчас понимает только текст, поэтому галереи и видео исчезают при сохранении — это ядро всей задачи."
+    story_ref: "US2"
+    requirement_refs: ["FR-008", "FR-009", "FR-020"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["content_node"]
+    contract_refs: ["content_serialization"]
+    steps:
+      - order: 1
+        action: "Создать модуль нод"
+        detail: "src/frontend/src/components/admin/editor/newsNodes.ts — экспортировать NewsImage, NewsGallery, NewsVideo через Node.create из @tiptap/core."
+      - order: 2
+        action: "Описать NewsImage"
+        detail: "Инлайн-блок figure с <img src alt loading=\"lazy\" style=\"width:100%;height:auto;border-radius:12px\">; атрибуты src и alt; parseHTML по селектору img."
+      - order: 3
+        action: "Описать NewsGallery"
+        detail: "Контейнер content: 'newsImage+', renderHTML — div со style \"display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:24px\"; parseHTML распознаёт div с grid-template-columns, содержащий изображения."
+      - order: 4
+        action: "Описать NewsVideo"
+        detail: "Atom-нода: div style \"display:grid;gap:16px;margin-top:24px\" > video controls preload=\"metadata\" playsinline style=\"width:100%;border-radius:12px;background:#000\" > source src type=\"video/mp4\" + текст «Ваш браузер не поддерживает воспроизведение видео.»; атрибут src."
+      - order: 5
+        action: "Покрыть round-trip тестами"
+        detail: "src/frontend/src/__tests__: сгенерировать HTML из документа и распарсить обратно; отдельный кейс — HTML из существующей программно созданной новости (галерея из 3 фото + видео) даёт то же число нод."
+    technical_notes:
+      - path: "src/frontend/src/app/novosti/[slug]/page.tsx"
+        note: "Контент рендерится через dangerouslySetInnerHTML в prose-club без стилей галереи — разметка обязана быть самодостаточной (inline-стили)."
+      - path: "src/frontend/package.json"
+        note: "@tiptap/react, @tiptap/starter-kit, @tiptap/extension-image 2.7 уже установлены."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Галерея сериализуется в грид-разметку эталона с сохранением alt каждого изображения"
+        done: false
+      - id: "AC-2"
+        description: "Видеоблок сериализуется с controls, preload=metadata и источником video/mp4"
+        done: false
+      - id: "AC-3"
+        description: "Разбор ранее сохранённого HTML восстанавливает то же число элементов содержимого"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["документ с галереей из трёх изображений и описаниями"]
+        when: "выполняется сериализация содержимого"
+        then: ["HTML содержит грид-контейнер и три изображения с атрибутом alt"]
+        verification: ["automated"]
+        level: "unit"
+      - id: "TS-2"
+        given: ["HTML существующей новости с галереей и видео"]
+        when: "содержимое загружается в редактор и сериализуется обратно"
+        then: ["число элементов совпадает", "видеоисточник сохранён"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T005"
+    title: "Клиент загрузки медиа новостей"
+    description: "Добавить в API-клиент функцию загрузки файла новости и типизированный результат с причиной отказа."
+    context: "Редактору нужен единый способ отправить файл и понятно показать, почему конкретный файл не загрузился."
+    story_ref: "US2"
+    requirement_refs: ["FR-018"]
+    depends_on: ["T001"]
+    parallelizable: false
+    entity_refs: ["news_media_asset", "upload_outcome"]
+    contract_refs: ["news_media_upload"]
+    steps:
+      - order: 1
+        action: "Добавить функцию uploadAdminNewsMedia"
+        detail: "src/frontend/src/lib/api.ts, рядом с uploadAdminPhoto: FormData с полем file, adminFetch(`${API_URL}/api/admin/news/media`)."
+      - order: 2
+        action: "Вернуть результат с причиной"
+        detail: "Возвращать { status, url?, mediaType?, message? } со status из набора uploaded / rejected_too_large / rejected_unsupported_type / failed_network; сетевую ошибку не выбрасывать наружу."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "adminFetch уже добавляет заголовок авторизации и обрабатывает истёкшую сессию — переиспользовать его."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Успешная загрузка возвращает ссылку и категорию файла"
+        done: false
+      - id: "AC-2"
+        description: "Отказ сервера и сетевой сбой превращаются в результат с причиной, а не в необработанное исключение"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["сервер отвечает отказом по размеру файла"]
+        when: "вызывается загрузка медиа новости"
+        then: ["результат содержит статус отказа по размеру и сообщение"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T006"
+    title: "Панель вставки галереи и видео в редакторе"
+    description: "Добавить в панель инструментов редактора кнопки вставки галереи (мульти-выбор файлов) и видео с загрузкой файлов и вставкой соответствующих нод."
+    context: "Админ должен собрать галерею из нескольких фото одной операцией, а не вставлять картинки по одной."
+    story_ref: "US2"
+    requirement_refs: ["FR-005", "FR-007", "FR-018"]
+    depends_on: ["T004", "T005"]
+    parallelizable: false
+    entity_refs: ["content_node", "upload_outcome"]
+    contract_refs: ["news_media_upload"]
+    steps:
+      - order: 1
+        action: "Подключить ноды к редактору"
+        detail: "src/frontend/src/app/admin/news/page.tsx: добавить NewsImage, NewsGallery, NewsVideo в extensions рядом со StarterKit."
+      - order: 2
+        action: "Добавить кнопку «Галерея»"
+        detail: "Скрытый <input type=\"file\" accept=\"image/*\" multiple> по образцу src/frontend/src/app/admin/photos/page.tsx; загрузить все выбранные файлы, вставить одну ноду галереи с успешно загруженными изображениями."
+      - order: 3
+        action: "Добавить кнопку «Видео»"
+        detail: "Скрытый <input type=\"file\" accept=\"video/mp4\">; после загрузки вставить ноду видео с полученной ссылкой."
+      - order: 4
+        action: "Показать результаты загрузки"
+        detail: "Вывести список отклонённых файлов с причиной; успешные файлы вставляются независимо от отказов по остальным. Сбрасывать value у input после выбора."
+      - order: 5
+        action: "Показать индикатор загрузки"
+        detail: "На время загрузки блокировать повторное нажатие кнопок, редактор оставить доступным для набора текста."
+    technical_notes:
+      - path: "src/frontend/src/app/admin/photos/page.tsx"
+        note: "Готовый образец мульти-загрузки: скрытый input, цикл по файлам, сброс fileInputRef.current.value."
+      - path: "src/frontend/src/app/admin/news/page.tsx"
+        note: "Текущая панель: B / I / H2 / список — новые кнопки добавлять в тот же ряд, классы btn-outline."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Выбор трёх изображений одной операцией вставляет одну галерею с тремя фотографиями"
+        done: false
+      - id: "AC-2"
+        description: "Выбор файла MP4 вставляет в текст работающий плеер"
+        done: false
+      - id: "AC-3"
+        description: "Отклонённый файл показывает причину и не мешает загрузке остальных"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["открыт редактор новости", "подготовлены три изображения"]
+        when: "администратор выбирает их одной операцией"
+        then: ["в тексте появляется галерея из трёх фотографий"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T007"
+    title: "Описания изображений (alt) внутри текста"
+    description: "Дать возможность задать русскоязычное описание каждому изображению прямо в редакторе, с предзаполнением из имени файла и пометкой изображений без описания."
+    context: "Описания нужны для поиска и доступности, но запрашивать их модальным окном на каждый файл при загрузке галереи неудобно."
+    story_ref: "US2"
+    requirement_refs: ["FR-006"]
+    depends_on: ["T004", "T006"]
+    parallelizable: false
+    entity_refs: ["content_node"]
+    contract_refs: ["content_serialization"]
+    steps:
+      - order: 1
+        action: "Добавить редактируемую подпись"
+        detail: "NodeView для NewsImage: поле подписи под изображением, значение пишется в атрибут alt ноды."
+      - order: 2
+        action: "Предзаполнить описание"
+        detail: "При вставке подставлять имя файла без расширения как заготовку alt."
+      - order: 3
+        action: "Пометить изображения без описания"
+        detail: "Визуальная пометка «без описания» у изображений с пустым alt; сохранение при этом не блокируется."
+    technical_notes:
+      - path: "src/frontend/src/components/admin/editor/newsNodes.ts"
+        note: "Атрибут alt уже объявлен в NewsImage — NodeView только редактирует его."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Введённое описание сохраняется в разметке изображения"
+        done: false
+      - id: "AC-2"
+        description: "Изображение без описания видимо помечено, но сохранению не мешает"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["в тексте есть изображение"]
+        when: "администратор вводит описание и сохраняет новость"
+        then: ["описание присутствует в сохранённой разметке"]
+        verification: ["automated"]
+        level: "unit"
+
+  - id: "T008"
+    title: "Обложка новости в форме редактора"
+    description: "Добавить загрузку обложки с превью, заменой и удалением, и передавать её при создании и обновлении новости."
+    context: "Обложка — первое, что видит читатель в списке и в соцсетях; сейчас задать её из админки нельзя."
+    story_ref: "US1"
+    requirement_refs: ["FR-001", "FR-003", "FR-004"]
+    depends_on: ["T003", "T005"]
+    parallelizable: false
+    entity_refs: ["news_draft", "news_media_asset"]
+    contract_refs: ["create_news", "update_news", "news_media_upload"]
+    steps:
+      - order: 1
+        action: "Добавить блок обложки в форму"
+        detail: "src/frontend/src/app/admin/news/page.tsx: состояние coverImage, кнопка загрузки через uploadAdminNewsMedia, превью изображения, кнопки «Заменить» и «Удалить»."
+      - order: 2
+        action: "Передавать обложку при сохранении"
+        detail: "Включить coverImage в тело createAdminNews и updateAdminNews; при удалении отправлять пустое значение."
+      - order: 3
+        action: "Заполнять обложку при открытии"
+        detail: "В openEdit подставлять coverImage из загруженной новости, чтобы сохранение без изменений её не затирало."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "createAdminNews/updateAdminNews — тела запросов расширяются полем coverImage."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Загруженная обложка показывается превью до сохранения"
+        done: false
+      - id: "AC-2"
+        description: "Созданная с обложкой новость показывает её на публичной странице"
+        done: false
+      - id: "AC-3"
+        description: "Сохранение без изменения обложки сохраняет прежнюю"
+        done: false
+      - id: "AC-4"
+        description: "Удаление обложки убирает её у новости"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["открыта новость с обложкой"]
+        when: "администратор меняет только заголовок и сохраняет"
+        then: ["обложка остаётся прежней"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T009"
+    title: "Публикационные поля: адрес, теги, SEO, статус"
+    description: "Добавить в форму адрес новости с автогенерацией и проверкой формата, редактор тегов, SEO-заголовок и SEO-описание со счётчиками и переключатель публикации."
+    context: "Без этих полей админ не управляет адресом страницы, её видимостью и тем, как новость выглядит в поиске и мессенджерах."
+    story_ref: "US3"
+    requirement_refs: ["FR-010", "FR-011", "FR-012", "FR-013", "FR-014"]
+    depends_on: []
+    parallelizable: true
+    entity_refs: ["news_draft"]
+    contract_refs: ["create_news", "update_news"]
+    steps:
+      - order: 1
+        action: "Вынести формирование адреса"
+        detail: "Перенести текущие TRANSLIT и slugify из src/frontend/src/app/admin/news/page.tsx в src/frontend/src/lib/ и покрыть unit-тестами (кириллица, пробелы, знаки препинания, повторные дефисы)."
+      - order: 2
+        action: "Добавить поле адреса"
+        detail: "Поле с автоподстановкой из заголовка и ручной правкой; перед отправкой проверять ^[a-z0-9-]+$ и показывать сообщение при нарушении."
+      - order: 3
+        action: "Добавить редактор тегов"
+        detail: "Ввод тега с добавлением по Enter, чипы с кнопкой удаления; состояние — массив строк."
+      - order: 4
+        action: "Добавить SEO-поля"
+        detail: "metaTitle (лимит 160) и metaDescription (лимит 300) со счётчиком символов и видимым превышением лимита."
+      - order: 5
+        action: "Добавить переключатель публикации"
+        detail: "isPublished в форме; значение отправляется при создании и обновлении."
+      - order: 6
+        action: "Показать конфликт адреса"
+        detail: "Отказ сервера по занятому адресу показывать отдельным понятным сообщением."
+    technical_notes:
+      - path: "src/backend/src/Arsenal.Application/Validators/NewsValidator.cs"
+        note: "Серверные ограничения: Slug ^[a-z0-9\\-]+$ до 200, MetaTitle ≤160, MetaDescription ≤300 — клиентские проверки держать в этих же рамках."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Адрес предлагается автоматически по заголовку и правится вручную"
+        done: false
+      - id: "AC-2"
+        description: "Адрес с недопустимыми символами не отправляется, показано сообщение"
+        done: false
+      - id: "AC-3"
+        description: "Теги добавляются и удаляются, сохраняются вместе с новостью"
+        done: false
+      - id: "AC-4"
+        description: "Превышение лимитов SEO-полей видно до сохранения"
+        done: false
+      - id: "AC-5"
+        description: "Неопубликованная новость отсутствует в публичном списке"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["заголовок на русском со знаками препинания"]
+        when: "формируется адрес новости"
+        then: ["адрес состоит только из строчных латинских букв, цифр и дефисов"]
+        verification: ["automated"]
+        level: "unit"
+      - id: "TS-2"
+        given: ["новость с выключенной публикацией"]
+        when: "запрашивается публичный список новостей"
+        then: ["новость в списке отсутствует"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T010"
+    title: "Полная загрузка и полная отправка новости при редактировании"
+    description: "При открытии новости заполнять все поля формы, а при сохранении отправлять состояние формы целиком, чтобы ничего не затиралось."
+    context: "Поля, которых нет в форме, уходят на сервер пустыми и стирают обложку, теги или статус публикации — это самая заметная потеря данных."
+    story_ref: "US3"
+    requirement_refs: ["FR-004", "FR-015", "FR-020"]
+    depends_on: ["T008", "T009"]
+    parallelizable: false
+    entity_refs: ["news_draft"]
+    contract_refs: ["update_news", "content_serialization"]
+    steps:
+      - order: 1
+        action: "Загружать новость целиком"
+        detail: "В openEdit использовать getAdminNewsById и заполнить заголовок, описание, содержимое, обложку, теги, адрес, SEO-поля и статус публикации."
+      - order: 2
+        action: "Отправлять полное состояние"
+        detail: "updateAdminNews получает все поля формы; частичных отправок не делать."
+      - order: 3
+        action: "Проверить открытие программно созданной новости"
+        detail: "Открыть существующую новость с галереей и видео, сохранить без изменений, сверить содержимое до и после."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "getAdminNewsById возвращает полную новость — источник значений для формы."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Открытая на редактирование новость показывает все свои поля заполненными"
+        done: false
+      - id: "AC-2"
+        description: "Сохранение без изменений не меняет ни одного поля новости"
+        done: false
+      - id: "AC-3"
+        description: "Галерея и видео программно созданной новости переживают цикл открытия и сохранения"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["новость с обложкой, тегами и статусом «опубликовано»"]
+        when: "новость открывается и сохраняется без изменений"
+        then: ["обложка, теги и статус публикации сохранены прежними"]
+        verification: ["automated"]
+        level: "integration"
+
+  - id: "T011"
+    title: "Устойчивость редактора к сбоям загрузки и истёкшей сессии"
+    description: "Показывать понятные сообщения при сетевой ошибке, отказе по размеру или типу файла и при истёкшей сессии, сохраняя набранный текст новости."
+    context: "Потерять набранную новость из-за неудачной загрузки одного файла — худший исход для админа."
+    story_ref: "US2"
+    requirement_refs: ["FR-018"]
+    depends_on: ["T006"]
+    parallelizable: false
+    entity_refs: ["upload_outcome"]
+    contract_refs: ["news_media_upload"]
+    steps:
+      - order: 1
+        action: "Обработать сбой загрузки"
+        detail: "При неуспешном результате uploadAdminNewsMedia показать сообщение рядом с панелью, содержимое редактора не очищать, повтор загрузки разрешить."
+      - order: 2
+        action: "Обработать истёкшую сессию"
+        detail: "При ответе о необходимости входа показать приглашение войти заново; набранный текст остаётся в редакторе."
+      - order: 3
+        action: "Блокировать пустое сохранение"
+        detail: "Пустой заголовок или пустое содержимое — сообщение вместо отправки запроса."
+    technical_notes:
+      - path: "src/frontend/src/lib/api.ts"
+        note: "adminFetch уже различает ответ об отсутствующей авторизации — использовать его сигнал."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Сетевой сбой загрузки показывает сообщение и не очищает редактор"
+        done: false
+      - id: "AC-2"
+        description: "Истёкшая сессия приводит к приглашению войти, а не к молчаливой потере данных"
+        done: false
+      - id: "AC-3"
+        description: "Пустой заголовок или пустой текст не отправляются на сервер"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["набранный текст новости", "загрузка файла завершается сетевой ошибкой"]
+        when: "администратор видит сообщение и повторяет загрузку"
+        then: ["текст новости не потерян", "повторная загрузка проходит"]
+        verification: ["manual"]
+        level: "e2e"
+
+  - id: "T012"
+    title: "Сквозная проверка паритета с программно созданными новостями"
+    description: "Пройти сценарии quickstart.md и убедиться, что новость, созданная в админке, по составу элементов не уступает опубликованным программно."
+    context: "Это итоговая проверка исходной цели: админ должен сам публиковать новости прежнего качества."
+    story_ref: "US2"
+    requirement_refs: ["FR-009", "FR-016", "FR-020"]
+    depends_on: ["T002", "T007", "T010", "T011"]
+    parallelizable: false
+    entity_refs: ["news_draft", "content_node"]
+    contract_refs: ["content_serialization"]
+    steps:
+      - order: 1
+        action: "Прогнать автоматические проверки"
+        detail: "npm run test в src/frontend и dotnet test src/backend — обе связки зелёные."
+      - order: 2
+        action: "Пройти сценарии quickstart"
+        detail: "Сценарии 1-5 из specs/004-admin-news-rich-editor/quickstart.md, включая проверку неизменности числа снимков публичной фотогалереи."
+      - order: 3
+        action: "Сверить публичный рендер"
+        detail: "Сравнить страницу новой новости со страницей ранее опубликованной программно: обложка, абзацы, сетка галереи, плеер, теги."
+      - order: 4
+        action: "Проверить сборку"
+        detail: "npm run build и npm run lint во frontend, dotnet build в backend без ошибок."
+    technical_notes:
+      - path: "specs/004-admin-news-rich-editor/quickstart.md"
+        note: "Сценарии проверки и ожидаемые результаты со ссылками на критерии спецификации."
+    acceptance_criteria:
+      - id: "AC-1"
+        description: "Автоматические тесты обеих сторон зелёные, сборка и линт без ошибок"
+        done: false
+      - id: "AC-2"
+        description: "Все сценарии quickstart пройдены с ожидаемым результатом"
+        done: false
+      - id: "AC-3"
+        description: "Страница новости из админки по составу элементов не отличается от программно опубликованной"
+        done: false
+    test_scenarios:
+      - id: "TS-1"
+        given: ["новость создана в админке с обложкой, галереей из трёх фото и видео"]
+        when: "открывается её публичная страница"
+        then: ["обложка, галерея, плеер и теги отображаются", "число снимков публичной фотогалереи не изменилось"]
+        verification: ["manual"]
+        level: "e2e"
