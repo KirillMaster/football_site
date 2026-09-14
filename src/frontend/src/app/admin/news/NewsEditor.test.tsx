@@ -599,10 +599,21 @@ describe('T010', () => {
     expect(onSave).toHaveBeenCalledTimes(1);
     const saved = onSave.mock.calls[0][0] as { contentRu: string };
     expect(saved.contentRu).toContain('grid-template-columns');
+    expect(saved.contentRu).toContain('repeat(auto-fit,minmax(260px,1fr))');
+    expect(saved.contentRu).toContain('gap: 12px');
+    expect(saved.contentRu).toContain('margin-top: 24px');
     expect(saved.contentRu).toContain('https://cdn.example.com/a.jpg');
+    expect(saved.contentRu).toContain('alt="Фото 1"');
     expect(saved.contentRu).toContain('https://cdn.example.com/b.jpg');
+    expect(saved.contentRu).toContain('alt="Фото 2"');
+    expect(saved.contentRu).toContain('Текст между блоками');
     expect(saved.contentRu).toContain('<video');
+    expect(saved.contentRu).toContain('controls');
+    expect(saved.contentRu).toContain('preload="metadata"');
+    expect(saved.contentRu).toContain('playsinline');
     expect(saved.contentRu).toContain('https://cdn.example.com/clip.mp4');
+    expect(saved.contentRu).toContain('type="video/mp4"');
+    expect(saved.contentRu).toContain('</video>');
   });
 });
 
@@ -664,17 +675,45 @@ describe('@quickstart-scenario-2 @SC-003 @FR-020', () => {
       metaTitle: string;
       metaDescription: string;
       contentRu: string;
+      titleRu: string;
+      slug: string;
+      excerptRu: string;
     };
+
+    // Проверка всех простых полей
+    expect(saved.titleRu).toBe('Новость с полным составом');
+    expect(saved.slug).toBe('full-parity-news');
+    expect(saved.excerptRu).toBe('Экспресс-описание');
     expect(saved.coverImage).toBe('https://cdn.example.com/cover.jpg');
     expect(saved.tags).toEqual(['новости', 'школа']);
     expect(saved.isPublished).toBe(true);
     expect(saved.metaTitle).toBe('SEO заголовок');
     expect(saved.metaDescription).toBe('SEO описание');
+
+    // Проверка структуры контента
+    expect(saved.contentRu).toContain('<h2>Заголовок раздела</h2>');
+    expect(saved.contentRu).toContain('<strong>Абзац с выделением.</strong>');
     expect(saved.contentRu).toContain('grid-template-columns');
+    expect(saved.contentRu).toContain('repeat(auto-fit,minmax(260px,1fr))');
+    expect(saved.contentRu).toContain('gap: 12px');
+    expect(saved.contentRu).toContain('margin-top: 24px');
+
+    // Проверка всех фото с атрибутами
     expect(saved.contentRu).toContain('https://cdn.example.com/photo1.jpg');
+    expect(saved.contentRu).toContain('alt="Фото 1"');
     expect(saved.contentRu).toContain('https://cdn.example.com/photo2.jpg');
+    expect(saved.contentRu).toContain('alt="Фото 2"');
+
+    // Проверка видео со всеми атрибутами
     expect(saved.contentRu).toContain('<video');
+    expect(saved.contentRu).toContain('controls');
+    expect(saved.contentRu).toContain('preload="metadata"');
+    expect(saved.contentRu).toContain('playsinline');
+    expect(saved.contentRu).toContain('border-radius: 12px');
+    expect(saved.contentRu).toContain('background:');
     expect(saved.contentRu).toContain('https://cdn.example.com/clip.mp4');
+    expect(saved.contentRu).toContain('type="video/mp4"');
+    expect(saved.contentRu).toContain('</video>');
   });
 });
 
@@ -725,10 +764,16 @@ describe('@quickstart-scenario-5 @SC-005 @EC-1', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
 
+    expect(onSave).toHaveBeenCalledTimes(1);
     const saved = onSave.mock.calls[0][0] as { contentRu: string };
+    // Успешные файлы должны быть вставлены
     expect(saved.contentRu).toContain('https://cdn.example.com/g1.jpg');
     expect(saved.contentRu).toContain('https://cdn.example.com/g2.jpg');
     expect(saved.contentRu).toContain('https://cdn.example.com/g3.jpg');
+    // Структура галереи сохранена
+    expect(saved.contentRu).toContain('grid-template-columns');
+    expect(saved.contentRu).toContain('repeat(auto-fit,minmax(260px,1fr))');
+    expect(saved.contentRu).toContain('gap: 12px');
   });
 });
 
@@ -764,8 +809,14 @@ describe('@quickstart-scenario-5 @SC-005 @EC-2', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
 
+    expect(onSave).toHaveBeenCalledTimes(1);
     const saved = onSave.mock.calls[0][0] as { contentRu: string };
+    // Успешная фотография сохранена
     expect(saved.contentRu).toContain('https://cdn.example.com/photo.jpg');
+    // Структура галереи не потеряна
+    expect(saved.contentRu).toContain('grid-template-columns');
+    // Отклонённый файл не попал в контент
+    expect(saved.contentRu).not.toContain('document.pdf');
   });
 });
 
@@ -803,8 +854,14 @@ describe('@quickstart-scenario-5 @SC-005 @EC-3', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
 
+    expect(onSave).toHaveBeenCalledTimes(1);
     const saved = onSave.mock.calls[0][0] as { contentRu: string };
+    // Важный текст сохранён несмотря на ошибку видео
     expect(saved.contentRu).toContain('Важный текст, который нельзя потерять.');
+    // Видео не вставлено из-за ошибки
     expect(saved.contentRu).not.toContain('<video');
+    expect(saved.contentRu).not.toContain('clip.mp4');
+    // Абзац с текстом сохранён
+    expect(saved.contentRu).toContain('<p>');
   });
 });

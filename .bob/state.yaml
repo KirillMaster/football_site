@@ -1,8 +1,8 @@
 run_id: "004-admin-news-rich-editor-20260914"
 feature: "004-admin-news-rich-editor"
 mode: day
-current_slice: "slice-publishing"
-current_role: "merge"
+current_slice: "slice-parity"
+current_role: "hardener"
 input_checksums:
   ".bob/features/004-admin-news-rich-editor/gherkin.md": "095443006f85847948804172dcff2b3f97fb594e6953e33dc41d55548665a8a3"
   ".bob/features/004-admin-news-rich-editor/qa-procedures.md": "2bcca88677ba6c01325a6b3eb53991050abb0fa52e54390918ae76dd0057fe13"
@@ -42,4 +42,12 @@ slices:
     status: merged
     return_count: 0
     worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-publishing"
+    skipped_roles: []
+  - id: slice-parity
+    title: "Сквозная проверка паритета с программно созданными новостями"
+    depends_on: [slice-media-endpoint, slice-editor-nodes, slice-publishing]
+    scenario_refs: ["quickstart:scenario-1", "quickstart:scenario-2", "quickstart:scenario-3", "quickstart:scenario-4", "quickstart:scenario-5", "SC-001", "SC-003", "SC-004", "SC-005"]
+    status: running
+    return_count: 0
+    worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-parity"
     skipped_roles: []

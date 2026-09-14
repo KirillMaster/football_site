@@ -56,12 +56,33 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
     // из ReferenceContent должны дойти до сохранённого contentRu без потерь.
     private static void AssertReferenceMediaPreserved(string contentRu)
     {
+        contentRu.Should().NotBeNullOrEmpty();
         contentRu.Should().Contain("grid-template-columns");
+        contentRu.Should().Contain("repeat(auto-fit,minmax(260px,1fr))");
+        contentRu.Should().Contain("gap:12px");
+        contentRu.Should().Contain("margin-top:24px");
+
+        // Все три фото с правильными атрибутами
         contentRu.Should().Contain("https://cdn.example.com/photo1.jpg");
         contentRu.Should().Contain("https://cdn.example.com/photo2.jpg");
         contentRu.Should().Contain("https://cdn.example.com/photo3.jpg");
+        contentRu.Should().Contain("alt=\"Фото 1\"");
+        contentRu.Should().Contain("alt=\"Фото 2\"");
+        contentRu.Should().Contain("alt=\"Фото 3\"");
+        contentRu.Should().Contain("loading=\"lazy\"");
+        contentRu.Should().Contain("width:100%");
+        contentRu.Should().Contain("height:auto");
+        contentRu.Should().Contain("border-radius:12px");
+
+        // Видео с атрибутами
         contentRu.Should().Contain("<video");
+        contentRu.Should().Contain("controls");
+        contentRu.Should().Contain("preload=\"metadata\"");
+        contentRu.Should().Contain("playsinline");
+        contentRu.Should().Contain("background:#000");
         contentRu.Should().Contain("https://cdn.example.com/clip.mp4");
+        contentRu.Should().Contain("type=\"video/mp4\"");
+        contentRu.Should().Contain("</video>");
     }
 
     [Fact]
@@ -87,11 +108,22 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         var ok = getResult.Should().BeOfType<OkObjectResult>().Subject;
         var dto = ok.Value.Should().BeOfType<NewsDto>().Subject;
 
+        // Основные поля
+        dto.Should().NotBeNull();
+        dto.Slug.Should().Be(slug);
+        dto.TitleRu.Should().Be("Новость с полным составом");
+        dto.ExcerptRu.Should().Be("Экспресс-описание");
+        dto.MetaTitle.Should().Be("SEO заголовок");
+        dto.MetaDescription.Should().Be("SEO описание");
         dto.CoverImage.Should().Be("https://cdn.example.com/cover.jpg");
         dto.Tags.Should().BeEquivalentTo(["новости", "школа"]);
         dto.IsPublished.Should().BeTrue();
-        AssertReferenceMediaPreserved(dto.ContentRu);
+
+        // Контент с медиа
+        dto.ContentRu.Should().NotBeNullOrEmpty();
+        dto.ContentRu.Should().Contain("<h2>Заголовок раздела</h2>");
         dto.ContentRu.Should().Contain("<strong>Первый абзац с выделением.</strong>");
+        AssertReferenceMediaPreserved(dto.ContentRu);
     }
 
     [Fact]
@@ -114,6 +146,13 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         await admin.Create(createCmd, CancellationToken.None);
         var news = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
 
+        // Новость должна быть создана с полным контентом
+        news.Should().NotBeNull();
+        news.TitleRu.Should().Be("Программная новость");
+        news.IsPublished.Should().BeTrue();
+        news.CoverImage.Should().Be("https://cdn.example.com/orig-cover.jpg");
+        news.Tags.Should().ContainSingle().Which.Should().Be("события");
+
         // Повторное открытие в редакторе и сохранение без потери загруженных
         // ранее медиа: меняется только текст абзаца, остальное редактор
         // передаёт обратно как есть (как делает NewsEditor.handleSave).
@@ -128,10 +167,24 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         updateResult.Should().BeOfType<NoContentResult>();
 
         var updated = await db.News.AsNoTracking().FirstAsync(n => n.Id == news.Id);
+
+        // Все поля должны сохраниться без потерь
+        updated.Should().NotBeNull();
+        updated.Id.Should().Be(news.Id);
+        updated.Slug.Should().Be(slug);
+        updated.TitleRu.Should().Be("Программная новость");
+        updated.ExcerptRu.Should().Be("Описание");
+        updated.MetaTitle.Should().Be("Мета");
+        updated.MetaDescription.Should().Be("Описание для поиска");
         updated.CoverImage.Should().Be("https://cdn.example.com/orig-cover.jpg");
         updated.Tags.Should().BeEquivalentTo(["события"]);
         updated.IsPublished.Should().BeTrue();
-        AssertReferenceMediaPreserved(updated.ContentRu);
+
+        // Контент должен содержать оба абзаца: исходный заголовок и отредактированный текст,
+        // и все медиа без потерь
+        updated.ContentRu.Should().NotBeNullOrEmpty();
         updated.ContentRu.Should().Contain("Отредактированный абзац.");
+        updated.ContentRu.Should().Contain("<h2>Заголовок раздела</h2>");
+        AssertReferenceMediaPreserved(updated.ContentRu);
     }
 }
