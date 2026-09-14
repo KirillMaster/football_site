@@ -65,6 +65,7 @@ public class AdminNewsController : ControllerBase
         var news = News.Create(req.Slug, req.TitleRu, req.TitleEn,
             req.ExcerptRu, req.ExcerptEn, req.ContentRu, req.ContentEn,
             req.MetaTitle, req.MetaDescription, req.Tags, req.IsPublished, req.PublishedAt);
+        if (!string.IsNullOrEmpty(req.CoverImage)) news.SetCoverImage(req.CoverImage);
         _db.News.Add(news);
         await _db.SaveChangesAsync(ct);
         return CreatedAtAction(null, new { id = news.Id, slug = news.Slug });

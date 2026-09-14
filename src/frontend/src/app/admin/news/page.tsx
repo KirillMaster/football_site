@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/components/AdminLayout';
 import { formatDate } from '@/lib/utils';
 import {
@@ -11,12 +11,8 @@ import {
   createAdminNews,
   updateAdminNews,
   deleteAdminNews,
-  uploadAdminNewsMedia,
-  type NewsMediaUploadResult,
 } from '@/lib/api';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { NewsGallery, NewsImage, NewsVideo } from '@/components/admin/editor/newsNodes';
+import { NewsEditor, type AdminNewsDto } from './NewsEditor';
 
 type Mode = 'list' | 'edit' | 'new';
 
@@ -38,241 +34,6 @@ function slugify(title: string): string {
     .slice(0, 180);
   const suffix = Date.now().toString(36);
   return base ? `${base}-${suffix}` : `news-${suffix}`;
-}
-
-interface AdminNewsDto {
-  id: string;
-  slug: string;
-  titleRu: string;
-  titleEn?: string;
-  excerptRu: string;
-  excerptEn?: string;
-  contentRu?: string;
-  contentEn?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  coverImage?: string | null;
-  tags: string[];
-  isPublished?: boolean;
-  publishedAt?: string | null;
-}
-
-// Имя файла без расширения — стартовое значение alt-подписи (T007, @AS-5).
-function filenameToAlt(name: string): string {
-  return name.replace(/\.[^./\\]+$/, '');
-}
-
-// Русский текст ошибки для нежелательного исхода загрузки (EC-1/EC-2/EC-3).
-// Общий для галереи и видео — оба сценария отличаются только тем, что делают
-// с успешным результатом.
-function describeUploadFailure(result: NewsMediaUploadResult, fileName: string): string {
-  if (result.status === 'unauthorized') return 'Сессия истекла — войдите заново';
-  if (result.status === 'network_error') return `${fileName}: нет соединения с сервером`;
-  if (result.status === 'rejected') return `${fileName}: ${result.message}`;
-  return '';
-}
-
-function NewsEditor({
-  article,
-  onSave,
-  onCancel,
-  saving,
-}: {
-  article?: Partial<AdminNewsDto>;
-  onSave: (data: { titleRu: string; excerptRu: string; contentRu: string }) => void;
-  onCancel: () => void;
-  saving: boolean;
-}) {
-  const [title, setTitle] = useState(article?.titleRu ?? '');
-  const [excerpt, setExcerpt] = useState(article?.excerptRu ?? '');
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [uploadingGallery, setUploadingGallery] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
-
-  const editor = useEditor({
-    extensions: [StarterKit, NewsImage, NewsGallery, NewsVideo],
-    content: article?.contentRu ?? '<p>Начните писать...</p>',
-  });
-
-  const handleSave = () => {
-    onSave({
-      titleRu: title,
-      excerptRu: excerpt,
-      contentRu: editor?.getHTML() ?? '',
-    });
-  };
-
-  // T006/T011: множественная загрузка изображений одной галереей за один выбор
-  // файлов (@AS-4). Ошибки отдельных файлов (EC-1/EC-2/EC-3) не блокируют
-  // ни успешные файлы, ни уже введённый текст — редактор остаётся рабочим.
-  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0 || !editor) return;
-
-    setUploadingGallery(true);
-    setUploadError(null);
-    const uploaded: { src: string; alt: string }[] = [];
-    const failures: string[] = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const result = await uploadAdminNewsMedia(files[i]);
-      if (result.status === 'uploaded') {
-        uploaded.push({ src: result.url, alt: filenameToAlt(files[i].name) });
-      } else {
-        failures.push(describeUploadFailure(result, files[i].name));
-      }
-    }
-
-    if (galleryInputRef.current) galleryInputRef.current.value = '';
-    setUploadingGallery(false);
-
-    if (uploaded.length > 0) {
-      editor
-        .chain()
-        .focus()
-        .insertContent({
-          type: 'newsGallery',
-          content: uploaded.map((img) => ({
-            type: 'newsImage',
-            attrs: { src: img.src, alt: img.alt },
-          })),
-        })
-        .run();
-    }
-
-    if (failures.length > 0) {
-      setUploadError(`Не удалось загрузить: ${failures.join('; ')}`);
-    }
-  };
-
-  // T006/T011: видео — один файл video/mp4 за раз (@AS-6).
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0 || !editor) return;
-    const videoFile = files[0];
-
-    setUploadingVideo(true);
-    setUploadError(null);
-
-    const result = await uploadAdminNewsMedia(videoFile);
-
-    if (videoInputRef.current) videoInputRef.current.value = '';
-    setUploadingVideo(false);
-
-    if (result.status === 'uploaded') {
-      editor.chain().focus().insertContent({ type: 'newsVideo', attrs: { src: result.url } }).run();
-    } else {
-      setUploadError(describeUploadFailure(result, videoFile.name));
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Краткое описание</label>
-        <textarea
-          rows={2}
-          value={excerpt}
-          onChange={(e) => setExcerpt(e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-red resize-none"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Содержание</label>
-        {uploadError && (
-          <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
-            {uploadError}
-          </div>
-        )}
-        <div className="border border-gray-300 rounded-lg overflow-hidden">
-          <div className="bg-gray-50 px-3 py-2 border-b border-gray-300 flex gap-2 flex-wrap">
-            <button
-              onClick={() => editor?.chain().focus().toggleBold().run()}
-              className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100 font-bold"
-            >
-              B
-            </button>
-            <button
-              onClick={() => editor?.chain().focus().toggleItalic().run()}
-              className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100 italic"
-            >
-              I
-            </button>
-            <button
-              onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-              className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100"
-            >
-              H2
-            </button>
-            <button
-              onClick={() => editor?.chain().focus().toggleBulletList().run()}
-              className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100"
-            >
-              List
-            </button>
-            <input
-              ref={galleryInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={handleGalleryUpload}
-            />
-            <button
-              type="button"
-              onClick={() => galleryInputRef.current?.click()}
-              disabled={uploadingGallery}
-              className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100 disabled:opacity-50"
-            >
-              {uploadingGallery ? 'Загрузка...' : 'Галерея'}
-            </button>
-            <input
-              ref={videoInputRef}
-              type="file"
-              accept="video/mp4"
-              className="hidden"
-              onChange={handleVideoUpload}
-            />
-            <button
-              type="button"
-              onClick={() => videoInputRef.current?.click()}
-              disabled={uploadingVideo}
-              className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100 disabled:opacity-50"
-            >
-              {uploadingVideo ? 'Загрузка...' : 'Видео'}
-            </button>
-          </div>
-          <EditorContent
-            editor={editor}
-            className="p-3 min-h-[200px] text-sm prose max-w-none focus:outline-none"
-          />
-        </div>
-      </div>
-      <div className="flex gap-3">
-        <button
-          onClick={handleSave}
-          disabled={saving || !title.trim()}
-          className="btn-primary text-sm px-6 py-2 disabled:opacity-50"
-        >
-          {saving ? 'Сохранение...' : 'Сохранить'}
-        </button>
-        <button onClick={onCancel} disabled={saving} className="btn-outline text-sm px-6 py-2">
-          Отмена
-        </button>
-      </div>
-    </div>
-  );
 }
 
 export default function AdminNewsPage() {
@@ -311,13 +72,15 @@ export default function AdminNewsPage() {
     titleRu: string;
     excerptRu: string;
     contentRu: string;
+    coverImage: string | null;
   }) => {
     setSaving(true);
     let ok: boolean;
 
     if (editing) {
       // UpdateNewsCommand требует полный набор полей; неотредактированные
-      // берём из загруженной новости, чтобы не затереть обложку/теги/публикацию.
+      // берём из загруженной новости, чтобы не затереть теги/публикацию.
+      // coverImage — из редактора (T008), чтобы «Заменить»/«Удалить» сохранялись.
       ok = await updateAdminNews(editing.id, {
         titleRu: data.titleRu,
         titleEn: editing.titleEn ?? '',
@@ -329,7 +92,7 @@ export default function AdminNewsPage() {
         metaDescription: editing.metaDescription || data.excerptRu.slice(0, 300),
         tags: editing.tags ?? [],
         isPublished: editing.isPublished ?? true,
-        coverImage: editing.coverImage ?? null,
+        coverImage: data.coverImage,
       });
     } else {
       // CreateNewsCommand на бэкенде требует полный набор non-nullable полей,
@@ -347,6 +110,7 @@ export default function AdminNewsPage() {
         tags: [],
         isPublished: true,
         publishedAt: null,
+        coverImage: data.coverImage,
       });
     }
 

@@ -14,7 +14,8 @@ public record CreateNewsCommand(
     string MetaDescription,
     List<string> Tags,
     bool IsPublished,
-    DateTime? PublishedAt
+    DateTime? PublishedAt,
+    string? CoverImage = null
 );
 
 public class CreateNewsCommandValidator : AbstractValidator<CreateNewsCommand>
@@ -38,6 +39,9 @@ public class CreateNewsCommandValidator : AbstractValidator<CreateNewsCommand>
 
         RuleFor(x => x.MetaDescription)
             .MaximumLength(300);
+
+        RuleFor(x => x.CoverImage)
+            .MaximumLength(500);
     }
 }
 
