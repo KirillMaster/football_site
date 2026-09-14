@@ -52,6 +52,13 @@ public class AdminNewsController : ControllerBase
         [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
         => Ok(await _queryHandler.HandleAsync(new GetNewsQuery(page, pageSize, null, PublishedOnly: false), ct));
 
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+    {
+        var result = await _queryHandler.HandleAsync(new GetNewsByIdQuery(id), ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(new { error = result.Error });
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateNewsCommand req, CancellationToken ct)
     {

@@ -9,32 +9,51 @@ public class TelegramNotificationChannel : IFeedbackNotificationChannel
 {
     private readonly HttpClient _httpClient;
     private readonly string? _botToken;
-    private readonly string? _chatId;
+    private readonly IReadOnlyList<string> _chatIds;
 
     public TelegramNotificationChannel(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
         _botToken = configuration["TELEGRAM_BOT_TOKEN"];
-        _chatId = configuration["TELEGRAM_CHAT_ID"];
+        // Несколько получателей через запятую: "-100123,456789"
+        _chatIds = (configuration["TELEGRAM_CHAT_ID"] ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     public string Name => "Telegram";
 
-    public bool IsConfigured => !string.IsNullOrWhiteSpace(_botToken) && !string.IsNullOrWhiteSpace(_chatId);
+    public bool IsConfigured => !string.IsNullOrWhiteSpace(_botToken) && _chatIds.Count > 0;
 
     public async Task SendAsync(FeedbackNotification notification, CancellationToken cancellationToken)
     {
         var text = FeedbackNotificationFormatter.Format(notification);
         var url = $"https://api.telegram.org/bot{_botToken}/sendMessage";
-        var payload = new TelegramSendMessageRequest(_chatId!, text);
 
-        using var response = await _httpClient.PostAsJsonAsync(url, payload, cancellationToken);
-        if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException("Telegram API request failed");
+        var failures = new List<string>();
+        foreach (var chatId in _chatIds)
+        {
+            try
+            {
+                var payload = new TelegramSendMessageRequest(chatId, text);
+                using var response = await _httpClient.PostAsJsonAsync(url, payload, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    failures.Add($"{chatId}: HTTP {(int)response.StatusCode}");
+                    continue;
+                }
 
-        var body = await response.Content.ReadFromJsonAsync<TelegramSendMessageResponse>(cancellationToken);
-        if (body is null || !body.Ok)
-            throw new InvalidOperationException("Telegram API returned ok=false");
+                var body = await response.Content.ReadFromJsonAsync<TelegramSendMessageResponse>(cancellationToken);
+                if (body is null || !body.Ok)
+                    failures.Add($"{chatId}: ok=false");
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                failures.Add($"{chatId}: {ex.GetType().Name}");
+            }
+        }
+
+        if (failures.Count > 0)
+            throw new InvalidOperationException($"Telegram send failed for {failures.Count}/{_chatIds.Count} recipient(s): {string.Join("; ", failures)}");
     }
 
     private record TelegramSendMessageRequest(

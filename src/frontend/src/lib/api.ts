@@ -615,6 +615,10 @@ export async function getAdminNews(page = 1, pageSize = 20): Promise<Record<stri
   return adminGetJson(`/api/admin/news?page=${page}&pageSize=${pageSize}`, { items: [], totalCount: 0 });
 }
 
+export async function getAdminNewsById(id: string): Promise<Record<string, unknown> | null> {
+  return adminGetJson(`/api/admin/news/${id}`, null);
+}
+
 export async function createAdminNews(data: Record<string, unknown>): Promise<boolean> {
   return adminMutate('/api/admin/news', 'POST', data);
 }

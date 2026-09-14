@@ -9,6 +9,8 @@ public record GetNewsQuery(int Page = 1, int PageSize = 20, string? Tag = null, 
 
 public record GetNewsBySlugQuery(string Slug);
 
+public record GetNewsByIdQuery(Guid Id);
+
 public class GetNewsQueryHandler
 {
     private readonly IArsenalDbContext _db;
@@ -31,6 +33,21 @@ public class GetNewsQueryHandler
             .ToListAsync(ct);
 
         return new PagedResult<NewsSummaryDto>(items, query.Page, query.PageSize, total);
+    }
+
+    public async Task<Result<NewsDto>> HandleAsync(GetNewsByIdQuery query, CancellationToken ct = default)
+    {
+        var news = await _db.News.AsNoTracking()
+            .Where(n => n.Id == query.Id)
+            .Select(n => new NewsDto(n.Id, n.Slug, n.TitleRu, n.TitleEn,
+                n.ExcerptRu, n.ExcerptEn, n.ContentRu, n.ContentEn,
+                n.CoverImage, n.MetaTitle, n.MetaDescription, n.Tags,
+                n.IsPublished, n.PublishedAt))
+            .FirstOrDefaultAsync(ct);
+
+        return news is null
+            ? Result<NewsDto>.Failure($"News '{query.Id}' not found")
+            : Result<NewsDto>.Success(news);
     }
 
     public async Task<Result<NewsDto>> HandleAsync(GetNewsBySlugQuery query, CancellationToken ct = default)

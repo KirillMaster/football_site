@@ -7,6 +7,7 @@ import AdminLayout from '@/components/AdminLayout';
 import { formatDate } from '@/lib/utils';
 import {
   getAdminNews,
+  getAdminNewsById,
   createAdminNews,
   updateAdminNews,
   deleteAdminNews,
@@ -40,10 +41,16 @@ interface AdminNewsDto {
   id: string;
   slug: string;
   titleRu: string;
+  titleEn?: string;
   excerptRu: string;
+  excerptEn?: string;
   contentRu?: string;
+  contentEn?: string;
+  metaTitle?: string;
+  metaDescription?: string;
   coverImage?: string | null;
   tags: string[];
+  isPublished?: boolean;
   publishedAt?: string | null;
 }
 
@@ -186,10 +193,20 @@ export default function AdminNewsPage() {
     let ok: boolean;
 
     if (editing) {
+      // UpdateNewsCommand требует полный набор полей; неотредактированные
+      // берём из загруженной новости, чтобы не затереть обложку/теги/публикацию.
       ok = await updateAdminNews(editing.id, {
         titleRu: data.titleRu,
+        titleEn: editing.titleEn ?? '',
         excerptRu: data.excerptRu,
+        excerptEn: editing.excerptEn ?? '',
         contentRu: data.contentRu,
+        contentEn: editing.contentEn ?? '',
+        metaTitle: editing.metaTitle || data.titleRu.slice(0, 160),
+        metaDescription: editing.metaDescription || data.excerptRu.slice(0, 300),
+        tags: editing.tags ?? [],
+        isPublished: editing.isPublished ?? true,
+        coverImage: editing.coverImage ?? null,
       });
     } else {
       // CreateNewsCommand на бэкенде требует полный набор non-nullable полей,
@@ -222,6 +239,20 @@ export default function AdminNewsPage() {
         true
       );
     }
+  };
+
+  // Список отдаёт только summary (без contentRu и meta) — перед редактированием
+  // загружаем полную новость, иначе редактор откроется с пустым содержанием.
+  const openEdit = async (article: AdminNewsDto) => {
+    setLoading(true);
+    const full = (await getAdminNewsById(article.id)) as AdminNewsDto | null;
+    setLoading(false);
+    if (!full) {
+      showToast('Не удалось загрузить новость для редактирования', true);
+      return;
+    }
+    setEditing(full);
+    setMode('edit');
   };
 
   const handleDelete = async (id: string) => {
@@ -291,10 +322,7 @@ export default function AdminNewsPage() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
-                          onClick={() => {
-                            setEditing(article);
-                            setMode('edit');
-                          }}
+                          onClick={() => openEdit(article)}
                           className="text-brand-red hover:underline text-xs font-medium mr-3"
                         >
                           Редактировать
