@@ -187,4 +187,46 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         updated.ContentRu.Should().Contain("<h2>Заголовок раздела</h2>");
         AssertReferenceMediaPreserved(updated.ContentRu);
     }
+
+    [Fact]
+    [Trait("scenario", "SC-004")]
+    [Trait("scenario", "quickstart-scenario-4")]
+    public async Task CreateNews_WithMediaAssets_DoesNotAddToPublicGallery()
+    {
+        // Сценарий 4: чистота фотогалереи — загрузка фотографий в текст новости
+        // не должна создавать записи в публичной фотогалерее.
+        var admin = MakeAdminController(_factory, out var db);
+        var slug = "parity-gallery-" + Guid.NewGuid().ToString("N")[..8];
+
+        // Запомнить текущее число фотографий в публичной галерее
+        var initialPhotoCount = await db.Photos.CountAsync();
+
+        // Создать новость с тремя фотографиями в тексте
+        var contentWithPhotos =
+            "<div style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:24px\">" +
+            "<img src=\"https://cdn.example.com/article-photo1.jpg\" alt=\"Фото 1\" />" +
+            "<img src=\"https://cdn.example.com/article-photo2.jpg\" alt=\"Фото 2\" />" +
+            "<img src=\"https://cdn.example.com/article-photo3.jpg\" alt=\"Фото 3\" />" +
+            "</div>";
+
+        var createCmd = new CreateNewsCommand(
+            slug, "Новость с галереей", "",
+            "Описание", "", contentWithPhotos, "",
+            "SEO", "SEO описание",
+            ["новости"], true, DateTime.UtcNow,
+            "https://cdn.example.com/cover.jpg");
+
+        var result = await admin.Create(createCmd, CancellationToken.None);
+        result.Should().BeOfType<CreatedAtActionResult>();
+
+        // Проверить что число записей в публичной галерее не изменилось
+        var afterNewsCount = await db.Photos.CountAsync();
+        afterNewsCount.Should().Be(initialPhotoCount);
+
+        // Проверить что контент новости сохранил все три фотографии
+        var news = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        news.ContentRu.Should().Contain("article-photo1.jpg");
+        news.ContentRu.Should().Contain("article-photo2.jpg");
+        news.ContentRu.Should().Contain("article-photo3.jpg");
+    }
 }

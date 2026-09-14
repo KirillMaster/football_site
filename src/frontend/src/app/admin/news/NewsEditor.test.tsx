@@ -717,6 +717,35 @@ describe('@quickstart-scenario-2 @SC-003 @FR-020', () => {
   });
 });
 
+describe('@quickstart-scenario-3 @AS-9 @AS-10 @EC-4 @FR-015', () => {
+  it('черновик (неопубликованная новость) не появляется в публичном списке', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Черновик новости' } });
+    // По умолчанию публикация выключена
+    expect(screen.getByLabelText('Опубликовано')).not.toBeChecked();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ isPublished: false }));
+  });
+
+  it('адрес с недопустимыми символами блокирует сохранение', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Заголовок' } });
+    fireEvent.input(screen.getByLabelText('Адрес (slug)'), { target: { value: 'invalid_адрес!' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).not.toHaveBeenCalled();
+    expect(
+      screen.getByText('Адрес может содержать только строчные латинские буквы, цифры и дефисы')
+    ).toBeInTheDocument();
+  });
+});
+
 function galleryFiles(names: string[]) {
   return names.map((name) => new File(['x'], name, { type: 'image/jpeg' }));
 }
