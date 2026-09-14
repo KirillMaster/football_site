@@ -658,6 +658,52 @@ export async function deleteAdminPhoto(id: string): Promise<boolean> {
   return adminMutate(`/api/admin/photos/${id}`, 'DELETE');
 }
 
+// ─── Admin News Media (rich-редактор: изображения/галерея/видео) ──────────────
+
+export type NewsMediaUploadResult =
+  | { status: 'uploaded'; url: string; key: string; mediaType: 'image' | 'video' }
+  | { status: 'rejected'; message: string }
+  | { status: 'unauthorized' }
+  | { status: 'network_error' };
+
+// POST /api/admin/news/media — бэкенд возвращает 400 с текстом message как для
+// превышения размера, так и для недопустимого типа файла (общий discriminator
+// отсутствует), поэтому клиент не пытается различать подтипы отказа и просто
+// показывает пользователю серверное сообщение на русском.
+export async function uploadAdminNewsMedia(file: File): Promise<NewsMediaUploadResult> {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    // Content-Type для FormData выставляет сам браузер (boundary) — не задаём вручную.
+    const res = await adminFetch(`${API_URL}/api/admin/news/media`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (res.status === 401 || res.status === 403) {
+      return { status: 'unauthorized' };
+    }
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      return {
+        status: 'rejected',
+        message: body?.message ?? 'Не удалось загрузить файл',
+      };
+    }
+
+    const result = await res.json();
+    return {
+      status: 'uploaded',
+      url: result.url,
+      key: result.key,
+      mediaType: result.mediaType,
+    };
+  } catch {
+    return { status: 'network_error' };
+  }
+}
+
 // ─── Admin Groups ───────────────────────────────────────────────────────────
 
 export async function getAdminGroups(): Promise<Record<string, unknown>[]> {

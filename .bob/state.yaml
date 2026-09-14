@@ -1,8 +1,8 @@
 run_id: "004-admin-news-rich-editor-20260914"
 feature: "004-admin-news-rich-editor"
 mode: day
-current_slice: "slice-media-endpoint"
-current_role: "coder"
+current_slice: "slice-editor-nodes"
+current_role: "qa"
 input_checksums:
   ".bob/features/004-admin-news-rich-editor/gherkin.md": "095443006f85847948804172dcff2b3f97fb594e6953e33dc41d55548665a8a3"
   ".bob/features/004-admin-news-rich-editor/qa-procedures.md": "2bcca88677ba6c01325a6b3eb53991050abb0fa52e54390918ae76dd0057fe13"
@@ -16,8 +16,14 @@ slices:
   - id: slice-media-endpoint
     title: "Эндпоинт загрузки медиа новостей"
     depends_on: []
-    scenario_refs: ["US4 @AS-12 @FR-016", "US4 @AS-13 @FR-019", "US4 @FR-017", "US2 @EC-3 @FR-018"]
-    status: running
+    status: merged
     return_count: 0
-    worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-media-endpoint"
+    skipped_roles: []
+  - id: slice-editor-nodes
+    title: "Ноды редактора: изображение, галерея, видео"
+    depends_on: [slice-media-endpoint]
+    scenario_refs: ["US1 @AS-4 @FR-005", "US1 @AS-5 @FR-006", "US1 @AS-6 @FR-007", "US1 @AS-7 @FR-008", "US2 @EC-1 @EC-2 @SC-005"]
+    status: merged
+    return_count: 0
+    worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-editor-nodes"
     skipped_roles: []
