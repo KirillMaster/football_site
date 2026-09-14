@@ -52,6 +52,18 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         "Ваш браузер не поддерживает воспроизведение видео." +
         "</video>";
 
+    // Общая проверка для обоих сценариев: галерея из трёх фото и видео
+    // из ReferenceContent должны дойти до сохранённого contentRu без потерь.
+    private static void AssertReferenceMediaPreserved(string contentRu)
+    {
+        contentRu.Should().Contain("grid-template-columns");
+        contentRu.Should().Contain("https://cdn.example.com/photo1.jpg");
+        contentRu.Should().Contain("https://cdn.example.com/photo2.jpg");
+        contentRu.Should().Contain("https://cdn.example.com/photo3.jpg");
+        contentRu.Should().Contain("<video");
+        contentRu.Should().Contain("https://cdn.example.com/clip.mp4");
+    }
+
     [Fact]
     [Trait("scenario", "SC-001")]
     [Trait("scenario", "quickstart-scenario-1")]
@@ -78,12 +90,7 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         dto.CoverImage.Should().Be("https://cdn.example.com/cover.jpg");
         dto.Tags.Should().BeEquivalentTo(["новости", "школа"]);
         dto.IsPublished.Should().BeTrue();
-        dto.ContentRu.Should().Contain("grid-template-columns");
-        dto.ContentRu.Should().Contain("https://cdn.example.com/photo1.jpg");
-        dto.ContentRu.Should().Contain("https://cdn.example.com/photo2.jpg");
-        dto.ContentRu.Should().Contain("https://cdn.example.com/photo3.jpg");
-        dto.ContentRu.Should().Contain("<video");
-        dto.ContentRu.Should().Contain("https://cdn.example.com/clip.mp4");
+        AssertReferenceMediaPreserved(dto.ContentRu);
         dto.ContentRu.Should().Contain("<strong>Первый абзац с выделением.</strong>");
     }
 
@@ -124,12 +131,7 @@ public class NewsParityEndpointTests : IClassFixture<WebAppFactory>
         updated.CoverImage.Should().Be("https://cdn.example.com/orig-cover.jpg");
         updated.Tags.Should().BeEquivalentTo(["события"]);
         updated.IsPublished.Should().BeTrue();
-        updated.ContentRu.Should().Contain("grid-template-columns");
-        updated.ContentRu.Should().Contain("https://cdn.example.com/photo1.jpg");
-        updated.ContentRu.Should().Contain("https://cdn.example.com/photo2.jpg");
-        updated.ContentRu.Should().Contain("https://cdn.example.com/photo3.jpg");
-        updated.ContentRu.Should().Contain("<video");
-        updated.ContentRu.Should().Contain("https://cdn.example.com/clip.mp4");
+        AssertReferenceMediaPreserved(updated.ContentRu);
         updated.ContentRu.Should().Contain("Отредактированный абзац.");
     }
 }
