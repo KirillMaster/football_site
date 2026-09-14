@@ -455,6 +455,7 @@ export function NewsEditor({
               type="file"
               accept="image/*"
               multiple
+              aria-label="Файлы галереи"
               className="hidden"
               onChange={handleGalleryUpload}
             />
@@ -470,6 +471,7 @@ export function NewsEditor({
               ref={videoInputRef}
               type="file"
               accept="video/mp4"
+              aria-label="Файл видео"
               className="hidden"
               onChange={handleVideoUpload}
             />

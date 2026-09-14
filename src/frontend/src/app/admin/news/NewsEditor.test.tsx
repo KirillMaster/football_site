@@ -605,3 +605,206 @@ describe('T010', () => {
     expect(saved.contentRu).toContain('https://cdn.example.com/clip.mp4');
   });
 });
+
+// Сквозная проверка паритета с программно созданными новостями (004-admin-news-rich-editor,
+// слайс slice-parity, quickstart:scenario-1..5, SC-001/SC-003/SC-004/SC-005).
+describe('@quickstart-scenario-2 @SC-003 @FR-020', () => {
+  it('полный цикл открытия и сохранения не теряет ни одно поле: обложка, теги, публикация, SEO, галерея и видео', () => {
+    const fullContent =
+      '<h2>Заголовок раздела</h2>' +
+      '<p><strong>Абзац с выделением.</strong></p>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:24px">' +
+      '<img src="https://cdn.example.com/photo1.jpg" alt="Фото 1" />' +
+      '<img src="https://cdn.example.com/photo2.jpg" alt="Фото 2" />' +
+      '</div>' +
+      '<video controls preload="metadata" playsinline style="width:100%;border-radius:12px;background:#000">' +
+      '<source src="https://cdn.example.com/clip.mp4" type="video/mp4" />' +
+      'Ваш браузер не поддерживает воспроизведение видео.' +
+      '</video>';
+
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{
+          id: 'news-full',
+          slug: 'full-parity-news',
+          titleRu: 'Новость с полным составом',
+          excerptRu: 'Экспресс-описание',
+          contentRu: fullContent,
+          coverImage: 'https://cdn.example.com/cover.jpg',
+          tags: ['новости', 'школа'],
+          metaTitle: 'SEO заголовок',
+          metaDescription: 'SEO описание',
+          isPublished: true,
+        }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    // Всё предзаполнено из открытой новости.
+    expect(screen.getByAltText('Обложка новости')).toHaveAttribute(
+      'src',
+      'https://cdn.example.com/cover.jpg'
+    );
+    expect(screen.getByText('новости')).toBeInTheDocument();
+    expect(screen.getByText('школа')).toBeInTheDocument();
+    expect(screen.getByLabelText('Опубликовано')).toBeChecked();
+    expect(screen.getByLabelText('SEO-заголовок (meta title)')).toHaveValue('SEO заголовок');
+    expect(screen.getByLabelText('SEO-описание (meta description)')).toHaveValue('SEO описание');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    const saved = onSave.mock.calls[0][0] as {
+      coverImage: string | null;
+      tags: string[];
+      isPublished: boolean;
+      metaTitle: string;
+      metaDescription: string;
+      contentRu: string;
+    };
+    expect(saved.coverImage).toBe('https://cdn.example.com/cover.jpg');
+    expect(saved.tags).toEqual(['новости', 'школа']);
+    expect(saved.isPublished).toBe(true);
+    expect(saved.metaTitle).toBe('SEO заголовок');
+    expect(saved.metaDescription).toBe('SEO описание');
+    expect(saved.contentRu).toContain('grid-template-columns');
+    expect(saved.contentRu).toContain('https://cdn.example.com/photo1.jpg');
+    expect(saved.contentRu).toContain('https://cdn.example.com/photo2.jpg');
+    expect(saved.contentRu).toContain('<video');
+    expect(saved.contentRu).toContain('https://cdn.example.com/clip.mp4');
+  });
+});
+
+function galleryFiles(names: string[]) {
+  return names.map((name) => new File(['x'], name, { type: 'image/jpeg' }));
+}
+
+describe('@quickstart-scenario-5 @SC-005 @EC-1', () => {
+  it('часть файлов галереи отклонена (превышен размер) — успешные вставляются, ошибка показывает остальные', async () => {
+    vi.mocked(uploadAdminNewsMedia)
+      .mockResolvedValueOnce({
+        status: 'uploaded',
+        url: 'https://cdn.example.com/g1.jpg',
+        key: 'g1',
+        mediaType: 'image',
+      })
+      .mockResolvedValueOnce({
+        status: 'uploaded',
+        url: 'https://cdn.example.com/g2.jpg',
+        key: 'g2',
+        mediaType: 'image',
+      })
+      .mockResolvedValueOnce({
+        status: 'uploaded',
+        url: 'https://cdn.example.com/g3.jpg',
+        key: 'g3',
+        mediaType: 'image',
+      })
+      .mockResolvedValueOnce({
+        status: 'rejected',
+        message: 'Файл превышает допустимый размер 20 МБ',
+      });
+
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Галерея с отказом' } });
+    fireEvent.change(screen.getByLabelText('Файлы галереи'), {
+      target: { files: galleryFiles(['ok1.jpg', 'ok2.jpg', 'ok3.jpg', 'huge.jpg']) },
+    });
+
+    await waitFor(() => expect(uploadAdminNewsMedia).toHaveBeenCalledTimes(4));
+    await waitFor(() =>
+      expect(
+        screen.getAllByText(/huge\.jpg: Файл превышает допустимый размер 20 МБ/).length
+      ).toBeGreaterThan(0)
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    const saved = onSave.mock.calls[0][0] as { contentRu: string };
+    expect(saved.contentRu).toContain('https://cdn.example.com/g1.jpg');
+    expect(saved.contentRu).toContain('https://cdn.example.com/g2.jpg');
+    expect(saved.contentRu).toContain('https://cdn.example.com/g3.jpg');
+  });
+});
+
+describe('@quickstart-scenario-5 @SC-005 @EC-2', () => {
+  it('файл неподдерживаемого типа в галерее не блокирует вставку остальных', async () => {
+    vi.mocked(uploadAdminNewsMedia)
+      .mockResolvedValueOnce({
+        status: 'uploaded',
+        url: 'https://cdn.example.com/photo.jpg',
+        key: 'p1',
+        mediaType: 'image',
+      })
+      .mockResolvedValueOnce({
+        status: 'rejected',
+        message: 'Недопустимый тип файла. Поддерживаются: JPEG, PNG, WebP',
+      });
+
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Галерея с плохим типом' } });
+    fireEvent.change(screen.getByLabelText('Файлы галереи'), {
+      target: { files: galleryFiles(['photo.jpg', 'document.pdf']) },
+    });
+
+    await waitFor(() => expect(uploadAdminNewsMedia).toHaveBeenCalledTimes(2));
+    await waitFor(() =>
+      expect(
+        screen.getAllByText(/document\.pdf: Недопустимый тип файла\. Поддерживаются: JPEG, PNG, WebP/)
+          .length
+      ).toBeGreaterThan(0)
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    const saved = onSave.mock.calls[0][0] as { contentRu: string };
+    expect(saved.contentRu).toContain('https://cdn.example.com/photo.jpg');
+  });
+});
+
+describe('@quickstart-scenario-5 @SC-005 @EC-3', () => {
+  it('сетевая ошибка при загрузке видео не стирает уже введённый текст новости', async () => {
+    vi.mocked(uploadAdminNewsMedia).mockResolvedValue({ status: 'network_error' });
+
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{
+          id: 'news-net-err',
+          slug: 'video-network-error',
+          titleRu: 'Новость с видео',
+          excerptRu: 'Описание',
+          contentRu: '<p>Важный текст, который нельзя потерять.</p>',
+          tags: [],
+          isPublished: false,
+        }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    const videoFile = new File(['x'], 'clip.mp4', { type: 'video/mp4' });
+    fireEvent.change(screen.getByLabelText('Файл видео'), { target: { files: [videoFile] } });
+
+    await waitFor(() => expect(uploadAdminNewsMedia).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(
+        screen.getAllByText(/clip\.mp4: нет соединения с сервером/).length
+      ).toBeGreaterThan(0)
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    const saved = onSave.mock.calls[0][0] as { contentRu: string };
+    expect(saved.contentRu).toContain('Важный текст, который нельзя потерять.');
+    expect(saved.contentRu).not.toContain('<video');
+  });
+});
