@@ -1,6 +1,6 @@
 {
- "complexity": 15,
- "duplication": 5.56,
- "captured_at_head": "1be5eff",
- "note": "scope: lizard src/frontend/src+src/backend; jscpd src с ignore node_modules/bin/obj/.next"
+ "complexity": 18,
+ "duplication": 8.64,
+ "captured_at_head": "e36d048",
+ "note": "scope: lizard src/frontend/src+src/backend/src -x node_modules/bin/obj/.next; jscpd те же пути с ignore. Предыдущий baseline (head 1be5eff): complexity 15, duplication 5.56 — область lizard отличалась."
 }

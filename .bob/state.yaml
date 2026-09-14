@@ -1,13 +1,23 @@
-last_run:
-  run_id: 003-admin-session-refresh-20260913
-  feature: 003-admin-session-refresh
-  mode: night
-  input_mode: integration
-  status: completed
-  merged_head: 1be5eff
-  slices:
-    S1:
-      title: admin-session-wrapper
-      status: merged
-      return_count: 0
-      commits: [960117e, 8cb39d8, 40ea5c3, 3d06f5f, aaa5947, 9fcdded]
+run_id: "004-admin-news-rich-editor-20260914"
+feature: "004-admin-news-rich-editor"
+mode: day
+current_slice: "slice-media-endpoint"
+current_role: "coder"
+input_checksums:
+  ".bob/features/004-admin-news-rich-editor/gherkin.md": "095443006f85847948804172dcff2b3f97fb594e6953e33dc41d55548665a8a3"
+  ".bob/features/004-admin-news-rich-editor/qa-procedures.md": "2bcca88677ba6c01325a6b3eb53991050abb0fa52e54390918ae76dd0057fe13"
+  ".bob/features/004-admin-news-rich-editor/slices.yaml": "c876c346d0f820fe8fb8b846f93ec4c80604a7469732e75ed8d8a855bec2e412"
+  "specs/004-admin-news-rich-editor/spec.yaml": "6f67c1a1e300af316e23655d9e0e9d788e17fa61900ce164b026135bdb03e0b2"
+  "specs/004-admin-news-rich-editor/tasks.yaml": "94086fcd5751ec6518d811a7dfe6bab496db1c278ce58d127f4260629de73fff"
+baselines:
+  complexity: 18
+  duplication: 8.64
+slices:
+  - id: slice-media-endpoint
+    title: "Эндпоинт загрузки медиа новостей"
+    depends_on: []
+    scenario_refs: ["US4 @AS-12 @FR-016", "US4 @AS-13 @FR-019", "US4 @FR-017", "US2 @EC-3 @FR-018"]
+    status: running
+    return_count: 0
+    worktree_path: ".worktrees/bob-004-admin-news-rich-editor-slice-media-endpoint"
+    skipped_roles: []
