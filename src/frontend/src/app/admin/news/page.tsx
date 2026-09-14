@@ -31,9 +31,8 @@ export default function AdminNewsPage() {
   const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data: any = await getAdminNews();
-      const raw = data?.items ?? data ?? [];
+      const data: unknown = await getAdminNews();
+      const raw = (data as { items?: unknown } | null)?.items ?? data ?? [];
       const items = (Array.isArray(raw) ? raw : []) as AdminNewsDto[];
       setNews(items);
       setError(null);

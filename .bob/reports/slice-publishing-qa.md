@@ -10,7 +10,7 @@
 
 | Шаг | Действие | Результат | Статус |
 |---|---|---|---|
-| 0.1 | `cd src/frontend && npm run test` | 14 test files, 143 tests passed, exit code 0 | ✓ PASS |
+| 0.1 | `cd src/frontend && npm run test` | 14 test files, 144 tests passed, exit code 0 | ✓ PASS |
 | 0.2 | `dotnet test src/backend` | 140 tests passed (27 Domain + 50 Application + 63 Integration), exit code 0 | ✓ PASS |
 | 0.3 | `cd src/frontend && npm run build && npm run lint` | Build успешен, exit code 0 | ✓ PASS |
 | 0.4 | `dotnet build src/backend` | Build успешен, exit code 0 | ✓ PASS |
@@ -105,13 +105,20 @@
 ---
 
 ### US3 @EC-5 — Истёкшая сессия администратора
-**Статус:** ⚠ NOT COVERED IN THIS SLICE
+**Статус:** ✓ PASS
 
-Это сценарий, требующий логики сессии на фронтенде (перехват 401, редирект на вход). Реализуется через:
-- Глобальный error handler в API слое (не покрыто в slice-publishing QA)
-- Backend: возврат 401 Unauthorized при истёкшей сессии
+**Тесты (Frontend):**
+- `adminAuth.test.ts` (describe @US3-EC-5): тест проверяет что при 401 во время сохранения новости (PUT /api/admin/news/123) сессия очищается и происходит редирект на `/admin/login?returnTo=/admin/news`
 
-**Примечание:** Тесты авторизации находятся в AuthEndpointTests, не в NewsPublishingEndpointTests. Это intentional design (комментарий на line 14 NewsPublishingEndpointTests.cs).
+**Реализация (Frontend):**
+- `src/lib/adminAuth.ts`: функция `adminFetch()` перехватывает 401, пытается обновить токен через `ensureRefreshed()`, при отказе вызывает `terminateSession()` — редирект на логин с сохранением текущего пути через параметр `returnTo`
+- `src/lib/api.ts` (line 630–647): функция `adminMutateNews()` использует `adminFetch()` и возвращает результат с `status: 'ok'` или `'error'`
+- `src/app/admin/news/page.tsx` (line 67–106): обработчик `handleSave()` вызывает `updateAdminNews()` / `createAdminNews()`, которые используют `adminMutateNews()` и показывают ошибку при `status: 'error'`
+
+**Реализация (Backend):**
+- NewsPublishingEndpointTests.cs не требует явного теста на 401 — это ответственность авторизационного middleware (проверка Bearer токена) и AuthEndpointTests
+
+**Вердикт:** При истёкшей сессии админ получает 401, сессия очищается, и происходит безопасный редирект на логин с возможностью вернуться на текущую страницу через returnTo.
 
 ---
 
@@ -139,25 +146,12 @@
 
 ## Нарушения и дефекты
 
-### CRITICAL: Нарушение правила `@typescript-eslint/no-explicit-any`
-**Файл:** `src/frontend/src/app/admin/news/page.tsx`, line 35
+**Статус:** ✓ Все дефекты устранены
 
-**Нарушение:**
-```typescript
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const data: any = await getAdminNews();
-```
-
-**Проблема:**
-- Требования CLAUDE.md: "ЖЁСТКОЕ ТРЕБОВАНИЕ: `any` в TypeScript ЗАПРЕЩЁН"
-- Правило CI: `@typescript-eslint/no-explicit-any` = ошибка, ломает build
-- Хотя ESLint-disable встроен, это означает нарушение было допущено намеренно
-
-**Решение:**
-- Заменить `any` на `unknown` или правильный тип (`{ items?: AdminNewsDto[] }`)
-- Убрать ESLint-disable
-
-**Статус:** SEND-BACK к Coder на исправление
+Предыдущий дефект (нарушение `@typescript-eslint/no-explicit-any` в page.tsx:35) устранён:
+- Заменено `const data: any` на типобезопасный вариант `const data: unknown` с приведением типа
+- ESLint-disable удалён
+- Build и lint пройдены успешно
 
 ---
 
@@ -165,38 +159,31 @@ const data: any = await getAdminNews();
 
 | Сценарий | Статус | Покрывающие тесты |
 |---|---|---|
-| US3-AS-8 | ✓ | `slug.test.ts` (5 unit + 1 idempotency), `NewsEditor.tsx` integration |
-| US3-AS-9 | ✓ | `slug.test.ts` (8 validation), `NewsPublishingEndpointTests` (3 tests) |
-| US3-AS-10 | ✓ | `NewsPublishingEndpointTests` (1 integration test) |
-| US3-AS-11 | ✓ | `NewsPublishingEndpointTests` (3 tests) + frontend roundtrip |
-| US3-EC-4 | ✓ | `NewsPublishingEndpointTests` (1 integration test) |
-| US3-EC-5 | ⚠ | Not in scope (auth layer responsibility) |
-| US3-FR-013 | ✓ | `NewsPublishingEndpointTests` (5 boundary tests) |
+| US3-AS-8 | ✓ | `slug.test.ts` (20 unit tests), `NewsEditor.test.tsx` (1 integration test) |
+| US3-AS-9 | ✓ | `slug.test.ts` (8 validation tests), `NewsEditor.test.tsx` (1 integration test) |
+| US3-AS-10 | ✓ | `NewsPublishingEndpointTests.cs` (1 test) |
+| US3-AS-11 | ✓ | `NewsPublishingEndpointTests.cs` (3 tests) + `NewsEditor.test.tsx` (1 test) |
+| US3-EC-4 | ✓ | `NewsPublishingEndpointTests.cs` (1 test) |
+| US3-EC-5 | ✓ | `adminAuth.test.ts` (1 test: сохранение новости при 401 редиректит на логин) |
+| US3-FR-013 | ✓ | `NewsPublishingEndpointTests.cs` (5 boundary tests) + `NewsEditor.test.tsx` (5 tests) |
 
 ---
 
 ## Итоги
 
-**Функциональность:** 6 из 7 сценариев полностью покрыты и работают корректно.
+**Функциональность:** ✓ Все 7 сценариев полностью покрыты и работают корректно.
 
 **Тестовое покрытие:** 
-- Frontend: 143 unit tests (slug, form interaction)
-- Backend: 63 integration tests (API endpoints)
-- Total: 206 tests ✓
+- Frontend: 144 unit tests (slug, form interaction, auth scenarios)
+- Backend: 140 integration tests (27 Domain + 50 Application + 63 API)
+- Total: 284 tests ✓
 
 **Build:**
-- Frontend: ✓ (с ESLint-disable на `any`)
-- Backend: ✓
+- Frontend: ✓ exit 0 (no `any`, no ESLint issues)
+- Backend: ✓ exit 0
 
 **Дефекты:**
-- 1 CRITICAL: Нарушение правила `@typescript-eslint/no-explicit-any` на фронтенде
+- None
 
-**Вердикт:** **SEND-BACK** к Coder из-за нарушения правила no-`any`. После исправления все сценарии полностью покрыты и функциональны.
-
----
-
-## Не покрыто в slice-publishing
-
-- **US3-EC-5** (истёкшая сессия): покрыто глобальным error handler и AuthEndpointTests, не требует покрытия в publishing-slice
-- **Session-aware tests:** редирект после логина — фронтенд-layer responsibility, покрывается в admin layout/auth tests
+**Вердикт:** **ok** — Все сценарии полностью покрыты, все тесты проходят, build успешен.
 

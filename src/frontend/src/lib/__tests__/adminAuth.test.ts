@@ -537,6 +537,37 @@ describe('@US2-AS-5', () => {
   });
 });
 
+describe('@US3-EC-5', () => {
+  it('сохранение новости: 401 при истёкшей сессии редиректит на логин с сохранением текущего пути', async () => {
+    localStorage.setItem('admin_token', 'old-access');
+    localStorage.setItem('admin_refresh_token', 'invalid-refresh');
+    setPathname('/admin/news');
+
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse(401, null)) // исходный PUT /api/admin/news/1
+      .mockResolvedValueOnce(jsonResponse(403, null)); // refresh отклонён (invalid token)
+    vi.stubGlobal('fetch', fetchMock);
+
+    await adminFetch('/api/admin/news/1', {
+      method: 'PUT',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ titleRu: 'Тест' }),
+    });
+
+    // Сессия очищена
+    expect(localStorage.getItem('admin_token')).toBeNull();
+    expect(localStorage.getItem('admin_refresh_token')).toBeNull();
+
+    // Редирект на логин с returnTo текущего пути
+    expect(window.location.assign).toHaveBeenCalledWith(
+      '/admin/login?returnTo=' + encodeURIComponent('/admin/news')
+    );
+
+    vi.unstubAllGlobals();
+  });
+});
+
 describe('@US2-EC-3 @US2-EC-3b @US2-AS-4 @US2-TS-4', () => {
   it('sanitizeReturnTo принимает только пути с префиксом /admin, иначе — обзорная /admin', () => {
     expect(sanitizeReturnTo('/admin/news')).toBe('/admin/news');
