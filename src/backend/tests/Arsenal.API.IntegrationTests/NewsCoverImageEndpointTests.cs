@@ -113,4 +113,62 @@ public class NewsCoverImageEndpointTests : IClassFixture<WebAppFactory>
         var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
         saved.CoverImage.Should().Be(coverUrl);
     }
+
+    [Fact]
+    [Trait("scenario", "US1-AS-1")]
+    [Trait("boundary", "cover-501")]
+    public async Task Create_CoverImage_Over500Chars_ReturnsBadRequest()
+    {
+        var controller = MakeController(_factory, out var db);
+        var slug = "cover-501-" + Guid.NewGuid().ToString("N")[..8];
+        var baseUrl = "https://cdn.example.com/";
+        var coverUrl = baseUrl + new string('x', 501 - baseUrl.Length);
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null, coverUrl);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    [Trait("scenario", "US1-AS-1")]
+    public async Task Update_ChangeCoverImage_SavesNewUrl()
+    {
+        var controller = MakeController(_factory, out var db);
+        var slug = "update-cover-" + Guid.NewGuid().ToString("N")[..8];
+        var oldUrl = "https://cdn.example.com/old-cover.jpg";
+        var createCmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null, oldUrl);
+        await controller.Create(createCmd, CancellationToken.None);
+        var news = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+
+        var newUrl = "https://cdn.example.com/new-cover.jpg";
+        var updateCmd = new UpdateNewsCommand(news.Id, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, newUrl);
+        await controller.Update(news.Id, updateCmd, CancellationToken.None);
+
+        var updated = await db.News.AsNoTracking().FirstAsync(n => n.Id == news.Id);
+        updated.CoverImage.Should().Be(newUrl);
+    }
+
+    [Fact]
+    [Trait("scenario", "US1-AS-3")]
+    public async Task Update_ClearCoverImage_SavesAsNull()
+    {
+        var controller = MakeController(_factory, out var db);
+        var slug = "clear-cover-" + Guid.NewGuid().ToString("N")[..8];
+        var oldUrl = "https://cdn.example.com/old-cover.jpg";
+        var createCmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null, oldUrl);
+        await controller.Create(createCmd, CancellationToken.None);
+        var news = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+
+        var updateCmd = new UpdateNewsCommand(news.Id, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null);
+        await controller.Update(news.Id, updateCmd, CancellationToken.None);
+
+        var updated = await db.News.AsNoTracking().FirstAsync(n => n.Id == news.Id);
+        updated.CoverImage.Should().BeNullOrEmpty();
+    }
 }

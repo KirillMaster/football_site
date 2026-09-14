@@ -127,4 +127,128 @@ public class NewsPublishingEndpointTests : IClassFixture<WebAppFactory>
 
         result.Should().BeOfType<BadRequestObjectResult>();
     }
+
+    [Theory]
+    [InlineData("Invalid Slug!", "должен отказать на спецсимволы в slug")]
+    [InlineData("UPPERCASE", "должен отказать на верхний регистр в slug")]
+    [InlineData("slug_underscore", "должен отказать на подчёркивание в slug")]
+    [InlineData("кириллица-slug", "должен отказать на кириллицу в slug")]
+    [InlineData("slug с пробелами", "должен отказать на пробелы в slug")]
+    [Trait("scenario", "US3-AS-9")]
+    public async Task Create_WithVaryingInvalidSlugFormats_ReturnsBadRequest(string invalidSlug, string _)
+    {
+        var controller = MakeAdminController(_factory, out var db);
+        var cmd = new CreateNewsCommand(invalidSlug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    [Trait("scenario", "US3-FR-013")]
+    [Trait("boundary", "meta-title-160")]
+    public async Task Create_WithMetaTitleExactly160Chars_Succeeds()
+    {
+        var controller = MakeAdminController(_factory, out var db);
+        var slug = "meta-160-" + Guid.NewGuid().ToString("N")[..8];
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", new string('a', 160), "", [], false, null);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<CreatedAtActionResult>();
+        var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        saved.MetaTitle.Should().HaveLength(160);
+    }
+
+    [Fact]
+    [Trait("scenario", "US3-FR-013")]
+    [Trait("boundary", "meta-title-159")]
+    public async Task Create_WithMetaTitleExactly159Chars_Succeeds()
+    {
+        var controller = MakeAdminController(_factory, out var db);
+        var slug = "meta-159-" + Guid.NewGuid().ToString("N")[..8];
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", new string('a', 159), "", [], false, null);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<CreatedAtActionResult>();
+    }
+
+    [Fact]
+    [Trait("scenario", "US3-FR-013")]
+    [Trait("boundary", "meta-description-300")]
+    public async Task Create_WithMetaDescriptionExactly300Chars_Succeeds()
+    {
+        var controller = MakeAdminController(_factory, out var db);
+        var slug = "meta-desc-300-" + Guid.NewGuid().ToString("N")[..8];
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", new string('b', 300), [], false, null);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<CreatedAtActionResult>();
+        var saved = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        saved.MetaDescription.Should().HaveLength(300);
+    }
+
+    [Fact]
+    [Trait("scenario", "US3-FR-013")]
+    [Trait("boundary", "meta-description-301")]
+    public async Task Create_WithMetaDescriptionOver300Chars_ReturnsBadRequest()
+    {
+        var controller = MakeAdminController(_factory, out _);
+        var slug = "meta-desc-301-" + Guid.NewGuid().ToString("N")[..8];
+        var cmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", new string('b', 301), [], false, null);
+
+        var result = await controller.Create(cmd, CancellationToken.None);
+
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    [Trait("scenario", "US3-AS-11")]
+    public async Task Update_WithPublishTrue_SetsPublishedAtToNonNull()
+    {
+        var controller = MakeAdminController(_factory, out var db);
+        var slug = "pub-test-" + Guid.NewGuid().ToString("N")[..8];
+        var createCmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null);
+        await controller.Create(createCmd, CancellationToken.None);
+        var news = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        news.PublishedAt.Should().BeNull();
+
+        var updateCmd = new UpdateNewsCommand(news.Id, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], true, null);
+        await controller.Update(news.Id, updateCmd, CancellationToken.None);
+
+        var updated = await db.News.AsNoTracking().FirstAsync(n => n.Id == news.Id);
+        updated.IsPublished.Should().BeTrue();
+        updated.PublishedAt.Should().NotBeNull();
+    }
+
+    [Fact]
+    [Trait("scenario", "US3-AS-11")]
+    public async Task Update_WithPublishFalse_SetsIsPublishedFalse()
+    {
+        var controller = MakeAdminController(_factory, out var db);
+        var slug = "unpub-test-" + Guid.NewGuid().ToString("N")[..8];
+        var publishedAt = DateTime.UtcNow.AddDays(-1);
+        var createCmd = new CreateNewsCommand(slug, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], true, publishedAt);
+        await controller.Create(createCmd, CancellationToken.None);
+        var news = await db.News.AsNoTracking().FirstAsync(n => n.Slug == slug);
+        news.IsPublished.Should().BeTrue();
+
+        var updateCmd = new UpdateNewsCommand(news.Id, "Заголовок", "",
+            "Excerpt", "", "Content", "", "", "", [], false, null);
+        await controller.Update(news.Id, updateCmd, CancellationToken.None);
+
+        var updated = await db.News.AsNoTracking().FirstAsync(n => n.Id == news.Id);
+        updated.IsPublished.Should().BeFalse();
+    }
 }

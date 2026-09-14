@@ -309,10 +309,72 @@ describe('US3 @FR-014', () => {
 
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ tags: ['школа'] }));
   });
+
+  it('дубликат тега не добавляется дважды', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Заголовок' } });
+    const tagInput = screen.getByLabelText('Теги');
+    fireEvent.input(tagInput, { target: { value: 'новости' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+    fireEvent.input(tagInput, { target: { value: 'новости' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ tags: ['новости'] }));
+  });
+
+  it('пустая строка не добавляется как тег', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Заголовок' } });
+    const tagInput = screen.getByLabelText('Теги');
+    fireEvent.input(tagInput, { target: { value: '' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ tags: [] }));
+  });
+
+  it('только пробелы не добавляются как тег', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Заголовок' } });
+    const tagInput = screen.getByLabelText('Теги');
+    fireEvent.input(tagInput, { target: { value: '   ' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ tags: [] }));
+  });
+
+  it('удаление одного тега не трогает остальные', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Заголовок' } });
+    const tagInput = screen.getByLabelText('Теги');
+    fireEvent.input(tagInput, { target: { value: 'новости' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+    fireEvent.input(tagInput, { target: { value: 'школа' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+    fireEvent.input(tagInput, { target: { value: 'турниры' } });
+    fireEvent.keyDown(tagInput, { key: 'Enter' });
+
+    // Получаем все кнопки удаления тегов и кликаем на вторую (школа)
+    const deleteButtons = screen.getAllByRole('button', { name: /^Удалить тег/ });
+    fireEvent.click(deleteButtons[1]); // Удаляем тег "школа"
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ tags: ['новости', 'турниры'] }));
+  });
 });
 
 describe('US3 @FR-015', () => {
-  it('переключатель «Опубликовано» передаёт isPublished в onSave', () => {
+  it('переключатель «Опубликовано» передаёт isPublished в onSave при создании', () => {
     const onSave = vi.fn();
     render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
 
@@ -321,6 +383,56 @@ describe('US3 @FR-015', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
 
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ isPublished: true }));
+  });
+
+  it('переключатель «Опубликовано» передаёт isPublished в onSave при обновлении', () => {
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{
+          id: 'news-1',
+          slug: 'existing-slug',
+          titleRu: 'Существующая новость',
+          excerptRu: 'Описание',
+          contentRu: '<p>Текст</p>',
+          isPublished: false,
+        }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    expect(screen.getByLabelText('Опубликовано')).not.toBeChecked();
+    fireEvent.click(screen.getByLabelText('Опубликовано'));
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ isPublished: true }));
+  });
+
+  it('снятие публикации передаёт isPublished: false при обновлении', () => {
+    const onSave = vi.fn();
+    render(
+      <NewsEditor
+        article={{
+          id: 'news-1',
+          slug: 'existing-slug',
+          titleRu: 'Существующая новость',
+          excerptRu: 'Описание',
+          contentRu: '<p>Текст</p>',
+          isPublished: true,
+        }}
+        onSave={onSave}
+        onCancel={vi.fn()}
+        saving={false}
+      />
+    );
+
+    expect(screen.getByLabelText('Опубликовано')).toBeChecked();
+    fireEvent.click(screen.getByLabelText('Опубликовано'));
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ isPublished: false }));
   });
 });
 
@@ -337,6 +449,66 @@ describe('US3 @FR-013', () => {
 
     expect(screen.getByText('161/160 — превышен лимит длины')).toBeInTheDocument();
     expect(screen.getByText('301/300 — превышен лимит длины')).toBeInTheDocument();
+  });
+
+  it('метаЗаголовок ровно 160 символов — без предупреждения', () => {
+    render(<NewsEditor onSave={vi.fn()} onCancel={vi.fn()} saving={false} />);
+
+    const metaInput = screen.getByLabelText('SEO-заголовок (meta title)');
+    fireEvent.input(metaInput, { target: { value: 'a'.repeat(160) } });
+
+    expect(screen.queryByText('160/160 — превышен лимит длины')).not.toBeInTheDocument();
+  });
+
+  it('метаЗаголовок 159 символов — без предупреждения', () => {
+    render(<NewsEditor onSave={vi.fn()} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('SEO-заголовок (meta title)'), {
+      target: { value: 'a'.repeat(159) },
+    });
+
+    expect(screen.queryByText('159/160 — превышен лимит длины')).not.toBeInTheDocument();
+  });
+
+  it('метаОписание ровно 300 символов — без предупреждения', () => {
+    render(<NewsEditor onSave={vi.fn()} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('SEO-описание (meta description)'), {
+      target: { value: 'a'.repeat(300) },
+    });
+
+    expect(screen.queryByText('300/300 — превышен лимит длины')).not.toBeInTheDocument();
+  });
+
+  it('метаОписание 299 символов — без предупреждения', () => {
+    render(<NewsEditor onSave={vi.fn()} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('SEO-описание (meta description)'), {
+      target: { value: 'a'.repeat(299) },
+    });
+
+    expect(screen.queryByText('299/300 — превышен лимит длины')).not.toBeInTheDocument();
+  });
+
+  it('граничные значения передаются в onSave без изменений', () => {
+    const onSave = vi.fn();
+    render(<NewsEditor onSave={onSave} onCancel={vi.fn()} saving={false} />);
+
+    fireEvent.input(screen.getByLabelText('Заголовок'), { target: { value: 'Заголовок' } });
+    fireEvent.input(screen.getByLabelText('SEO-заголовок (meta title)'), {
+      target: { value: 'a'.repeat(160) },
+    });
+    fireEvent.input(screen.getByLabelText('SEO-описание (meta description)'), {
+      target: { value: 'b'.repeat(300) },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Сохранить' }));
+
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({
+        metaTitle: 'a'.repeat(160),
+        metaDescription: 'b'.repeat(300),
+      })
+    );
   });
 });
 
