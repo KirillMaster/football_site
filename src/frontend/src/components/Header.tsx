@@ -64,8 +64,47 @@ export default function Header() {
             </div>
           </Link>
 
+
+          {/* CTA + Hamburger */}
+          <div className="flex items-center gap-3">
+            <PhoneLink
+              phone={HEADER_PHONE}
+              place="header"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-red text-white hover:bg-red-700 transition-colors px-3 h-10 sm:px-4"
+            >
+              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" />
+              </svg>
+              <span className="hidden md:inline text-sm font-semibold whitespace-nowrap">{HEADER_PHONE}</span>
+              <span className="sr-only">Позвонить {HEADER_PHONE}</span>
+            </PhoneLink>
+            <Link
+              href="/zapisatsya"
+              className="hidden sm:inline-flex btn-primary text-sm px-4 py-2"
+            >
+              Записаться
+            </Link>
+            <button
+              className="xl:hidden p-2 rounded-md text-blue-200 hover:text-white hover:bg-blue-800"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Открыть меню"
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center justify-center gap-1 h-12 border-t border-blue-800">
             {navLinks.map((link) =>
               link.children ? (
                 <div
@@ -76,7 +115,7 @@ export default function Header() {
                 >
                   <Link
                     href={link.href}
-                    className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors flex items-center gap-1"
+                    className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors flex items-center gap-1 whitespace-nowrap"
                   >
                     {link.label}
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,57 +142,19 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors"
+                  className="px-3 py-2 text-sm font-medium text-blue-200 hover:text-white hover:bg-blue-800 rounded-md transition-colors whitespace-nowrap"
                 >
                   {link.label}
                 </Link>
               )
             )}
           </nav>
-
-          {/* CTA + Hamburger */}
-          <div className="flex items-center gap-3">
-            <PhoneLink
-              phone={HEADER_PHONE}
-              place="header"
-              className="inline-flex items-center gap-2 rounded-full bg-brand-red text-white hover:bg-red-700 transition-colors px-3 h-10 sm:px-4"
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M6.62 10.79a15.53 15.53 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.21 2.2z" />
-              </svg>
-              <span className="hidden md:inline text-sm font-semibold whitespace-nowrap">{HEADER_PHONE}</span>
-              <span className="sr-only">Позвонить {HEADER_PHONE}</span>
-            </PhoneLink>
-            <Link
-              href="/zapisatsya"
-              className="hidden sm:inline-flex btn-primary text-sm px-4 py-2"
-            >
-              Записаться
-            </Link>
-            <button
-              className="lg:hidden p-2 rounded-md text-blue-200 hover:text-white hover:bg-blue-800"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Открыть меню"
-              aria-expanded={menuOpen}
-            >
-              {menuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Mobile menu */}
       <div
         className={cn(
-          'lg:hidden overflow-hidden transition-all duration-300',
+          'xl:hidden overflow-hidden transition-all duration-300',
           menuOpen ? 'max-h-[820px]' : 'max-h-0'
         )}
       >
