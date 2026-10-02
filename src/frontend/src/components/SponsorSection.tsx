@@ -151,6 +151,7 @@ function DonateModal({ onClose }: { onClose: () => void }) {
           <img
             src={QR_URL}
             alt="QR-код для пожертвования АНО ФК Арсенал Севастополь"
+            loading="lazy"
             className="w-52 h-52 object-contain border border-gray-200 rounded-xl p-2"
           />
         </div>

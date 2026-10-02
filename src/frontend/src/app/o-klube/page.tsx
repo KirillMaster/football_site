@@ -76,7 +76,7 @@ export default async function OKlubePage() {
               <div key={c.id} className="text-center">
                 <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden bg-gray-200 mb-3">
                   {c.photoUrl && (
-                    <Image src={c.photoUrl} alt={c.name} fill className="object-cover object-top" />
+                    <Image src={c.photoUrl} alt={c.name} fill sizes="128px" className="object-cover object-top" />
                   )}
                 </div>
                 <h3 className="font-bold text-gray-900">{c.name}</h3>

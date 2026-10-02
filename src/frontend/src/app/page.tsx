@@ -31,13 +31,21 @@ export default async function HomePage() {
       <section className="relative bg-brand-blue text-white overflow-hidden min-h-[700px] flex items-center">
         {/* Self-hosted looping video background */}
         <div className="absolute inset-0 overflow-hidden">
+          <Image
+            src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <video
             autoPlay
             loop
             muted
             playsInline
-            poster="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/promo_1.jpg"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
+            preload="none"
+            className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
           >
             <source src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/hero_video_new.mp4" type="video/mp4" />
           </video>
@@ -124,6 +132,7 @@ export default async function HomePage() {
                 alt="Тренировка футбольного клуба «Арсенал» Севастополь"
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>
@@ -141,6 +150,7 @@ export default async function HomePage() {
                 alt="Кулиев Игорь Рамизович"
                 fill
                 className="object-cover object-top"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
             <div>
@@ -323,6 +333,7 @@ export default async function HomePage() {
                     <img
                       src={partner.logoUrl}
                       alt={partner.name}
+                      loading="lazy"
                       className="h-16 w-auto object-contain grayscale group-hover:grayscale-0 transition-all"
                     />
                   ) : (

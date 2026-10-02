@@ -95,7 +95,7 @@ const products: Product[] = [
   },
 ];
 
-function ProductGallery({ photos }: { photos: readonly string[] }) {
+function ProductGallery({ photos, title }: { photos: readonly string[]; title: string }) {
   if (photos.length === 0) return null;
   const cover = photos[0];
   const rest = photos.slice(1, 5);
@@ -103,14 +103,14 @@ function ProductGallery({ photos }: { photos: readonly string[] }) {
     <div className="space-y-2">
       <div className="relative aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={cover} alt="" loading="lazy" className="w-full h-full object-cover" />
+        <img src={cover} alt={title} loading="lazy" className="w-full h-full object-cover" />
       </div>
       {rest.length > 0 && (
         <div className="grid grid-cols-4 gap-2">
-          {rest.map((src) => (
+          {rest.map((src, i) => (
             <div key={src} className="relative aspect-square bg-gray-100 rounded overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
+              <img src={src} alt={`${title}, фото ${i + 2}`} loading="lazy" className="w-full h-full object-cover" />
             </div>
           ))}
         </div>
@@ -143,7 +143,7 @@ export default function MagazinPage() {
                 className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="p-4">
-                  <ProductGallery photos={product.photos} />
+                  <ProductGallery photos={product.photos} title={product.title} />
                 </div>
                 <div className="px-6 pb-6 flex flex-col flex-1">
                   <div className="text-brand-red font-bold text-sm mb-2">{product.price}</div>
