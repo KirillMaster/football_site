@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import { getSiteSettings } from '@/lib/api';
 import ContactForm from '@/components/ContactForm';
 import { JsonLd } from '@/components/JsonLd';
@@ -6,11 +6,12 @@ import { getLocalBusinessSchema } from '@/lib/schema';
 import PhoneLink from '@/components/PhoneLink';
 import MapLinks from '@/components/MapLinks';
 
-export const metadata: Metadata = {
-  title: 'Контакты',
+export const metadata = buildMetadata({
+  title: 'Контакты: ул. Косарева, 12, Севастополь',
   description:
-    'Контакты футбольного клуба «Арсенал» Севастополь. Телефоны, адрес, карта проезда. Напишите нам онлайн.',
-};
+    'Контакты детской футбольной школы «Арсенал» в Севастополе: ул. Косарева, 12 (спорткомплекс школы №61), телефоны, карта проезда.',
+  path: '/kontakty',
+});
 
 export default async function KontaktyPage() {
   const settings = await getSiteSettings();
@@ -21,7 +22,7 @@ export default async function KontaktyPage() {
 
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-3">Контакты</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-3">Контакты футбольной школы</h1>
           <p className="text-blue-300 text-lg">Мы всегда рады ответить на ваши вопросы</p>
         </div>
       </section>

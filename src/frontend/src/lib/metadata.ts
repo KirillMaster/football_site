@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
 
 const DOMAIN = 'https://fcarsenal92.ru';
-const DEFAULT_OG_IMAGE = '/og-default.jpg';
-const SITE_NAME = 'ДФК Арсенал — Детская футбольная школа Севастополь';
+const DEFAULT_OG_IMAGE = {
+  url: 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png',
+  width: 512,
+  height: 561,
+};
+const SITE_NAME = 'Футбольный клуб «Арсенал» Севастополь';
 
 interface BuildMetadataOptions {
   title: string;
@@ -10,45 +14,34 @@ interface BuildMetadataOptions {
   path: string;
   ogImage?: string;
   noIndex?: boolean;
+  absoluteTitle?: boolean;
 }
 
 export function buildMetadata(opts: BuildMetadataOptions): Metadata {
-  const { title, description, path, ogImage, noIndex } = opts;
+  const { title, description, path, ogImage, noIndex, absoluteTitle } = opts;
   const canonical = `${DOMAIN}${path}`;
-  const image = ogImage ?? DEFAULT_OG_IMAGE;
-  const absoluteImage = image.startsWith('http') ? image : `${DOMAIN}${image}`;
+  const image = ogImage
+    ? { url: ogImage.startsWith('http') ? ogImage : `${DOMAIN}${ogImage}` }
+    : DEFAULT_OG_IMAGE;
 
   return {
-    title,
+    title: absoluteTitle ? { absolute: title } : title,
     description,
-    alternates: {
-      canonical,
-      languages: {
-        ru: canonical,
-        en: `${DOMAIN}/en${path}`,
-      },
-    },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
       url: canonical,
       siteName: SITE_NAME,
-      images: [
-        {
-          url: absoluteImage,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
+      images: [{ ...image, alt: title }],
       locale: 'ru_RU',
       type: 'website',
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary',
       title,
       description,
-      images: [absoluteImage],
+      images: [image.url],
     },
     robots: noIndex
       ? { index: false, follow: false }

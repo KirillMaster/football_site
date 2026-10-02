@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'Сборы — подготовка к просмотру в Европе',
   description:
     'Подготовка юных футболистов на сборах ФК «Арсенал» Севастополь на берегу Чёрного моря к просмотрам в европейских клубах. Недельный, месячный и сезонный циклы.',
-};
+  path: '/prodvizhenie/sbory',
+});
 
 const benefits = [
   'Развитие мобильности, стабильности суставов, физических качеств: ловкости, быстроты, координации, взрывной силы, гибкости.',

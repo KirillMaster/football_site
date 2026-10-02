@@ -1,16 +1,16 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import { getPricingPlans } from '@/lib/api';
 import PricingCard from '@/components/PricingCard';
 import { JsonLd } from '@/components/JsonLd';
-import { getCourseSchema } from '@/lib/schema';
-import { mockGroups } from '@/lib/mock-data';
+import { getFAQSchema } from '@/lib/schema';
 
-export const metadata: Metadata = {
-  title: 'Цены на тренировки',
+export const metadata = buildMetadata({
+  title: 'Цены на футбол для детей в Севастополе',
   description:
-    'Стоимость занятий в футбольном клубе «Арсенал» Севастополь: Standard — 4000₽, Standard+ — 5400₽, PRO — 6000₽ в месяц. Первое занятие бесплатно.',
-};
+    'Стоимость занятий в детской футбольной школе «Арсенал» в Севастополе: Standard — 4000₽, Standard+ — 5400₽, PRO — 6000₽ в месяц. Первое занятие бесплатно.',
+  path: '/ceny',
+});
 
 const faq = [
   {
@@ -52,12 +52,12 @@ export default async function CenyPage() {
 
   return (
     <>
-      <JsonLd data={mockGroups.map(getCourseSchema)} />
+      <JsonLd data={getFAQSchema(faq)} />
 
       {/* Hero */}
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-3">Цены</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-3">Цены на футбол для детей</h1>
           <p className="text-blue-300 text-lg">
             Прозрачная стоимость — без скрытых платежей
           </p>

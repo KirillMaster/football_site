@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import { getCmsPage } from '@/lib/api';
 
-export const metadata: Metadata = {
-  title: 'Философия клуба',
+export const metadata = buildMetadata({
+  title: 'Философия и методика футбольной школы',
   description:
     'Ценности и методология футбольного клуба «Арсенал» Севастополь. Как мы воспитываем детей через футбол.',
-};
+  path: '/filosofiya',
+});
 
 export default async function FilosofiyaPage() {
   const page = await getCmsPage('mission');

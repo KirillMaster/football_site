@@ -1,19 +1,20 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import TryoutForm from '@/components/TryoutForm';
 import PhoneLink from '@/components/PhoneLink';
 
-export const metadata: Metadata = {
-  title: 'Записаться',
+export const metadata = buildMetadata({
+  title: 'Запись в футбольную секцию в Севастополе',
   description:
-    'Запишите ребёнка на пробное занятие в футбольный клуб «Арсенал» Севастополь. Первое занятие бесплатно. Группы для детей 6–16 лет.',
-};
+    'Запишите ребёнка в футбольную секцию «Арсенал» в Севастополе. Первое пробное занятие бесплатно. Группы для детей 6–16 лет.',
+  path: '/zapisatsya',
+});
 
 export default function ZapisatsyaPage() {
   return (
     <>
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-3">Записаться</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-3">Записаться в футбольную секцию</h1>
           <p className="text-blue-300 text-lg">
             Первое пробное занятие — бесплатно
           </p>

@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import PhoneLink from '@/components/PhoneLink';
 
-export const metadata: Metadata = {
-  title: 'Просмотры и стажировки — ФК «Арсенал» Севастополь',
+export const metadata = buildMetadata({
+  title: 'Просмотры и стажировки в академиях',
   description:
     'Прямой контакт с академиями «Краснодар», «Локомотив», «Ростов», ЦСКА, EFC Antalya и сотрудничество с International Scouting Office (Словения). Ежегодные просмотры и стажировки.',
-};
+  path: '/prodvizhenie/stazhirovki',
+});
 
 const RUSSIAN_CLUBS = [
   '«Краснодар»',

@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'TRYOUT 2026 в Сербии — просмотр юных футболистов',
+export const metadata = buildMetadata({
+  title: 'TRYOUT 2026 в Сербии: просмотр футболистов',
   description:
     'Международный просмотр юных футболистов 2006–2012 г.р. на базе ФК «Zeleznik 1930» в Белграде, 5–15 июля 2026. Совместно с International Scout Office (Словения).',
-};
+  path: '/prodvizhenie/tryout-serbia',
+});
 
 const STADIUM_PHOTOS = [
   'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/zheleznik_stadium_01.jpg',

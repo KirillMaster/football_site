@@ -1,13 +1,14 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getCmsPage, getCoaches } from '@/lib/api';
 
-export const metadata: Metadata = {
-  title: 'О клубе',
+export const metadata = buildMetadata({
+  title: 'О детской футбольной школе в Севастополе',
   description:
     'Футбольный клуб «Арсенал» Севастополь основан в июле 2022 года. 64 воспитанника 6–16 лет, группы по уровню подготовки. Лицензия УЕФА C, стажировки в ведущих академиях России и Европы.',
-};
+  path: '/o-klube',
+});
 
 const advantages = [
   { icon: '🏆', title: 'Профессиональные тренеры', text: 'Тренерская лицензия категории C УЕФА. Мы любим детей и знаем, как привить любовь к спорту и добиться поставленных целей.' },

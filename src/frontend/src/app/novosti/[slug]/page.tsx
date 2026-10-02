@@ -16,11 +16,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await getNewsArticle(slug);
   if (!article) return { title: 'Статья не найдена' };
 
+  const url = `https://fcarsenal92.ru/novosti/${slug}`;
   return {
     title: article.title,
     description: article.excerpt,
+    alternates: { canonical: url },
     openGraph: {
       type: 'article',
+      url,
       title: article.title,
       description: article.excerpt,
       images: [{ url: article.coverImageUrl, width: 1200, height: 630 }],

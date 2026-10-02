@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Proдвижение юных футболистов',
+export const metadata = buildMetadata({
+  title: 'Продвижение юных футболистов',
   description:
     'Программы продвижения юных футболистов ФК «Арсенал» Севастополь совместно с International Scout Office: сборы для подготовки к просмотрам, TRYOUT в Сербии, стажировки в европейских клубах.',
-};
+  path: '/prodvizhenie',
+});
 
 const sections = [
   {

@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import { getNewsPage } from '@/lib/api';
 import NewsCard from '@/components/NewsCard';
 
-export const metadata: Metadata = {
-  title: 'Новости',
+export const metadata = buildMetadata({
+  title: 'Новости футбольной школы в Севастополе',
   description:
     'Последние новости футбольного клуба «Арсенал» Севастополь: турниры, результаты матчей, события клуба.',
-};
+  path: '/novosti',
+});
 
 interface Props {
   searchParams: Promise<{ page?: string }>;

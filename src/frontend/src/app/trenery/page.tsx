@@ -1,14 +1,15 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import { getCoaches } from '@/lib/api';
 import CoachCard from '@/components/CoachCard';
 import { JsonLd } from '@/components/JsonLd';
 import { getCoachSchema } from '@/lib/schema';
 
-export const metadata: Metadata = {
-  title: 'Тренеры',
+export const metadata = buildMetadata({
+  title: 'Тренеры по футболу для детей в Севастополе',
   description:
     'Тренерский состав футбольного клуба «Арсенал» Севастополь. Лицензия УЕФА категории C. Узнайте о каждом тренере клуба.',
-};
+  path: '/trenery',
+});
 
 export default async function TreneryPage() {
   const coaches = await getCoaches();
@@ -19,7 +20,7 @@ export default async function TreneryPage() {
 
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-3">Тренеры</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-3">Тренеры по футболу</h1>
           <p className="text-blue-300 text-lg">
             Профессиональные специалисты с лицензиями UEFA и РФС
           </p>

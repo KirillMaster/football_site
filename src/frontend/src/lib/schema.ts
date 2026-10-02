@@ -15,9 +15,16 @@ const address = {
   streetAddress: 'ул. Косарева, д.12, Спорткомплекс школы №61',
   addressLocality: 'Севастополь',
   addressRegion: 'Севастополь',
-  postalCode: '299000',
   addressCountry: 'RU',
 } as const;
+
+const geo = {
+  '@type': 'GeoCoordinates',
+  latitude: 44.586567,
+  longitude: 33.522167,
+} as const;
+
+const telephones = ['+7-978-813-09-82', '+7-978-812-64-32', '+7-978-104-09-40'];
 
 const logo = {
   '@type': 'ImageObject',
@@ -61,13 +68,13 @@ export function getOrganizationSchema(): Record<string, unknown> {
       'Детская футбольная школа «Арсенал» в Севастополе. 64 воспитанника 6–16 лет. Профессиональные тренеры с лицензией УЕФА категории C.',
     url: DOMAIN,
     logo,
-    telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
+    telephone: telephones,
     address,
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+7-978-813-09-82',
       contactType: 'customer service',
-      availableLanguage: ['Russian', 'English'],
+      availableLanguage: 'Russian',
     },
     sameAs,
     founder: {
@@ -92,8 +99,9 @@ export function getSportsClubSchema(): Record<string, unknown> {
     url: DOMAIN,
     logo,
     image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
-    telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
+    telephone: telephones,
     address,
+    geo,
     openingHoursSpecification: openingHours,
     sport: 'Football',
     priceRange: '4000₽ - 6000₽/мес',
@@ -119,8 +127,9 @@ export function getLocalBusinessSchema(): Record<string, unknown> {
     description:
       'Детская футбольная школа в Севастополе. 64 воспитанника 6–16 лет, группы формируются по уровню подготовки.',
     url: `${DOMAIN}/kontakty`,
-    telephone: ['+7-978-813-09-82', '+7-978-812-64-32'],
+    telephone: telephones,
     address,
+    geo,
     openingHoursSpecification: openingHours,
     image: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
     logo: `https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/logo_arsenal_new_512.png`,
@@ -188,23 +197,27 @@ export function getCourseSchema(group: TrainingGroup): Record<string, unknown> {
     hasCourseInstance: {
       '@type': 'CourseInstance',
       courseMode: 'onsite',
-      instructor: {
-        '@type': 'Person',
-        name: group.coachName,
-      },
+      ...(group.coachName && {
+        instructor: {
+          '@type': 'Person',
+          name: group.coachName,
+        },
+      }),
       location: {
         '@type': 'Place',
         name: 'Спорткомплекс школы №61',
         address,
       },
     },
-    offers: {
-      '@type': 'Offer',
-      price: String(group.price),
-      priceCurrency: 'RUB',
-      availability: 'https://schema.org/InStock',
-      url: `${DOMAIN}/zapisatsya`,
-    },
+    ...(group.price > 0 && {
+      offers: {
+        '@type': 'Offer',
+        price: String(group.price),
+        priceCurrency: 'RUB',
+        availability: 'https://schema.org/InStock',
+        url: `${DOMAIN}/zapisatsya`,
+      },
+    }),
     coursePrerequisites: `Дети от ${group.ageMin} до ${group.ageMax} лет`,
     educationalLevel: 'Beginner to Advanced',
   };
@@ -292,7 +305,7 @@ export function getFAQSchema(
   };
 }
 
-// ─── WebSite + SearchAction ──────────────────────────────────────────────────
+// ─── WebSite ──────────────────────────────────────────────────
 
 export function getWebSiteSchema(): Record<string, unknown> {
   return {
@@ -301,17 +314,9 @@ export function getWebSiteSchema(): Record<string, unknown> {
     '@id': WEBSITE_ID,
     name: 'Футбольный клуб «Арсенал» Севастополь — Детская футбольная школа',
     url: DOMAIN,
-    inLanguage: ['ru', 'en'],
+    inLanguage: 'ru',
     publisher: {
       '@id': ORG_ID,
-    },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${DOMAIN}/search?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
     },
   };
 }

@@ -1,9 +1,11 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 
-export const metadata: Metadata = {
-  title: 'Видео',
-  description: 'Видеогалерея футбольного клуба «Арсенал» Севастополь — лучшие моменты тренировок и матчей.',
-};
+export const metadata = buildMetadata({
+  title: 'Видео футбольной школы в Севастополе',
+  description:
+    'Видеогалерея футбольного клуба «Арсенал» Севастополь — лучшие моменты тренировок и матчей.',
+  path: '/video',
+});
 
 const S3_BASE = 'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads';
 

@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import { EQUIPMENT_PHOTOS, EQUIPMENT_VIDEOS } from '@/lib/equipment-media';
 
-export const metadata: Metadata = {
-  title: 'Экипировка',
+export const metadata = buildMetadata({
+  title: 'Футбольная экипировка в Севастополе',
   description:
     'Футбольная экипировка от ФК «Арсенал» Севастополь: бутсы, форма, костюмы, ветровки, сумки, защита, инвентарь. Поставка от производителей. Заказ через Telegram.',
-};
+  path: '/magazin',
+});
 
 const TELEGRAM_URL = 'https://t.me/s/arsenalarena';
 

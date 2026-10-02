@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Родителям',
+export const metadata = buildMetadata({
+  title: 'Родителям: футбол для детей в Севастополе',
   description:
     'Информация для родителей о занятиях в футбольном клубе «Арсенал» Севастополь: безопасность, медицинский осмотр, форма, расписание.',
-};
+  path: '/roditelyam',
+});
 
 const sections = [
   {

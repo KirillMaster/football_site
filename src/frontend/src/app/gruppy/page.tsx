@@ -1,15 +1,16 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import { getGroups } from '@/lib/api';
 import { DAYS_RU } from '@/lib/utils';
 import { JsonLd } from '@/components/JsonLd';
 import { getCourseSchema } from '@/lib/schema';
 
-export const metadata: Metadata = {
-  title: 'Группы и расписание',
+export const metadata = buildMetadata({
+  title: 'Футбольные группы для детей в Севастополе',
   description:
-    'Тренировочные группы футбольного клуба «Арсенал» Севастополь: Малыши (6–7 лет), Юниоры (8–10 лет), Кадеты (11–13 лет), Юноши (14–17 лет). Расписание и цены.',
-};
+    'Группы детской футбольной школы «Арсенал» в Севастополе: U-10 (6–10 лет), U-12 (8–12 лет), U-17 (14–16 лет). Расписание тренировок и запись на пробное занятие.',
+  path: '/gruppy',
+});
 
 export default async function GruppyPage() {
   const groups = await getGroups();
@@ -20,9 +21,9 @@ export default async function GruppyPage() {
 
       <section className="bg-brand-blue text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-3">Группы</h1>
+          <h1 className="text-4xl md:text-5xl font-black mb-3">Футбольные группы для детей</h1>
           <p className="text-blue-300 text-lg">
-            Для детей от 6 до 17 лет — выберите подходящую группу
+            Для детей от 6 до 16 лет — выберите подходящую группу
           </p>
         </div>
       </section>

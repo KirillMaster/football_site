@@ -1,20 +1,19 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getCoaches, getNewsPage, getPricingPlans, getSiteSettings, getPartners, getReviews } from '@/lib/api';
 import CoachCard from '@/components/CoachCard';
 import NewsCard from '@/components/NewsCard';
 import PricingCard from '@/components/PricingCard';
-import { JsonLd } from '@/components/JsonLd';
-import { getSportsClubSchema, getWebSiteSchema } from '@/lib/schema';
 import SponsorSection from '@/components/SponsorSection';
 
-export const metadata: Metadata = {
-  title: 'Футбольный клуб «Арсенал» Севастополь — Детская футбольная школа',
+export const metadata = buildMetadata({
+  title: 'Детская футбольная школа в Севастополе — ФК «Арсенал»',
   description:
     'Детская футбольная школа «Арсенал» в Севастополе. 64 воспитанника 6–16 лет. Лицензия УЕФА C. Открыт набор 2026. Запишитесь на пробное занятие!',
-  openGraph: { type: 'website' },
-};
+  path: '/',
+  absoluteTitle: true,
+});
 
 export default async function HomePage() {
   const [coaches, newsData, plans, settings, partners, reviews] = await Promise.all([
@@ -28,8 +27,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <JsonLd data={[getSportsClubSchema(), getWebSiteSchema()]} />
-
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative bg-brand-blue text-white overflow-hidden min-h-[700px] flex items-center">
         {/* Self-hosted looping video background */}
@@ -55,7 +52,7 @@ export default async function HomePage() {
               Открыт набор 2026
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-4">
-              Футбольный клуб <span className="text-brand-red">«Арсенал»</span>
+              Детская футбольная школа <span className="text-brand-red">«Арсенал»</span>
               <span className="block text-3xl md:text-4xl lg:text-5xl mt-2">Севастополь</span>
             </h1>
             <p className="text-base md:text-lg text-blue-200 leading-relaxed mb-8">

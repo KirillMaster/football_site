@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/metadata';
 import { getPhotos } from '@/lib/api';
 import PhotoGallery from '@/components/PhotoGallery';
 
-export const metadata: Metadata = {
-  title: 'Фото',
+export const metadata = buildMetadata({
+  title: 'Фото футбольной школы в Севастополе',
   description:
     'Фотогалерея футбольного клуба «Арсенал» Севастополь — тренировки, турниры, жизнь клуба.',
-};
+  path: '/foto',
+});
 
 export default async function FotoPage() {
   const photos = await getPhotos();
