@@ -45,7 +45,7 @@ export default async function HomePage() {
             muted
             playsInline
             preload="none"
-            className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover"
           >
             <source src="https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/hero_video_new.mp4" type="video/mp4" />
           </video>
