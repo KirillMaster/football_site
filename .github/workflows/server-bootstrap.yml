@@ -22,7 +22,8 @@ on:
 jobs:
   bootstrap:
     name: Run on server
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
     steps:
       - name: SSH and run
         uses: appleboy/ssh-action@v1.2.0
