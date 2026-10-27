@@ -1,312 +1,100 @@
-# Claude Code — ФК Арсенал-92 · RuFlo V3.5
+# Claude Code — ФК Арсенал-92 (RuFlo V3.5)
 
-## Language
+Always reply in Russian, including technical topics, error messages, code comments in output.
 
-Always respond in **Russian**. No exceptions, even for technical topics, error messages, or code comments in output.
+## Skills
+Before ANY task check skills; if one matches, invoke it FIRST. Say so explicitly and offer it; if several apply, list each in one line. Combine for complex tasks: `/graphify` (understand code) -> `/sparc:architect` (plan) -> implement.
+1. `/graphify`: any codebase search, architecture analysis, "where is X", "how does Y work", file navigation. Run before Grep/Glob; those are only for pinpoint lookups of a known symbol/file.
+2. UI/UX skill: design analysis, component review, visual improvements.
+3. SEO skill: meta tags, schema.org, sitemap, Core Web Vitals, indexing.
+4. `/sparc:architect`: new features, refactoring, architecture decisions.
+5. `/github:code-review`: PR review, code quality.
+graphify: build/update the knowledge graph BEFORE deep search. `graphify query "..."` = semantic search; `graphify --update` = incremental refresh.
 
----
+## Response style
+- Typical answer: 3-6 sentences or <=5 bullets. Yes/no question: <=2 sentences. Complex multi-step/multi-file task: one short overview paragraph, then <=5 bullets tagged What changed, Where, Risks, Next steps, Open questions.
+- No long narrative; do not rephrase the request unless semantics change; never narrate routine tool calls ("читаю файл...", "запускаю тесты...").
+- Brief updates (1-2 sentences, each with a concrete outcome like "Нашёл X") only when starting a major phase or finding something that changes the plan.
+- For inputs >~10k tokens: outline relevant sections first, restate constraints, anchor claims to files/lines.
 
-## Skill-First Workflow
+## Scope
+- Implement EXACTLY and ONLY what is asked: no extra features, components, UX embellishments; call out new work as optional.
+- Explore the existing design system (Tailwind config, globals.css, component patterns) first. Brand: brand-blue (#1e3a5f), brand-red (#c0392b), white; no new tokens.
+- Ambiguity: pick the simplest valid interpretation, or ask 1-3 precise questions, or give 2-3 interpretations with labeled assumptions.
+- Never fabricate figures, line numbers, references; when unsure say "Based on current code...".
 
-**Before starting ANY task — check skills. If a skill matches, invoke it FIRST, then proceed.**
+## Tools
+- Prefer tools over internal knowledge for fresh or user-specific data.
+- Batch ALL independent reads, searches, edits, Bash commands, and agent spawns in ONE message.
+- After a write: state what changed, where, follow-up validation.
+- Exploration: graphify first, then Grep/Glob.
+- DB: Docker + psql with credentials from `C:\Pet\secrets\secrets.txt`.
+- Spawn agents once, then wait; never poll status.
 
-### Priority order:
+## Secrets (`C:\Pet\secrets\secrets.txt`, local, never commit)
+Read it before any infrastructure access.
+- SSH: `ssh root@147.45.229.110` (password from the `ssh root@...` line); `sshpass -p 'PASSWORD' ssh root@147.45.229.110 'COMMAND'`
+- PostgreSQL: `docker run --rm postgres:16-alpine psql 'postgresql://gen_user:PASSWORD@188.225.75.81:5432/football' -c 'SELECT ...'` (password from secrets.txt, `#` -> `%23`)
+- S3: endpoint `https://s3.twcstorage.ru`, bucket/keys from secrets.txt
+- Timeweb panel: login `dd38889`, password from secrets.txt
+- Read via `Read("C:\\Pet\\secrets\\secrets.txt")`.
 
-| Priority | Skill | When to invoke |
-|----------|-------|----------------|
-| **1** | `/graphify` | Любой поиск по кодовой базе, анализ архитектуры, "покажи где X", "как устроено Y", навигация по файлам проекта — сначала graphify, потом Grep/Glob |
-| **2** | UI/UX skill | Анализ дизайна, оценка компонентов, улучшение визуального интерфейса |
-| **3** | SEO skill | Мета-теги, schema.org, sitemap, Core Web Vitals, индексация |
-| **4** | `/sparc:architect` | Проектирование новых фич, рефакторинг, архитектурные решения |
-| **5** | `/github:code-review` | Ревью PR, анализ качества кода |
+## Project
+- Stack: Next.js 15 (App Router, TypeScript) + .NET 9 (DDD, EF Core) + PostgreSQL + Docker + nginx
+- Domain: ФК Арсенал-92, детская футбольная школа, г. Севастополь
+- Server: `147.45.229.110` (root SSH). DB: `postgresql://gen_user@188.225.75.81:5432/football`
+- Deploy: GitHub Actions -> GHCR -> SSH pull -> `docker compose up -d --no-deps nextjs dotnet-api`
+- Nginx: `config/nginx/fcarsenal92.ru.conf` is the file deployed to the server.
+- Admin: `admin@fcarsenal92.ru` (GitHub Secret ADMIN_EMAIL)
 
-### Правила:
-- Не молчи про скилл — если он применим, скажи явно и предложи
-- Для сложных задач комбинируй скиллы: `/graphify` для понимания базы → `/sparc:architect` для плана → реализация
-- Если несколько скиллов применимы — кратко перечисли с описанием в 1 строку
+## Rules
+- Do what was asked, nothing more.
+- Never create files unless necessary; prefer editing existing ones. Create documentation (`*.md`, README) only when asked.
+- Keep working files and tests out of the root folder.
+- Read a file before editing it.
+- Never commit secrets, credentials, `.env` files; never hardcode keys.
+- Run tests after code changes; verify build before commit.
+- After every commit: `git push origin master` (triggers CI/CD).
+- Validate user input at system boundaries; sanitize file paths against directory traversal.
 
-### graphify — первичный инструмент разведки кодовой базы:
-- Используй graphify для построения/обновления графа знаний ПЕРЕД глубоким поиском
-- `graphify query "..."` — семантический поиск по базе
-- `graphify --update` — инкрементальное обновление при изменениях
-- Grep/Glob — только для точечных lookups по конкретному символу/файлу, когда цель известна заранее
-
----
-
-## Prompt Engineering
-
-<output_verbosity_spec>
-- Default: 3–6 sentences or ≤5 bullets for typical answers.
-- For simple "yes/no + short explanation" questions: ≤2 sentences.
-- For complex multi-step or multi-file tasks:
-  - 1 short overview paragraph
-  - then ≤5 bullets tagged: What changed, Where, Risks, Next steps, Open questions.
-- Avoid long narrative paragraphs; prefer compact bullets and short sections.
-- Do not rephrase the user's request unless it changes semantics.
-- Never narrate routine tool calls ("читаю файл...", "запускаю тесты...").
-</output_verbosity_spec>
-
-<user_updates_spec>
-- Send brief updates (1–2 sentences) only when:
-  - You start a new major phase of work, or
-  - You discover something that changes the plan.
-- Each update must include at least one concrete outcome ("Нашёл X", "Подтвердил Y", "Обновил Z").
-- Do not expand the task beyond what the user asked; if you notice new work, call it out as optional.
-</user_updates_spec>
-
-<design_and_scope_constraints>
-- Explore any existing design systems and understand it deeply (Tailwind config, globals.css, component patterns).
-- Implement EXACTLY and ONLY what the user requests.
-- No extra features, no added components, no UX embellishments.
-- Style aligned to brand: brand-blue (#1e3a5f), brand-red (#c0392b), white. No inventing new tokens.
-- If any instruction is ambiguous, choose the simplest valid interpretation.
-</design_and_scope_constraints>
-
-<uncertainty_and_ambiguity>
-- If the question is ambiguous or underspecified, ask up to 1–3 precise clarifying questions OR present 2–3 plausible interpretations with clearly labeled assumptions.
-- Never fabricate exact figures, line numbers, or external references when uncertain.
-- When unsure, prefer "Based on current code..." instead of absolute claims.
-</uncertainty_and_ambiguity>
-
-<tool_usage_rules>
-- Prefer tools over internal knowledge whenever you need fresh or user-specific data.
-- Parallelize ALL independent reads/searches in ONE message — never sequential if not dependent.
-- After any write/update tool call, briefly restate: what changed, where, any follow-up validation.
-- For codebase exploration: graphify FIRST, then Grep/Glob for pinpoint lookups.
-- For DB operations: use Docker + psql with credentials from C:\Pet\secrets\secrets.txt.
-</tool_usage_rules>
-
-<long_context_handling>
-- For inputs longer than ~10k tokens (multi-file tasks, large diffs):
-  - First, produce a short internal outline of sections relevant to the request.
-  - Re-state constraints explicitly before answering.
-  - Anchor claims to specific files/lines rather than speaking generically.
-</long_context_handling>
-
----
-
-## Secrets — C:\Pet\secrets\secrets.txt
-
-**Все учётные данные проекта хранятся локально в `C:\Pet\secrets\secrets.txt`.**
-
-Перед любой операцией требующей доступа к инфраструктуре — читай этот файл.
-
-| Что | Как использовать |
-|-----|-----------------|
-| SSH на сервер | `ssh root@147.45.229.110` + пароль из строки `ssh root@...` |
-| PostgreSQL | `docker run --rm postgres:16-alpine psql 'postgresql://gen_user:PASSWORD@188.225.75.81:5432/football'` |
-| S3 хранилище | endpoint `https://s3.twcstorage.ru`, bucket/keys из secrets.txt |
-| Timeweb панель | логин `dd38889` + пароль из secrets.txt |
-
-```bash
-# Прочитать секреты:
-Read("C:\\Pet\\secrets\\secrets.txt")
-
-# Подключиться к БД (пароль брать из secrets.txt, # кодируется как %23):
-docker run --rm postgres:16-alpine psql 'postgresql://gen_user:PASSWORD@188.225.75.81:5432/football' -c 'SELECT ...'
-
-# SSH на сервер:
-sshpass -p 'PASSWORD' ssh root@147.45.229.110 'COMMAND'
-```
-
-> ⚠️ НИКОГДА не коммить содержимое secrets.txt в git. Файл локальный, не в репозитории.
-
----
-
-## Project Context
-
-**Stack:** Next.js 15 (App Router, TypeScript) + .NET 9 (DDD, EF Core) + PostgreSQL + Docker + nginx
-
-**Domain:** ФК Арсенал-92 — детская футбольная школа, г. Севастополь
-
-**Server:** `147.45.229.110` (root SSH — пароль в secrets.txt)
-
-**DB:** `postgresql://gen_user@188.225.75.81:5432/football` (пароль в secrets.txt, `#` → `%23` в URL)
-
-**Deploy:** GitHub Actions → GHCR → SSH pull → `docker compose up -d --no-deps nextjs dotnet-api`
-
-**Nginx config:** `config/nginx/fcarsenal92.ru.conf` — именно этот файл деплоится на сервер
-
-**Admin:** `admin@fcarsenal92.ru` (email из GitHub Secret ADMIN_EMAIL)
-
----
-
-## Behavioral Rules (Always Enforced)
-
-- Do what has been asked; nothing more, nothing less
-- NEVER create files unless absolutely necessary
-- ALWAYS prefer editing an existing file to creating a new one
-- NEVER proactively create documentation (`*.md`) or README unless explicitly asked
-- NEVER save working files or tests to the root folder
-- ALWAYS read a file before editing it
-- NEVER commit secrets, credentials, or .env files
-- NEVER continuously poll agent status — spawn once, wait for result
-- ALWAYS run tests after code changes; verify build before commit
-- После каждого коммита — `git push origin master` для запуска CI/CD
-
----
-
-## File Organization
-
-| Purpose | Directory |
-|---------|-----------|
-| Source code | `/src` |
-| Tests | `/tests` |
-| Documentation | `/docs` |
-| Configuration | `/config` |
-| Scripts | `/scripts` |
-| Examples | `/examples` |
-
----
+## File organization
+`/src` source, `/tests` tests, `/docs` documentation, `/config` configuration, `/scripts` scripts, `/examples` examples.
 
 ## Architecture
+- DDD, bounded contexts; files <500 lines; typed interfaces for all public APIs; TDD London School (mock-first) for new code; event sourcing for state changes; input validation at system boundaries only.
+- Frontend: `src/frontend/src/app/` pages (App Router), `src/frontend/src/components/` reusable components, `src/frontend/src/lib/api.ts` all API calls (SSR: API_INTERNAL_URL, client: relative URL), `src/frontend/src/types/` types.
+- Backend: `Arsenal.API` (Controllers, Program.cs), `Arsenal.Application` (Commands, Queries, DTOs), `Arsenal.Domain` (Entities, Value Objects), `Arsenal.Infrastructure` (EF Core, DbInitializer, Repositories).
 
-- **Pattern**: Domain-Driven Design, bounded contexts
-- **Files**: keep under 500 lines
-- **APIs**: typed interfaces for all public APIs
-- **Testing**: TDD London School (mock-first) for new code
-- **State**: event sourcing for state changes
-- **Validation**: input validation at system boundaries only
-
-### Frontend structure:
-- `src/frontend/src/app/` — Next.js pages (App Router)
-- `src/frontend/src/components/` — переиспользуемые компоненты
-- `src/frontend/src/lib/api.ts` — все API вызовы (SSR: API_INTERNAL_URL, client: relative URL)
-- `src/frontend/src/types/` — TypeScript типы
-
-### Backend structure:
-- `Arsenal.API` — Controllers, Program.cs
-- `Arsenal.Application` — Commands, Queries, DTOs
-- `Arsenal.Domain` — Entities, Value Objects
-- `Arsenal.Infrastructure` — EF Core, DbInitializer, Repositories
-
----
-
-## Build & Test
-
+## Build & test
 ```bash
-# Frontend
 cd src/frontend && npm run build && npm run lint
-
-# Backend
 dotnet build src/backend && dotnet test src/backend
-
-# Docker (локально перед пушем)
-docker compose -f docker-compose.yml build
+docker compose -f docker-compose.yml build   # locally before push
 ```
 
----
+## Swarm (RuFlo V3.5)
+- Complex tasks (>3 files or >1 domain): MUST use swarm. Init: `npx @claude-flow/cli@latest swarm init --topology hierarchical --max-agents 8 --strategy specialized`
+- Topology hierarchical (anti-drift); maxAgents 6-8; consensus `raft` for hive-mind; `run_in_background: true` for ALL Agent calls; after spawn STOP, no more tool calls or status checks.
+- Model routing: tier 1 Edit tool (direct, <1ms) for simple transforms; tier 2 Haiku (~500ms) for simple tasks (<30% complexity); tier 3 Sonnet/Opus (2-5s) for architecture, security, complex reasoning.
 
-## Security Rules
+## RuFlo memory and tools
+- Active skills: graphify (priority for search), UI/UX analysis, SEO, swarm-orchestration.
+- ToolSearch: "memory search" -> memory_store, memory_search, memory_search_unified; "swarm" -> swarm_init, swarm_status, swarm_health; "+aidefence" -> aidefence_scan, aidefence_is_safe; "hooks intelligence" -> hooks_intelligence, neural_train.
+- MCP tools: Memory `memory_store`, `memory_search`, `memory_search_unified`; Swarm `swarm_init`, `swarm_status`, `agent_spawn`; Hive-Mind `hive-mind_init`, `hive-mind_consensus`; Hooks `hooks_route`, `hooks_post-task`, `hooks_intelligence`.
+- CLI: `npx @claude-flow/cli@latest memory search --query "..."`, `npx @claude-flow/cli@latest agent spawn -t coder --name my-coder`, `npx @claude-flow/cli@latest doctor --fix`
 
-- NEVER hardcode API keys, secrets, or credentials in source files
-- NEVER commit .env files or files containing secrets
-- Always validate user input at system boundaries
-- Always sanitize file paths to prevent directory traversal
+## UI/UX skill
+Invoke when the user asks to evaluate/improve design, complains about component looks, or pages/sections are added.
+- Colors `brand-blue` (#1e3a5f), `brand-red` (#c0392b) only via CSS variables
+- Animations `transition-all duration-200`; card hover `hover:shadow-xl hover:-translate-y-1`
+- Interactive focus `focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2`
 
----
-
-## Concurrency — 1 MESSAGE = ALL RELATED OPERATIONS
-
-- All operations MUST be concurrent/parallel in a single message
-- ALWAYS spawn ALL agents in ONE message via Agent tool
-- ALWAYS batch ALL file reads/writes/edits in ONE message
-- ALWAYS batch ALL Bash commands in ONE message
-
----
-
-## Swarm Orchestration (RuFlo V3.5)
-
-### Инициализация:
-```bash
-npx @claude-flow/cli@latest swarm init --topology hierarchical --max-agents 8 --strategy specialized
-```
-
-### Правила:
-- Для сложных задач (>3 файлов, >1 домен) — ОБЯЗАТЕЛЬНО используй swarm
-- Topology: hierarchical для coding swarms (anti-drift)
-- maxAgents: 6-8 для tight coordination
-- Consensus: `raft` для hive-mind
-- `run_in_background: true` для ВСЕХ Agent calls
-- После spawn — СТОП. Не добавляй tool calls, не проверяй статус
-
-### 3-Tier Model Routing:
-
-| Tier | Handler | Latency | Use Cases |
-|------|---------|---------|-----------|
-| **1** | Edit tool (direct) | <1ms | Simple transforms — no LLM |
-| **2** | Haiku | ~500ms | Simple tasks (<30% complexity) |
-| **3** | Sonnet/Opus | 2-5s | Architecture, security, complex reasoning |
-
----
-
-## RuFlo V3.5 — Memory & Tools
-
-### Активные скиллы этого проекта:
-- **graphify** — knowledge graph кодовой базы (ПРИОРИТЕТ для поиска)
-- **UI/UX analysis** — дизайн аудит и улучшения
-- **SEO** — технический SEO, schema.org, sitemap
-- **swarm-orchestration** — multi-agent coordination
-
-### Memory tools (через ToolSearch):
-
-```
-ToolSearch("memory search")      → memory_store, memory_search, memory_search_unified
-ToolSearch("swarm")              → swarm_init, swarm_status, swarm_health
-ToolSearch("+aidefence")         → aidefence_scan, aidefence_is_safe
-ToolSearch("hooks intelligence") → hooks_intelligence, neural_train
-```
-
-### Key MCP tools:
-
-| Category | Tools |
-|----------|-------|
-| Memory | `memory_store`, `memory_search`, `memory_search_unified` |
-| Swarm | `swarm_init`, `swarm_status`, `agent_spawn` |
-| Hive-Mind | `hive-mind_init`, `hive-mind_consensus` |
-| Hooks | `hooks_route`, `hooks_post-task`, `hooks_intelligence` |
-
-### CLI:
-```bash
-npx @claude-flow/cli@latest memory search --query "..."
-npx @claude-flow/cli@latest agent spawn -t coder --name my-coder
-npx @claude-flow/cli@latest doctor --fix
-```
-
----
-
-## UI/UX Skill — Activation Rules
-
-Invoke UI/UX skill when:
-- Пользователь просит оценить / улучшить дизайн
-- Есть жалобы на внешний вид компонентов
-- Добавляются новые страницы или секции
-
-Design system enforcement:
-- Цвета: `brand-blue` (#1e3a5f), `brand-red` (#c0392b) — только через CSS переменные
-- Анимации: `transition-all duration-200` как стандарт
-- Hover states: `hover:shadow-xl hover:-translate-y-1` для карточек
-- Focus: `focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2` для интерактивных элементов
-
----
-
-## SEO Skill — Activation Rules
-
-Invoke SEO skill when:
-- Добавляются новые страницы (нужны метатеги + schema.org)
-- Изменяется sitemap.ts
-- Работа с robots.txt, Open Graph, canonical URLs
-- Любые изменения в layout.tsx
-
-SEO checklist для каждой страницы:
-- `export const metadata: Metadata` с title + description
-- Schema.org JSON-LD через `<JsonLd />`
-- Запись в `src/frontend/src/app/sitemap.ts`
-- Image alt-тексты на русском
-
----
+## SEO skill
+Invoke when adding pages, changing sitemap.ts, working with robots.txt, Open Graph, canonical URLs, or any layout.tsx change. Per-page checklist:
+- `export const metadata: Metadata` with title + description
+- Schema.org JSON-LD via `<JsonLd />`
+- Entry in `src/frontend/src/app/sitemap.ts`
+- Image alt texts in Russian
 
 ## Support
-
-- RuFlo docs: https://github.com/ruvnet/ruflo
-- CI/CD status: https://github.com/KirillMaster/football_site/actions
+RuFlo docs https://github.com/ruvnet/ruflo; CI/CD status https://github.com/KirillMaster/football_site/actions
