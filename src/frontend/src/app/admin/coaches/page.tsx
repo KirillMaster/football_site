@@ -10,7 +10,9 @@ import {
   createAdminCoach,
   updateAdminCoach,
   deleteAdminCoach,
+  type CoachScheduleSlot,
 } from '@/lib/api';
+import { ReassignDialog } from './ReassignDialog';
 
 interface AdminCoachDto {
   id: string;
@@ -133,6 +135,7 @@ export default function AdminCoachesPage() {
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [reassign, setReassign] = useState<{ coach: AdminCoachDto; slots: CoachScheduleSlot[] } | null>(null);
 
   const showToast = (msg: string, isError = false) => {
     setError(isError ? msg : null);
@@ -201,13 +204,28 @@ export default function AdminCoachesPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (coach: AdminCoachDto) => {
     if (!confirm('Удалить тренера?')) return;
-    const ok = await deleteAdminCoach(id);
-    if (ok) {
+    const res = await deleteAdminCoach(coach.id);
+    if (res.ok) {
       await fetchCoaches();
+    } else if (res.schedules?.length) {
+      setReassign({ coach, slots: res.schedules });
     } else {
       showToast('Ошибка при удалении тренера', true);
+    }
+  };
+
+  const handleReassignDelete = async (reassignTo: string) => {
+    if (!reassign) return;
+    setSaving(true);
+    const res = await deleteAdminCoach(reassign.coach.id, reassignTo);
+    setSaving(false);
+    if (res.ok) {
+      setReassign(null);
+      await fetchCoaches();
+    } else {
+      showToast('Не удалось передать занятия и удалить тренера', true);
     }
   };
 
@@ -320,7 +338,7 @@ export default function AdminCoachesPage() {
                       Изменить
                     </button>
                     <button
-                      onClick={() => handleDelete(coach.id)}
+                      onClick={() => handleDelete(coach)}
                       className="text-xs text-gray-400 hover:text-red-600"
                     >
                       Удалить
@@ -331,6 +349,17 @@ export default function AdminCoachesPage() {
             )
           )}
         </div>
+      )}
+
+      {reassign && (
+        <ReassignDialog
+          coach={reassign.coach}
+          slots={reassign.slots}
+          candidates={coaches.filter((c) => c.id !== reassign.coach.id)}
+          busy={saving}
+          onConfirm={handleReassignDelete}
+          onCancel={() => setReassign(null)}
+        />
       )}
     </AdminLayout>
   );

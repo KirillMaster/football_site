@@ -68,12 +68,33 @@ public class AdminCoachesController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    public async Task<IActionResult> Delete(Guid id, [FromQuery] Guid? reassignTo, CancellationToken ct)
     {
         var coach = await _db.Coaches.FindAsync([id], ct);
         if (coach is null) return NotFound();
-        if (await _db.Schedules.AnyAsync(s => s.CoachId == id, ct))
-            return Conflict(new { message = "Тренер указан в расписании. Сначала замените его в расписании или сделайте неактивным." });
+
+        var schedules = await _db.Schedules.Include(s => s.Group)
+            .Where(s => s.CoachId == id).ToListAsync(ct);
+        if (schedules.Count > 0)
+        {
+            if (reassignTo is null)
+                return Conflict(new
+                {
+                    message = "Тренер ведёт занятия. Выберите, кому их передать.",
+                    schedules = schedules
+                        .OrderBy(s => s.Group!.Name).ThenBy(s => s.DayOfWeek).ThenBy(s => s.StartTime)
+                        .Select(s => new
+                        {
+                            groupName = s.Group!.Name,
+                            dayOfWeek = s.DayOfWeek.ToString(),
+                            startTime = s.StartTime.ToString("HH:mm"),
+                        }),
+                });
+            if (reassignTo == id || !await _db.Coaches.AnyAsync(c => c.Id == reassignTo, ct))
+                return BadRequest(new { message = "Некорректный тренер для передачи занятий." });
+            foreach (var s in schedules) s.ReassignCoach(reassignTo.Value);
+        }
+
         _db.Coaches.Remove(coach);
         await _db.SaveChangesAsync(ct);
         return NoContent();

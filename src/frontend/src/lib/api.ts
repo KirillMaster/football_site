@@ -605,8 +605,32 @@ export async function updateAdminCoach(id: string, data: Record<string, unknown>
   return adminMutate(`/api/admin/coaches/${id}`, 'PUT', data);
 }
 
-export async function deleteAdminCoach(id: string): Promise<boolean> {
-  return adminMutate(`/api/admin/coaches/${id}`, 'DELETE');
+export interface CoachScheduleSlot {
+  groupName: string;
+  dayOfWeek: string;
+  startTime: string;
+}
+
+export type DeleteAdminCoachResult =
+  | { ok: true }
+  | { ok: false; schedules?: CoachScheduleSlot[] };
+
+export async function deleteAdminCoach(id: string, reassignTo?: string): Promise<DeleteAdminCoachResult> {
+  const query = reassignTo ? `?reassignTo=${encodeURIComponent(reassignTo)}` : '';
+  try {
+    const res = await adminFetch(`${API_URL}/api/admin/coaches/${id}${query}`, {
+      method: 'DELETE',
+      headers: JSON_HEADERS,
+    });
+    if (res.ok) return { ok: true };
+    if (res.status === 409) {
+      const body = await res.json().catch(() => null);
+      return { ok: false, schedules: body?.schedules ?? [] };
+    }
+    return { ok: false };
+  } catch {
+    return { ok: false };
+  }
 }
 
 // ─── Admin News ─────────────────────────────────────────────────────────────

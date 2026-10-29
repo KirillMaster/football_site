@@ -44,4 +44,11 @@ public class Schedule : BaseEntity
         IsActive = isActive;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void ReassignCoach(Guid coachId)
+    {
+        if (coachId == Guid.Empty) throw new ArgumentException("Coach id is required", nameof(coachId));
+        CoachId = coachId;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
