@@ -153,61 +153,69 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Self-hosted раннер в контейнере с docker.sock хоста: docker-экшены (appleboy/*) видят пустой
+      # workspace (bind-mount пути раннера, которого нет на хосте) — поэтому scp/ssh напрямую.
+      - name: Set up SSH key
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          command -v ssh >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq openssh-client)
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -T 15 "$SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null
+
       - name: Copy files to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml,config/seed-data.json,scripts/deploy.sh,config/nginx/fcarsenal92.ru.conf"
-          target: /opt/football_site
-          strip_components: 0
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          ssh -i ~/.ssh/deploy_key root@"$SERVER_IP" 'mkdir -p /opt/football_site/config/nginx /opt/football_site/scripts'
+          tar czf - docker-compose.yml config/seed-data.json scripts/deploy.sh config/nginx/fcarsenal92.ru.conf | ssh -i ~/.ssh/deploy_key root@"$SERVER_IP" 'tar xzf - -C /opt/football_site'
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -euo pipefail
-            # Ensure claude-code key is authorized
-            mkdir -p /root/.ssh && chmod 700 /root/.ssh
-            grep -qF 'claude-code@football_site' /root/.ssh/authorized_keys 2>/dev/null || \
-              echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz/HTFfJoNew/3GQnLXtV+eGefW6w/mpMI+v9A7ac8f claude-code@football_site' >> /root/.ssh/authorized_keys
-            chmod 600 /root/.ssh/authorized_keys
-            mkdir -p /opt/football_site/config
-            cd /opt/football_site
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          ssh -i ~/.ssh/deploy_key root@"$SERVER_IP" bash -s <<'REMOTE'
+          set -euo pipefail
+          # Ensure claude-code key is authorized
+          mkdir -p /root/.ssh && chmod 700 /root/.ssh
+          grep -qF 'claude-code@football_site' /root/.ssh/authorized_keys 2>/dev/null || \
+            echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJz/HTFfJoNew/3GQnLXtV+eGefW6w/mpMI+v9A7ac8f claude-code@football_site' >> /root/.ssh/authorized_keys
+          chmod 600 /root/.ssh/authorized_keys
+          mkdir -p /opt/football_site/config
+          cd /opt/football_site
 
-            # Write .env (GITHUB_REPOSITORY lowercased — Docker requires lowercase)
-            REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-            printf '%s\n' \
-              "GITHUB_REPOSITORY=${REPO}" \
-              "IMAGE_TAG=sha-${{ github.sha }}" \
-              "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
-              "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
-              "S3_ENDPOINT=${{ secrets.S3_ENDPOINT }}" \
-              "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}" \
-              "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" \
-              "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
-              "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" \
-              "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" \
-              "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" \
-              "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" \
-              "SMTP_HOST=${{ secrets.SMTP_HOST }}" \
-              "SMTP_PORT=${{ secrets.SMTP_PORT }}" \
-              "SMTP_USER=${{ secrets.SMTP_USER }}" \
-              "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" \
-              "FEEDBACK_EMAIL_TO=${{ secrets.FEEDBACK_EMAIL_TO }}" \
-              "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" \
-              "NEXT_PUBLIC_YM_ID=${{ secrets.NEXT_PUBLIC_YM_ID }}" \
-              "FRONTEND_URL=https://fcarsenal92.ru" > .env
+          # Write .env (GITHUB_REPOSITORY lowercased — Docker requires lowercase)
+          REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          printf '%s\n' \
+            "GITHUB_REPOSITORY=${REPO}" \
+            "IMAGE_TAG=sha-${{ github.sha }}" \
+            "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+            "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+            "S3_ENDPOINT=${{ secrets.S3_ENDPOINT }}" \
+            "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}" \
+            "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" \
+            "S3_BUCKET=${{ secrets.S3_BUCKET }}" \
+            "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" \
+            "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" \
+            "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+            "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            "SMTP_HOST=${{ secrets.SMTP_HOST }}" \
+            "SMTP_PORT=${{ secrets.SMTP_PORT }}" \
+            "SMTP_USER=${{ secrets.SMTP_USER }}" \
+            "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" \
+            "FEEDBACK_EMAIL_TO=${{ secrets.FEEDBACK_EMAIL_TO }}" \
+            "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" \
+            "NEXT_PUBLIC_YM_ID=${{ secrets.NEXT_PUBLIC_YM_ID }}" \
+            "FRONTEND_URL=https://fcarsenal92.ru" > .env
 
-            # Login to GHCR
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          # Login to GHCR
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-            # Update nginx config and reload
-            cp /opt/football_site/config/nginx/fcarsenal92.ru.conf /etc/nginx/sites-available/fcarsenal92.ru
-            nginx -t && systemctl reload nginx
+          # Update nginx config and reload
+          cp /opt/football_site/config/nginx/fcarsenal92.ru.conf /etc/nginx/sites-available/fcarsenal92.ru
+          nginx -t && systemctl reload nginx
 
-            bash scripts/deploy.sh
+          bash scripts/deploy.sh
+          REMOTE
