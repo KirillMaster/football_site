@@ -95,8 +95,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Self-hosted: driver docker = layer cache хостового демона; type=gha кэш виснет на аплоаде
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
 
       - name: Extract Docker metadata (backend)
         id: meta-api
@@ -115,8 +118,6 @@ jobs:
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
-          cache-from: type=gha,scope=backend-v2
-          cache-to: type=gha,mode=max,scope=backend-v2
 
       - name: Extract Docker metadata (frontend)
         id: meta-fe
@@ -135,8 +136,6 @@ jobs:
           push: true
           tags: ${{ steps.meta-fe.outputs.tags }}
           labels: ${{ steps.meta-fe.outputs.labels }}
-          cache-from: type=gha,scope=frontend-v2
-          cache-to: type=gha,mode=max,scope=frontend-v2
           build-args: |
             NEXT_PUBLIC_API_URL=https://fcarsenal92.ru
             NEXT_PUBLIC_YM_ID=${{ secrets.NEXT_PUBLIC_YM_ID }}
