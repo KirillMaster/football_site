@@ -94,6 +94,7 @@ public class AdminNewsController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateNewsCommand req, CancellationToken ct)
     {
+        req = req with { Id = id };
         var validation = await _updateValidator.ValidateAsync(req, ct);
         if (!validation.IsValid)
             return BadRequest(new { message = validation.Errors[0].ErrorMessage });
