@@ -3,9 +3,7 @@
 import { useState } from 'react';
 import { submitContactMessage } from '@/lib/api';
 import { reachGoal } from '@/lib/analytics';
-
-const QR_URL =
-  'https://s3.twcstorage.ru/577cc034-8ff38061-52e3-42ed-af0c-f06c744e4e66/uploads/qr_payment.jpg';
+import DonateModal from './DonateModal';
 
 function SponsorModal({ onClose }: { onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
@@ -124,55 +122,6 @@ function SponsorModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-function DonateModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl leading-none"
-          aria-label="Закрыть"
-        >
-          ×
-        </button>
-        <div className="text-brand-red text-sm font-bold uppercase tracking-wide mb-1">Поддержка проекта</div>
-        <h2 className="text-xl font-black text-brand-blue mb-2 leading-tight">
-          Финансовая поддержка на строительство футбольного поля
-        </h2>
-        <p className="text-gray-600 text-sm mb-5 leading-relaxed">
-          Отсканируйте QR-код приложением вашего банка, укажите удобную сумму и совершите перевод.
-          Средства поступят непосредственно на счёт АНО «Футбольный клуб «Арсенал»».
-        </p>
-
-        {/* QR */}
-        <div className="flex justify-center mb-5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={QR_URL}
-            alt="QR-код для пожертвования АНО ФК Арсенал Севастополь"
-            loading="lazy"
-            className="w-52 h-52 object-contain border border-gray-200 rounded-xl p-2"
-          />
-        </div>
-
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-700 space-y-1 mb-5">
-          <div className="font-semibold text-gray-900 mb-2">Получатель:</div>
-          <div>АНО «Футбольный клуб «Арсенал»»</div>
-          <div className="text-gray-500 text-xs mt-1">Сумму укажите самостоятельно при оплате</div>
-        </div>
-
-        <p className="text-xs text-gray-400 text-center leading-relaxed">
-          Пожертвование носит добровольный характер. По вопросам сотрудничества:&nbsp;
-          <a href="mailto:ars2011sev@mail.ru" className="text-brand-blue hover:underline">
-            ars2011sev@mail.ru
-          </a>
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function SponsorSection() {
   const [modal, setModal] = useState<'sponsor' | 'donate' | null>(null);
 
@@ -197,7 +146,10 @@ export default function SponsorSection() {
               🤝 Стать генеральным спонсором
             </button>
             <button
-              onClick={() => setModal('donate')}
+              onClick={() => {
+                reachGoal('donate_click', { place: 'sponsor-section' });
+                setModal('donate');
+              }}
               className="bg-brand-red text-white font-bold px-8 py-4 rounded-lg hover:bg-red-700 transition-colors text-sm"
             >
               💳 Поддержать строительство поля

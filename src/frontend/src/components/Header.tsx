@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import PhoneLink from '@/components/PhoneLink';
+import DonateButton from '@/components/DonateButton';
 
 const HEADER_PHONE = '+7-978-813-09-82';
 
@@ -78,6 +79,12 @@ export default function Header() {
               <span className="hidden md:inline text-sm font-semibold whitespace-nowrap">{HEADER_PHONE}</span>
               <span className="sr-only">Позвонить {HEADER_PHONE}</span>
             </PhoneLink>
+            <DonateButton
+              place="header"
+              className="hidden lg:inline-flex items-center h-10 px-4 rounded-lg border-2 border-white/80 text-white text-sm font-semibold whitespace-nowrap hover:bg-white hover:text-brand-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2"
+            >
+              ⚽ Помочь построить поле
+            </DonateButton>
             <Link
               href="/zapisatsya"
               className="hidden sm:inline-flex btn-primary text-sm px-4 py-2"
@@ -201,6 +208,13 @@ export default function Header() {
           >
             Записаться
           </Link>
+          <DonateButton
+            place="mobile-menu"
+            onOpen={() => setMenuOpen(false)}
+            className="mt-2 rounded-md border-2 border-white/80 text-white text-sm font-semibold py-2 hover:bg-white hover:text-brand-blue transition-all duration-200"
+          >
+            ⚽ Помочь построить поле
+          </DonateButton>
         </nav>
       </div>
     </header>
