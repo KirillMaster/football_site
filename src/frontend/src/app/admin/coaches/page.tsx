@@ -10,6 +10,7 @@ import {
   createAdminCoach,
   updateAdminCoach,
   deleteAdminCoach,
+  uploadAdminNewsMedia,
   type CoachScheduleSlot,
 } from '@/lib/api';
 import { ReassignDialog } from './ReassignDialog';
@@ -28,6 +29,7 @@ interface CoachFormData {
   nameRu: string;
   positionRu: string;
   bioRu: string;
+  photo: string;
   certifications: string;
   isActive: boolean;
 }
@@ -36,6 +38,7 @@ const emptyForm: CoachFormData = {
   nameRu: '',
   positionRu: '',
   bioRu: '',
+  photo: '',
   certifications: '',
   isActive: true,
 };
@@ -52,12 +55,68 @@ function CoachForm({
   saving: boolean;
 }) {
   const [form, setForm] = useState<CoachFormData>(initial);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const set = (field: keyof CoachFormData, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploading(true);
+    setUploadError(null);
+    const result = await uploadAdminNewsMedia(file);
+    setUploading(false);
+    if (result.status === 'uploaded') {
+      set('photo', result.url);
+    } else if (result.status === 'rejected') {
+      setUploadError(result.message);
+    } else if (result.status === 'unauthorized') {
+      setUploadError('Сессия истекла — войдите заново');
+    } else {
+      setUploadError('Нет соединения с сервером');
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Фото</label>
+        <div className="flex items-center gap-4">
+          <div className="relative h-24 w-20 shrink-0 rounded-lg overflow-hidden bg-gray-200">
+            {form.photo ? (
+              <Image src={form.photo} alt={form.nameRu || 'Фото тренера'} fill className="object-cover object-top" sizes="80px" />
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400 text-xs">Нет фото</div>
+            )}
+          </div>
+          <div className="flex flex-col items-start gap-1.5">
+            <label className="btn-outline text-xs px-3 py-1.5 cursor-pointer">
+              {uploading ? 'Загрузка...' : form.photo ? 'Заменить' : 'Загрузить'}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                disabled={uploading || saving}
+                onChange={handlePhotoUpload}
+              />
+            </label>
+            {form.photo && (
+              <button
+                type="button"
+                onClick={() => set('photo', '')}
+                disabled={uploading || saving}
+                className="text-xs text-gray-400 hover:text-red-600"
+              >
+                Удалить фото
+              </button>
+            )}
+          </div>
+        </div>
+        {uploadError && <p className="mt-1 text-xs text-red-600">{uploadError}</p>}
+      </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Имя (RU)</label>
         <input
@@ -115,7 +174,7 @@ function CoachForm({
       <div className="flex gap-3 pt-2">
         <button
           onClick={() => onSave(form)}
-          disabled={saving || !form.nameRu.trim()}
+          disabled={saving || uploading || !form.nameRu.trim()}
           className="btn-primary text-sm px-6 py-2 disabled:opacity-50"
         >
           {saving ? 'Сохранение...' : 'Сохранить'}
@@ -168,6 +227,7 @@ export default function AdminCoachesPage() {
       nameRu: form.nameRu,
       positionRu: form.positionRu,
       bioRu: form.bioRu,
+      photo: form.photo || null,
       certifications: form.certifications
         .split(',')
         .map((s) => s.trim())
@@ -189,6 +249,7 @@ export default function AdminCoachesPage() {
       nameRu: form.nameRu,
       positionRu: form.positionRu,
       bioRu: form.bioRu,
+      photo: form.photo || null,
       certifications: form.certifications
         .split(',')
         .map((s) => s.trim())
@@ -278,6 +339,7 @@ export default function AdminCoachesPage() {
                     nameRu: coach.nameRu,
                     positionRu: coach.positionRu,
                     bioRu: coach.bioRu,
+                    photo: coach.photo ?? '',
                     certifications: (coach.certifications ?? []).join(', '),
                     isActive: coach.isActive,
                   }}

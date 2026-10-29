@@ -50,6 +50,7 @@ public class AdminCoachesController : ControllerBase
     {
         var coach = Coach.Create(req.NameRu, req.NameEn ?? "", req.PositionRu ?? "", req.PositionEn ?? "",
             req.BioRu ?? "", req.BioEn ?? "", req.Certifications, req.SortOrder ?? 0, req.IsActive);
+        if (!string.IsNullOrWhiteSpace(req.Photo)) coach.SetPhoto(req.Photo);
         _db.Coaches.Add(coach);
         await _db.SaveChangesAsync(ct);
         return CreatedAtAction(null, new { id = coach.Id });
@@ -61,7 +62,7 @@ public class AdminCoachesController : ControllerBase
         var coach = await _db.Coaches.FindAsync([id], ct);
         if (coach is null) return NotFound();
         coach.Update(req.NameRu, req.NameEn ?? coach.NameEn, req.PositionRu ?? "", req.PositionEn ?? coach.PositionEn,
-            req.BioRu ?? "", req.BioEn ?? coach.BioEn, coach.Photo, req.Certifications ?? [],
+            req.BioRu ?? "", req.BioEn ?? coach.BioEn, string.IsNullOrWhiteSpace(req.Photo) ? null : req.Photo, req.Certifications ?? [],
             req.SortOrder ?? coach.SortOrder, req.IsActive);
         await _db.SaveChangesAsync(ct);
         return NoContent();
@@ -106,5 +107,6 @@ public record CoachRequest(
     string? PositionRu, string? PositionEn,
     string? BioRu, string? BioEn,
     List<string>? Certifications,
-    int? SortOrder, bool IsActive
+    int? SortOrder, bool IsActive,
+    string? Photo = null
 );
