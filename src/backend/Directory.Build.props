@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <QualityGatesProfile>legacy-ratchet</QualityGatesProfile>
+    <QualityGatesMode>adopt</QualityGatesMode>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1900;NU1901;NU1902;NU1903;NU1904;NU1905</WarningsNotAsErrors>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)quality/grandfathered/warnings.props" Condition="Exists('$(MSBuildThisFileDirectory)quality/grandfathered/warnings.props')" />
+  <ItemGroup>
+    <PackageReference Include="KirillMaster.QualityGates.Build" Version="0.2.0" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

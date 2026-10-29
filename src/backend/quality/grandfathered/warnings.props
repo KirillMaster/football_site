@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Arsenal.API.IntegrationTests'">
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS8602</WarningsNotAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Arsenal.Infrastructure'">
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS8604</WarningsNotAsErrors>
+  </PropertyGroup>
+</Project>
