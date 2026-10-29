@@ -3,6 +3,7 @@ using Arsenal.Application.Queries;
 using Arsenal.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Arsenal.API.Controllers;
 
@@ -47,8 +48,8 @@ public class AdminCoachesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CoachRequest req, CancellationToken ct)
     {
-        var coach = Coach.Create(req.NameRu, req.NameEn, req.PositionRu, req.PositionEn,
-            req.BioRu, req.BioEn, req.Certifications, req.SortOrder, req.IsActive);
+        var coach = Coach.Create(req.NameRu, req.NameEn ?? "", req.PositionRu ?? "", req.PositionEn ?? "",
+            req.BioRu ?? "", req.BioEn ?? "", req.Certifications, req.SortOrder ?? 0, req.IsActive);
         _db.Coaches.Add(coach);
         await _db.SaveChangesAsync(ct);
         return CreatedAtAction(null, new { id = coach.Id });
@@ -59,8 +60,9 @@ public class AdminCoachesController : ControllerBase
     {
         var coach = await _db.Coaches.FindAsync([id], ct);
         if (coach is null) return NotFound();
-        coach.Update(req.NameRu, req.NameEn, req.PositionRu, req.PositionEn,
-            req.BioRu, req.BioEn, null, req.Certifications ?? [], req.SortOrder, req.IsActive);
+        coach.Update(req.NameRu, req.NameEn ?? coach.NameEn, req.PositionRu ?? "", req.PositionEn ?? coach.PositionEn,
+            req.BioRu ?? "", req.BioEn ?? coach.BioEn, coach.Photo, req.Certifications ?? [],
+            req.SortOrder ?? coach.SortOrder, req.IsActive);
         await _db.SaveChangesAsync(ct);
         return NoContent();
     }
@@ -70,6 +72,8 @@ public class AdminCoachesController : ControllerBase
     {
         var coach = await _db.Coaches.FindAsync([id], ct);
         if (coach is null) return NotFound();
+        if (await _db.Schedules.AnyAsync(s => s.CoachId == id, ct))
+            return Conflict(new { message = "Тренер указан в расписании. Сначала замените его в расписании или сделайте неактивным." });
         _db.Coaches.Remove(coach);
         await _db.SaveChangesAsync(ct);
         return NoContent();
@@ -77,9 +81,9 @@ public class AdminCoachesController : ControllerBase
 }
 
 public record CoachRequest(
-    string NameRu, string NameEn,
-    string PositionRu, string PositionEn,
-    string BioRu, string BioEn,
+    string NameRu, string? NameEn,
+    string? PositionRu, string? PositionEn,
+    string? BioRu, string? BioEn,
     List<string>? Certifications,
-    int SortOrder, bool IsActive
+    int? SortOrder, bool IsActive
 );
