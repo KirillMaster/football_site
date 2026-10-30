@@ -7,6 +7,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)quality/grandfathered/warnings.props" Condition="Exists('$(MSBuildThisFileDirectory)quality/grandfathered/warnings.props')" />
   <ItemGroup>
-    <PackageReference Include="KirillMaster.QualityGates.Build" Version="0.3.0" PrivateAssets="all" />
+    <PackageReference Include="KirillMaster.QualityGates.Build" Version="0.3.1" PrivateAssets="all" />
   </ItemGroup>
 </Project>
