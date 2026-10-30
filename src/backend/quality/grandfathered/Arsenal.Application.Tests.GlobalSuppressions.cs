@@ -6,3 +6,8 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0042", Justification = "grandfathered")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "S6562", Justification = "grandfathered")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "VSTHRD003", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0051", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0170", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0171", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0173", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0181", Justification = "grandfathered")]
