@@ -1,11 +1,12 @@
 # ── Build stage ──────────────────────────────────────────────────────────────
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS builder
 
 WORKDIR /src
 
 # Copy solution + NuGet config + all csproj files (preserving dir structure)
 # so dotnet restore can cache this layer independently from source changes.
-COPY Arsenal.sln NuGet.config ./
+COPY Arsenal.sln NuGet.config Directory.Build.props ./
+COPY quality/grandfathered/warnings.props quality/grandfathered/warnings.props
 COPY src/Arsenal.API/Arsenal.API.csproj                         src/Arsenal.API/
 COPY src/Arsenal.Application/Arsenal.Application.csproj         src/Arsenal.Application/
 COPY src/Arsenal.Domain/Arsenal.Domain.csproj                   src/Arsenal.Domain/
