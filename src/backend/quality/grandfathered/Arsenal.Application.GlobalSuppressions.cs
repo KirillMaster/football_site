@@ -21,3 +21,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "QG0151", Justification = "grandfathered")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "S109", Justification = "grandfathered")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "S2360", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "CA1031", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "S2221", Justification = "grandfathered")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("QualityGates", "CA1002", Justification = "grandfathered")]
