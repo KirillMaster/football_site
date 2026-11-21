@@ -1,0 +1,26 @@
+# powerpuff profile — verified on clean base 72131ea (2026-11-21); see docs/profile.md of the plugin
+approved: true
+# excluded: src-backend-format red on clean base 72131ea: IMPORTS ordering errors in existing sources
+# excluded: src-frontend-typecheck red on clean base 72131ea: TS errors in existing NewsEditor/uploadAdminNewsMedia tests
+stack: mixed
+gates:
+  iteration: [src-backend-build, src-frontend-lint, src-frontend-build]
+  unit: [src-backend-tests, duplication, size, src-backend-complexity, src-frontend-tests, src-frontend-complexity]
+  final: [src-backend-tests-full]
+commands:
+  src-backend-build: 'cd src/backend && dotnet build'
+  src-backend-format: 'cd src/backend && dotnet format --verify-no-changes'
+  src-backend-tests: 'cd src/backend && dotnet test'
+  duplication: 'python "{plugin}/scripts/diff_gates.py" duplication --base {base} --max-new 0'
+  size: 'python "{plugin}/scripts/diff_gates.py" size --base {base} --max-lines 400 --exclude "quality-report*.json" --exclude powerpuff.yaml --exclude ".powerpuff-*" --exclude "*/TestResults/*"'
+  src-backend-complexity: 'cd src/backend && lizard -l csharp --csv -x "*/obj/*" -x "*/bin/*" . > "{root}/.powerpuff-lizard.csv" && python "{plugin}/scripts/diff_gates.py" complexity --root {root} --base {base} --report "{root}/.powerpuff-lizard.csv" --max 15'
+  src-backend-tests-full: 'cd src/backend && dotnet test --configuration Release'
+  src-frontend-typecheck: 'cd src/frontend && npx --no-install tsc --noEmit'
+  src-frontend-lint: 'cd src/frontend && npm run lint'
+  src-frontend-build: 'cd src/frontend && npm run build'
+  src-frontend-tests: 'cd src/frontend && npm run test'
+  src-frontend-complexity: 'cd src/frontend && lizard -l typescript --csv -x "*/node_modules/*" -x "*/dist/*" . > "{root}/.powerpuff-lizard.csv" && python "{plugin}/scripts/diff_gates.py" complexity --root {root} --base {base} --report "{root}/.powerpuff-lizard.csv" --max 15'
+format_fix: 'cd "{root}/src/backend" && dotnet format'
+setup: 'cd "{root}/src/backend" && dotnet restore && cd "{root}/src/frontend" && npm install --no-audit --no-fund'
+test_gates: [src-backend-tests, src-frontend-tests]
+protected: ['powerpuff.yaml', 'src/backend/.editorconfig', '.editorconfig', 'src/backend/Directory.Build.props', 'Directory.Build.props', 'src/backend/Directory.Build.targets', 'Directory.Build.targets', 'src/backend/Directory.Packages.props', 'Directory.Packages.props', 'src/backend/.globalconfig', '.globalconfig', 'src/backend/*.ruleset', '*.ruleset', 'src/backend/global.json', 'global.json', 'src/backend/nuget.config', 'nuget.config', 'src/backend/*.runsettings', '*.runsettings', 'src/backend/stryker-config.json', 'stryker-config.json', 'src/backend/quality/**', 'quality/**', 'src/backend/.github/workflows/**', '.github/workflows/**', 'src/frontend/eslint.config.*', 'eslint.config.*', 'src/frontend/.eslintrc*', '.eslintrc*', 'src/frontend/tsconfig*.json', 'tsconfig*.json', 'src/frontend/.prettierrc*', '.prettierrc*', 'src/frontend/prettier.config.*', 'prettier.config.*', 'src/frontend/vitest.config.*', 'vitest.config.*', 'src/frontend/jest.config.*', 'jest.config.*', 'src/frontend/stryker.conf.*', 'stryker.conf.*', 'src/frontend/stryker-config.json', 'src/frontend/.dependency-cruiser.*', '.dependency-cruiser.*', 'src/frontend/.github/workflows/**']
