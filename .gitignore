@@ -70,3 +70,9 @@ secrets.txt
 # bob-pipeline runtime
 .bob/
 .worktrees/
+
+# powerpuff runtime
+.powerpuff/
+.forge/
+.forge-unit-spec.md
+.powerpuff-*
